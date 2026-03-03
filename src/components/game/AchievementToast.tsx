@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useGameStore, type ToastNotification } from '@/store/gameStore';
+import { type ToastNotification, useGameStore } from '@/store/gameStore';
 
-function Toast({ toast, onDismiss }: { toast: ToastNotification; onDismiss: (id: string) => void }) {
+function Toast({
+  toast,
+  onDismiss,
+}: {
+  toast: ToastNotification;
+  onDismiss: (id: string) => void;
+}) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -41,8 +47,8 @@ function Toast({ toast, onDismiss }: { toast: ToastNotification; onDismiss: (id:
 }
 
 export function AchievementToast() {
-  const toastQueue = useGameStore(s => s.toastQueue);
-  const dismissToast = useGameStore(s => s.dismissToast);
+  const toastQueue = useGameStore((s) => s.toastQueue);
+  const dismissToast = useGameStore((s) => s.dismissToast);
 
   // Show last 3 toasts
   const visibleToasts = toastQueue.slice(-3);
@@ -51,7 +57,7 @@ export function AchievementToast() {
 
   return (
     <div className="fixed bottom-4 right-4 flex flex-col gap-2 z-50 pointer-events-none">
-      {visibleToasts.map(toast => (
+      {visibleToasts.map((toast) => (
         <div key={toast.id} className="pointer-events-auto">
           <Toast toast={toast} onDismiss={dismissToast} />
         </div>

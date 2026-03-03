@@ -86,7 +86,7 @@ export const UPGRADES: Upgrade[] = [
     cost: 10000,
     target: 'autocomplete',
     multiplier: 3,
-    unlockCondition: ({ producers }) => (producers['autocomplete'] ?? 0) >= 5,
+    unlockCondition: ({ producers }) => (producers.autocomplete ?? 0) >= 5,
   },
   {
     id: 'lgtm-bot',
@@ -140,7 +140,7 @@ export const UPGRADES: Upgrade[] = [
     cost: 250000000,
     target: 'agi',
     multiplier: 5,
-    unlockCondition: ({ producers }) => (producers['agi'] ?? 0) >= 1,
+    unlockCondition: ({ producers }) => (producers.agi ?? 0) >= 1,
   },
 
   // Global multiplier upgrades

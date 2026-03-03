@@ -2,10 +2,10 @@ import { useGameStore } from '@/store/gameStore';
 import { formatLOC, formatRate } from '@/utils/format';
 
 export function LOCDisplay() {
-  const loc = useGameStore(s => s.loc);
-  const totalLoc = useGameStore(s => s.totalLoc);
-  const activeEvent = useGameStore(s => s.activeEvent);
-  const displayedLOCps = useGameStore(s => s.displayedLOCps);
+  const loc = useGameStore((s) => s.loc);
+  const totalLoc = useGameStore((s) => s.totalLoc);
+  const activeEvent = useGameStore((s) => s.activeEvent);
+  const displayedLOCps = useGameStore((s) => s.displayedLOCps);
 
   const commits = Math.floor(totalLoc / 1000);
   const progressToNextCommit = (totalLoc % 1000) / 1000;
@@ -27,7 +27,9 @@ export function LOCDisplay() {
       <div className="flex items-center gap-2 text-gh-muted font-mono text-sm">
         <span className="text-gh-blue">{formatRate(displayedLOCps)}</span>
         {activeEvent && (
-          <span className={`text-xs px-1.5 py-0.5 rounded ${activeEvent.isNegative ? 'bg-gh-red/20 text-gh-red' : 'bg-gh-green/20 text-gh-green'}`}>
+          <span
+            className={`text-xs px-1.5 py-0.5 rounded ${activeEvent.isNegative ? 'bg-gh-red/20 text-gh-red' : 'bg-gh-green/20 text-gh-green'}`}
+          >
             {activeEvent.emoji} event active
           </span>
         )}

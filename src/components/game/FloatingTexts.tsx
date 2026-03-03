@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useGameStore, type FloatingText } from '@/store/gameStore';
+import { type FloatingText, useGameStore } from '@/store/gameStore';
 
 function FloatingTextItem({ text, onDone }: { text: FloatingText; onDone: () => void }) {
   useEffect(() => {
@@ -18,17 +18,13 @@ function FloatingTextItem({ text, onDone }: { text: FloatingText; onDone: () => 
 }
 
 export function FloatingTexts() {
-  const floatingTexts = useGameStore(s => s.floatingTexts);
-  const removeFloatingText = useGameStore(s => s.removeFloatingText);
+  const floatingTexts = useGameStore((s) => s.floatingTexts);
+  const removeFloatingText = useGameStore((s) => s.removeFloatingText);
 
   return (
     <>
-      {floatingTexts.map(ft => (
-        <FloatingTextItem
-          key={ft.id}
-          text={ft}
-          onDone={() => removeFloatingText(ft.id)}
-        />
+      {floatingTexts.map((ft) => (
+        <FloatingTextItem key={ft.id} text={ft} onDone={() => removeFloatingText(ft.id)} />
       ))}
     </>
   );

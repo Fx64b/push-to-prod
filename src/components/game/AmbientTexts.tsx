@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 
 interface AmbientText {
@@ -18,7 +18,7 @@ const PRODUCER_SOUNDS: Record<string, { sounds: string[]; color: string }> = {
     sounds: ['*clack*', 'clack', 'CLACK', 'clackity', 'clack clack', 'clk clk clk'],
     color: 'text-gh-muted',
   },
-  'autocomplete': {
+  autocomplete: {
     sounds: ['...', 'tab ✓', 'accepted', '→ done', '// suggested', 'complete'],
     color: 'text-gh-blue',
   },
@@ -46,7 +46,7 @@ const PRODUCER_SOUNDS: Record<string, { sounds: string[]; color: string }> = {
     sounds: ['deploying...', 'PR merged', 'CI ✓', '47 features shipped', 'LGTM x47'],
     color: 'text-gh-green',
   },
-  'agi': {
+  agi: {
     sounds: ['...', 'done.', '✓', '*thinking*', 'universe refactored'],
     color: 'text-cyan-400',
   },
@@ -59,7 +59,7 @@ function pick<T>(arr: T[]): T {
 }
 
 export function AmbientTexts() {
-  const producers = useGameStore(s => s.producers);
+  const producers = useGameStore((s) => s.producers);
   const [texts, setTexts] = useState<AmbientText[]>([]);
 
   const spawn = useCallback((producerId: string) => {
@@ -73,9 +73,9 @@ export function AmbientTexts() {
       y: 25 + Math.random() * 40,
       color: def.color,
     };
-    setTexts(prev => [...prev, text]);
+    setTexts((prev) => [...prev, text]);
     setTimeout(() => {
-      setTexts(prev => prev.filter(t => t.id !== text.id));
+      setTexts((prev) => prev.filter((t) => t.id !== text.id));
     }, 2200);
   }, []);
 
@@ -96,7 +96,7 @@ export function AmbientTexts() {
 
   return (
     <>
-      {texts.map(t => (
+      {texts.map((t) => (
         <div
           key={t.id}
           className={`

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useGameStore } from '@/store/gameStore';
 
 export function useGameLoop() {
-  const tick = useGameStore(s => s.tick);
+  const tick = useGameStore((s) => s.tick);
   const lastTimeRef = useRef<number>(Date.now());
 
   useEffect(() => {

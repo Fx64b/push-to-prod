@@ -1,11 +1,11 @@
+import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
-import { X } from 'lucide-react';
 
 export function EventBanner() {
-  const activeEvent = useGameStore(s => s.activeEvent);
-  const eventEndTime = useGameStore(s => s.eventEndTime);
-  const dismissEvent = useGameStore(s => s.dismissEvent);
+  const activeEvent = useGameStore((s) => s.activeEvent);
+  const eventEndTime = useGameStore((s) => s.eventEndTime);
+  const dismissEvent = useGameStore((s) => s.dismissEvent);
   const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {

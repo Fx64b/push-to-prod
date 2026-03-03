@@ -1,32 +1,32 @@
-import { useMemo } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { useGameStore } from '@/store/gameStore';
+import { useMemo } from 'react';
+import { ACHIEVEMENTS, type Achievement } from '@/data/achievements';
 import { PRODUCERS, type Producer } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
-import { ACHIEVEMENTS, type Achievement } from '@/data/achievements';
+import { useGameStore } from '@/store/gameStore';
+import { producerCost } from '@/utils/costs';
 import { formatLOC, formatRate } from '@/utils/format';
 import { calculateClickValue } from '@/utils/production';
-import { producerCost } from '@/utils/costs';
 
 export function StatsPanel() {
-  const loc = useGameStore(s => s.loc);
-  const totalLoc = useGameStore(s => s.totalLoc);
-  const producers = useGameStore(s => s.producers);
-  const upgrades = useGameStore(s => s.upgrades);
-  const locPerClick = useGameStore(s => s.locPerClick);
-  const achievements = useGameStore(s => s.achievements);
-  const totalClicks = useGameStore(s => s.totalClicks);
-  const prestigeCount = useGameStore(s => s.prestigeCount);
-  const legacyTokens = useGameStore(s => s.legacyTokens);
+  const loc = useGameStore((s) => s.loc);
+  const totalLoc = useGameStore((s) => s.totalLoc);
+  const producers = useGameStore((s) => s.producers);
+  const upgrades = useGameStore((s) => s.upgrades);
+  const locPerClick = useGameStore((s) => s.locPerClick);
+  const achievements = useGameStore((s) => s.achievements);
+  const totalClicks = useGameStore((s) => s.totalClicks);
+  const prestigeCount = useGameStore((s) => s.prestigeCount);
+  const legacyTokens = useGameStore((s) => s.legacyTokens);
 
-  const locps = useGameStore(s => s.displayedLOCps);
+  const locps = useGameStore((s) => s.displayedLOCps);
 
-  const clickValue = useMemo(() =>
-    calculateClickValue({ producers, upgrades, locPerClick }),
-    [producers, upgrades, locPerClick]
+  const clickValue = useMemo(
+    () => calculateClickValue({ producers, upgrades, locPerClick }),
+    [producers, upgrades, locPerClick],
   );
 
-  const ownedProducers = PRODUCERS.filter(p => (producers[p.id] ?? 0) > 0);
+  const ownedProducers = PRODUCERS.filter((p) => (producers[p.id] ?? 0) > 0);
 
   return (
     <div className="flex flex-col gap-4 font-mono text-sm h-full overflow-y-auto">
@@ -58,11 +58,9 @@ export function StatsPanel() {
             🔨 Producers
           </h2>
           <div className="space-y-1">
-            {ownedProducers.map(p => {
+            {ownedProducers.map((p) => {
               const count = producers[p.id] ?? 0;
-              return (
-                <ProducerTooltip key={p.id} producer={p} count={count} upgrades={upgrades} />
-              );
+              return <ProducerTooltip key={p.id} producer={p} count={count} upgrades={upgrades} />;
             })}
           </div>
         </div>
@@ -74,11 +72,9 @@ export function StatsPanel() {
           🏆 Achievements ({achievements.length}/{ACHIEVEMENTS.length})
         </h2>
         <div className="flex flex-wrap gap-1">
-          {ACHIEVEMENTS.map(a => {
+          {ACHIEVEMENTS.map((a) => {
             const earned = achievements.includes(a.id);
-            return (
-              <AchievementBadge key={a.id} achievement={a} earned={earned} />
-            );
+            return <AchievementBadge key={a.id} achievement={a} earned={earned} />;
           })}
         </div>
       </div>
@@ -86,7 +82,15 @@ export function StatsPanel() {
   );
 }
 
-function ProducerTooltip({ producer, count, upgrades }: { producer: Producer; count: number; upgrades: string[] }) {
+function ProducerTooltip({
+  producer,
+  count,
+  upgrades,
+}: {
+  producer: Producer;
+  count: number;
+  upgrades: string[];
+}) {
   // LOC/s this producer type contributes (with upgrades applied)
   let locps = producer.baseLOCps * count;
   for (const upgrade of UPGRADES) {
@@ -103,9 +107,7 @@ function ProducerTooltip({ producer, count, upgrades }: { producer: Producer; co
           <span className="text-gh-muted text-xs truncate">
             {producer.icon} {producer.name}
           </span>
-          <span className="text-gh-blue font-bold text-xs ml-1 shrink-0">
-            ×{count}
-          </span>
+          <span className="text-gh-blue font-bold text-xs ml-1 shrink-0">×{count}</span>
         </div>
       </TooltipPrimitive.Trigger>
       <TooltipPrimitive.Portal>

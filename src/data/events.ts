@@ -100,7 +100,7 @@ export const EVENTS: GameEvent[] = [
   {
     id: 'hackernews-frontpage',
     emoji: '🗞️',
-    title: "HackerNews front page",
+    title: 'HackerNews front page',
     description: 'The hype is real. LOC/s ×3 for the next 30 seconds.',
     effectType: 'locps_multiplier',
     effectValue: 3,

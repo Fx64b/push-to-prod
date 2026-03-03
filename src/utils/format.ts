@@ -7,8 +7,8 @@ const SUFFIXES = [
 ];
 
 export function formatLOC(n: number): string {
-  if (!isFinite(n) || isNaN(n)) return '0';
-  if (n < 0) return '-' + formatLOC(-n);
+  if (!Number.isFinite(n) || Number.isNaN(n)) return '0';
+  if (n < 0) return `-${formatLOC(-n)}`;
 
   for (const { value, label } of SUFFIXES) {
     if (n >= value) {
@@ -23,7 +23,7 @@ export function formatLOC(n: number): string {
 }
 
 export function formatRate(n: number): string {
-  return formatLOC(n) + '/s';
+  return `${formatLOC(n)}/s`;
 }
 
 export function formatTime(seconds: number): string {

@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { ACHIEVEMENTS } from '@/data/achievements';
+import { EVENTS, type GameEvent } from '@/data/events';
 import { PRODUCERS } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
-import { EVENTS, type GameEvent } from '@/data/events';
-import { ACHIEVEMENTS } from '@/data/achievements';
-import { calculateLOCps, calculateClickValue } from '@/utils/production';
 import { producerCost } from '@/utils/costs';
+import { calculateClickValue, calculateLOCps } from '@/utils/production';
 
 export interface FloatingText {
   id: number;
@@ -51,8 +51,8 @@ interface GameState {
   // UI state (not persisted)
   floatingTexts: FloatingText[];
   toastQueue: ToastNotification[];
-  pendingClickLoc: number;  // click LOC accumulated since last tick
-  displayedLOCps: number;   // EMA-smoothed actual rate (passive + clicks)
+  pendingClickLoc: number; // click LOC accumulated since last tick
+  displayedLOCps: number; // EMA-smoothed actual rate (passive + clicks)
 
   // Actions
   click: (x?: number, y?: number) => void;
@@ -75,7 +75,11 @@ const EVENT_CHANCE_PER_TICK = 1 / 600;
 const MIN_EVENT_INTERVAL = 30; // seconds
 let lastEventTime = 0;
 
-function getEventMultiplier(event: GameEvent | null): { locps: number; click: number; clickDisabled: boolean } {
+function getEventMultiplier(event: GameEvent | null): {
+  locps: number;
+  click: number;
+  clickDisabled: boolean;
+} {
   if (!event) return { locps: 1, click: 1, clickDisabled: false };
 
   switch (event.effectType) {
@@ -179,7 +183,11 @@ export const useGameStore = create<GameState>()(
         let activeEventTriggered = state.activeEventTriggered;
 
         const timeSinceLastEvent = (now - lastEventTime) / 1000;
-        if (!activeEvent && timeSinceLastEvent >= MIN_EVENT_INTERVAL && Math.random() < EVENT_CHANCE_PER_TICK) {
+        if (
+          !activeEvent &&
+          timeSinceLastEvent >= MIN_EVENT_INTERVAL &&
+          Math.random() < EVENT_CHANCE_PER_TICK
+        ) {
           newActiveEvent = EVENTS[Math.floor(Math.random() * EVENTS.length)];
           newEventEndTime = now + newActiveEvent.duration * 1000;
           lastEventTime = now;
@@ -235,7 +243,7 @@ export const useGameStore = create<GameState>()(
 
       buyProducer: (id: string) => {
         const state = get();
-        const producer = PRODUCERS.find(p => p.id === id);
+        const producer = PRODUCERS.find((p) => p.id === id);
         if (!producer) return;
 
         const owned = state.producers[id] ?? 0;
@@ -254,7 +262,7 @@ export const useGameStore = create<GameState>()(
 
       buyUpgrade: (id: string) => {
         const state = get();
-        const upgrade = UPGRADES.find(u => u.id === id);
+        const upgrade = UPGRADES.find((u) => u.id === id);
         if (!upgrade) return;
         if (state.upgrades.includes(id)) return;
         if (state.loc < upgrade.cost) return;
@@ -297,21 +305,21 @@ export const useGameStore = create<GameState>()(
       },
 
       addOfflineProgress: (loc: number) => {
-        set(state => ({
+        set((state) => ({
           loc: state.loc + loc,
           totalLoc: state.totalLoc + loc,
         }));
       },
 
       removeFloatingText: (id: number) => {
-        set(state => ({
-          floatingTexts: state.floatingTexts.filter(f => f.id !== id),
+        set((state) => ({
+          floatingTexts: state.floatingTexts.filter((f) => f.id !== id),
         }));
       },
 
       dismissToast: (id: string) => {
-        set(state => ({
-          toastQueue: state.toastQueue.filter(t => t.id !== id),
+        set((state) => ({
+          toastQueue: state.toastQueue.filter((t) => t.id !== id),
         }));
       },
 
@@ -323,9 +331,15 @@ export const useGameStore = create<GameState>()(
       name: 'push-to-prod-v1',
       // Don't persist UI-only state
       partialize: (state) => {
-        const { floatingTexts: _ft, toastQueue: _tq, pendingClickLoc: _pc, displayedLOCps: _dl, ...rest } = state;
+        const {
+          floatingTexts: _ft,
+          toastQueue: _tq,
+          pendingClickLoc: _pc,
+          displayedLOCps: _dl,
+          ...rest
+        } = state;
         return rest;
       },
-    }
-  )
+    },
+  ),
 );

@@ -92,16 +92,25 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Hired at least one of every producer.',
     icon: '🏆',
     condition: ({ producers }) =>
-      ['rubber-duck', 'mechanical-keyboard', 'autocomplete', 'stackoverflow-tab',
-       'junior-dev', 'senior-dev', '10x-engineer', 'github-copilot', 'ai-agent', 'agi']
-        .every(id => (producers[id] ?? 0) >= 1),
+      [
+        'rubber-duck',
+        'mechanical-keyboard',
+        'autocomplete',
+        'stackoverflow-tab',
+        'junior-dev',
+        'senior-dev',
+        '10x-engineer',
+        'github-copilot',
+        'ai-agent',
+        'agi',
+      ].every((id) => (producers[id] ?? 0) >= 1),
   },
   {
     id: 'big-o-h-no',
     name: 'Big O(h no)',
     description: 'Own 100 of any single producer.',
     icon: '📈',
-    condition: ({ producers }) => Object.values(producers).some(count => count >= 100),
+    condition: ({ producers }) => Object.values(producers).some((count) => count >= 100),
   },
   {
     id: 'not-a-bug',
@@ -120,7 +129,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'deploy-on-friday',
     name: 'Deploy on Friday',
-    description: "Bought the Deploy on Fridays upgrade. Brave.",
+    description: 'Bought the Deploy on Fridays upgrade. Brave.',
     icon: '😈',
     condition: ({ upgrades }) => upgrades.includes('deploy-on-fridays'),
   },

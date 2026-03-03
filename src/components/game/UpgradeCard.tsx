@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
+import type { Upgrade } from '@/data/upgrades';
 import { useGameStore } from '@/store/gameStore';
-import { type Upgrade } from '@/data/upgrades';
 import { formatLOC } from '@/utils/format';
 
 interface UpgradeCardProps {
@@ -12,20 +12,20 @@ const TARGET_LABELS: Record<string, string> = {
   all: '🌍 Global',
   'rubber-duck': '🦆',
   'mechanical-keyboard': '⌨️',
-  'autocomplete': '✨',
+  autocomplete: '✨',
   'stackoverflow-tab': '📋',
   'junior-dev': '👶',
   'senior-dev': '🧙',
   '10x-engineer': '⚡',
   'github-copilot': '🤖',
   'ai-agent': '🦾',
-  'agi': '🧠',
+  agi: '🧠',
 };
 
 export function UpgradeCard({ upgrade }: UpgradeCardProps) {
-  const loc = useGameStore(s => s.loc);
-  const upgrades = useGameStore(s => s.upgrades);
-  const buyUpgrade = useGameStore(s => s.buyUpgrade);
+  const loc = useGameStore((s) => s.loc);
+  const upgrades = useGameStore((s) => s.upgrades);
+  const buyUpgrade = useGameStore((s) => s.buyUpgrade);
 
   const purchased = upgrades.includes(upgrade.id);
   const canAfford = loc >= upgrade.cost && !purchased;
@@ -42,9 +42,10 @@ export function UpgradeCard({ upgrade }: UpgradeCardProps) {
       disabled={!canAfford}
       className={`
         w-full text-left p-2.5 rounded border transition-all duration-150 font-mono
-        ${canAfford
-          ? 'border-gh-yellow/60 bg-gh-yellow/5 hover:border-gh-yellow hover:bg-gh-yellow/10 cursor-pointer'
-          : 'border-gh-border/40 bg-gh-surface/40 cursor-not-allowed opacity-60'
+        ${
+          canAfford
+            ? 'border-gh-yellow/60 bg-gh-yellow/5 hover:border-gh-yellow hover:bg-gh-yellow/10 cursor-pointer'
+            : 'border-gh-border/40 bg-gh-surface/40 cursor-not-allowed opacity-60'
         }
       `}
     >
@@ -58,7 +59,9 @@ export function UpgradeCard({ upgrade }: UpgradeCardProps) {
           </div>
           <p className="text-[11px] text-gh-muted mt-0.5">{upgrade.description}</p>
         </div>
-        <div className={`text-sm font-bold tabular-nums shrink-0 ${canAfford ? 'text-gh-green' : 'text-gh-muted'}`}>
+        <div
+          className={`text-sm font-bold tabular-nums shrink-0 ${canAfford ? 'text-gh-green' : 'text-gh-muted'}`}
+        >
           {formatLOC(upgrade.cost)}
         </div>
       </div>
