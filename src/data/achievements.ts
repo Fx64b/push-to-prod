@@ -140,4 +140,23 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '♻️',
     condition: ({ prestigeCount }) => prestigeCount >= 1,
   },
+    {
+    id: 'fortune-500-company',
+    name: 'Fortune 500 Company',
+    description: 'Hired at least 100 of every producer. (Do you even have a life? Go Touch Grass!)',
+    icon: '🤯',
+    condition: ({ producers }) =>
+      [
+        'rubber-duck',
+        'mechanical-keyboard',
+        'autocomplete',
+        'stackoverflow-tab',
+        'junior-dev',
+        'senior-dev',
+        '10x-engineer',
+        'github-copilot',
+        'ai-agent',
+        'agi',
+      ].every((id) => (producers[id] ?? 0) >= 100),
+  },
 ];
