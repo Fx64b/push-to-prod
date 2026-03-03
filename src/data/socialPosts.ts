@@ -1,0 +1,169 @@
+// ── Product name generator ────────────────────────────────────────────────────
+
+const PREFIXES = [
+  'Turbo',
+  'Hyper',
+  'Ultra',
+  'Meta',
+  'Nano',
+  'Quantum',
+  'Vibe',
+  'Sigma',
+  'Atomic',
+  'Neuro',
+  'AI',
+  'Blazing',
+];
+const CORES = [
+  'Push',
+  'Ship',
+  'Deploy',
+  'Stack',
+  'Forge',
+  'Flow',
+  'Build',
+  'Dev',
+  'Code',
+  'Craft',
+  'Loop',
+  'Byte',
+];
+const SUFFIXES = ['.io', 'ly', 'Hub', 'HQ', 'AI', 'Pro', 'OS', 'Lab', 'ify', ''];
+
+export function generateProductName(): string {
+  const p = PREFIXES[Math.floor(Math.random() * PREFIXES.length)];
+  const c = CORES[Math.floor(Math.random() * CORES.length)];
+  const s = SUFFIXES[Math.floor(Math.random() * SUFFIXES.length)];
+  return `${p}${c}${s}`;
+}
+
+// ── Social post data types ────────────────────────────────────────────────────
+
+export interface TwitterPostData {
+  username: string;
+  handle: string;
+  avatar: string;
+  text: string;
+  time: string;
+  likes: number;
+  retweets: number;
+  replies: number;
+}
+
+export interface HNPostData {
+  title: string;
+  points: number;
+  user: string;
+  comments: number;
+  hoursAgo: number;
+}
+
+export type SocialPostData =
+  | { type: 'twitter'; data: TwitterPostData }
+  | { type: 'hn'; data: HNPostData };
+
+// ── Templates ─────────────────────────────────────────────────────────────────
+
+const TWITTER_AUTHORS = [
+  { username: 'Jared K.', handle: 'jk_dev_thoughts', avatar: '👨‍💻' },
+  { username: 'Sarah Ships', handle: 'sarahshipsit', avatar: '🚀' },
+  { username: 'null pointer', handle: 'nullptr_exception', avatar: '💀' },
+  { username: 'Senior Dev', handle: 'sr_dev_vibes', avatar: '🧙' },
+  { username: 'git blame', handle: 'gitblame_irl', avatar: '😭' },
+  { username: 'rubber.duck()', handle: 'rubberduck_dev', avatar: '🦆' },
+  { username: 'Prod On Fridays', handle: 'deployfriday', avatar: '🔥' },
+  { username: 'Tech Enjoyer', handle: 'techenjoyer9000', avatar: '🤓' },
+  { username: 'grep enjoyer', handle: 'grep_harder', avatar: '🐧' },
+  { username: '10x Engineer', handle: 'real10xengineer', avatar: '⚡' },
+  { username: 'BugSnacker', handle: 'BugSnacker69', avatar: '🐒' },
+  { username: 'Fx64b', handle: 'F_x64b', avatar: 'F' },
+];
+
+const TWITTER_TEXTS: ((n: string) => string)[] = [
+  (n) =>
+    `just discovered ${n} and I've already shipped 47 features before lunch. this changes everything.`,
+  (n) => `${n} literally prints money. well, lines of code. same thing.`,
+  (n) => `me before ${n}: 5 LOC/day\nme after: please send help my codebase has achieved sentience`,
+  (n) => `deployed to prod on a Friday with ${n}. nothing caught fire. genuinely shocked.`,
+  (n) =>
+    `the ${n} AGI just refactored our entire codebase, filed the patents, and IPO'd. found out via LinkedIn.`,
+  (n) => `${n} speedrun any%: 0 to 1M LOC in 4 minutes. new PB`,
+  (n) => `hot take: ${n} is just Cookie Clicker for developers. (I have 2,000 hours)`,
+  (n) => `my rubber duck is the most productive employee since I switched to ${n}`,
+  (n) => `"just use ${n}" — my PM, right before the deadline`,
+  (n) => `${n} hit 1 trillion LOC today. the singularity is a feature, not a bug.`,
+  (n) => `anyone else have ${n} running 24/7? asking for a friend (it's me)`,
+  (n) => `my senior dev saw me using ${n}. he just nodded slowly and walked away.`,
+  (n) => `${n} PRO TIP: if you buy 100 rubber ducks they start pair programming each other`,
+  (n) => `honestly ${n} is the most realistic dev simulator I've ever seen`,
+  (n) => `I set up ${n} and left for a week. when I came back it had rewritten itself in Rust.`,
+  (n) => `${n} investors: "what's the moat?" me: "the ducks"`,
+  (n) => `just quit my FAANG job to focus on ${n} full time. never been happier`,
+];
+
+const TIMES = ['just now', '1m', '2m', '5m', '12m', '23m', '1h', '2h', '3h'];
+
+const HN_TITLES: ((n: string) => string)[] = [
+  (n) => `Show HN: ${n} – I built an idle game that writes code so I don't have to`,
+  (n) => `Ask HN: Is anyone else's ${n} generating more LOC than their actual job?`,
+  (n) => `${n} reaches 1T LOC generated – what does this mean for software?`,
+  (n) => `The ${n} architecture is surprisingly clever (deep dive)`,
+  (n) => `Why I quit my FAANG job to work on ${n} full time`,
+  (n) => `${n} is just Cookie Clicker for programmers and I mean that as a compliment`,
+  (n) => `Ask HN: How do I stop using ${n}? (serious)`,
+  (n) => `${n} founder AMA – yes, the AGI is real, no I don't know what it's doing`,
+  (n) => `Show HN: ${n} 2.0 – now with actual AI (it's still mostly a clicker)`,
+  (n) => `The economics of ${n}: when LOC becomes a monetary unit`,
+  (n) => `${n}: a post-mortem on shipping 1B lines in 30 days`,
+  (n) => `We open-sourced ${n}. it generated 50k GitHub stars before we read them.`,
+  (n) => `What I learned building ${n}: rubber ducks scale better than engineers`,
+];
+
+const HN_USERS = [
+  'thrower9000',
+  'xkb_wizard',
+  'null_ptr_dev',
+  'rustacean42',
+  'functional_friday',
+  'vim_or_death',
+  'tabs_not_spaces',
+  'left_pad_survivor',
+  'yc_w24_founder',
+  'senior_10x_dev',
+  'rubber_duck_enjoyer',
+  'ship_it_daily',
+  'f_x64b',
+];
+
+function rand<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+export function generateSocialPost(productName: string): SocialPostData {
+  if (Math.random() < 0.6) {
+    const author = rand(TWITTER_AUTHORS);
+    return {
+      type: 'twitter',
+      data: {
+        username: author.username,
+        handle: author.handle,
+        avatar: author.avatar,
+        text: rand(TWITTER_TEXTS)(productName),
+        time: rand(TIMES),
+        likes: Math.floor(Math.random() * 2800) + 12,
+        retweets: Math.floor(Math.random() * 400) + 2,
+        replies: Math.floor(Math.random() * 120) + 1,
+      },
+    };
+  }
+  return {
+    type: 'hn',
+    data: {
+      title: rand(HN_TITLES)(productName),
+      points: Math.floor(Math.random() * 1400) + 50,
+      user: rand(HN_USERS),
+      comments: Math.floor(Math.random() * 450) + 5,
+      hoursAgo: Math.floor(Math.random() * 10) + 1,
+    },
+  };
+}

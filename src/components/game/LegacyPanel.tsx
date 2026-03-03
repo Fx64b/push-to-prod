@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { ShoppingBag, X } from 'lucide-react';
 import { useState } from 'react';
 import { LEGACY_UPGRADES, type LegacyUpgrade } from '@/data/legacyUpgrades';
 import { useGameStore } from '@/store/gameStore';
@@ -126,10 +126,12 @@ export function LegacyPanel() {
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-gh-purple/50 bg-gh-purple/10 text-gh-purple text-xs font-mono font-bold hover:border-gh-purple hover:bg-gh-purple/20 transition-all"
+        className="w-full flex items-center justify-between px-3 py-2 rounded border border-gh-purple/50 bg-gh-purple/10 text-gh-purple font-mono font-bold hover:border-gh-purple hover:bg-gh-purple/20 transition-all"
       >
-        <span>⬡</span>
-        <span>Legacy Panel</span>
+        <div className="flex items-center gap-2 text-xs">
+          <ShoppingBag size={13} />
+          <span>Legacy Shop</span>
+        </div>
         {legacyTokens > 0 && (
           <span className="bg-gh-purple/30 text-gh-purple px-1.5 py-0.5 rounded-full text-[10px]">
             {legacyTokens} LCT

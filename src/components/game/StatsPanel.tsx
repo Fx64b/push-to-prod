@@ -1,5 +1,6 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useMemo } from 'react';
+import { LegacyPanel } from '@/components/game/LegacyPanel';
 import { ACHIEVEMENTS, type Achievement } from '@/data/achievements';
 import { PRODUCERS, type Producer } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
@@ -29,7 +30,7 @@ export function StatsPanel() {
   const ownedProducers = PRODUCERS.filter((p) => (producers[p.id] ?? 0) > 0);
 
   return (
-    <div className="flex flex-col gap-4 font-mono text-sm h-full overflow-y-auto">
+    <div className="flex flex-col gap-4 font-mono text-sm min-h-full justify-between">
       {/* Stats */}
       <div>
         <h2 className="text-xs text-gh-muted uppercase tracking-widest mb-2 border-b border-gh-border pb-1">
@@ -78,6 +79,11 @@ export function StatsPanel() {
           })}
         </div>
       </div>
+
+      {/* Legacy Shop — pinned to bottom */}
+      <div className="mt-auto pt-2 border-t border-gh-border">
+        <LegacyPanel />
+      </div>
     </div>
   );
 }
@@ -114,7 +120,7 @@ function ProducerTooltip({
         <TooltipPrimitive.Content
           side="right"
           sideOffset={6}
-          className="z-50 w-56 rounded-md border border-gh-border bg-gh-surface shadow-xl p-3 font-mono text-xs animate-[toastIn_0.15s_ease-out]"
+          className="z-50 w-56 rounded-md border border-gh-border bg-gh-surface shadow-xl p-3 font-mono text-xs animate-tooltip-in"
         >
           {/* Header */}
           <div className="flex items-center gap-2 mb-2">
@@ -167,7 +173,7 @@ function AchievementBadge({ achievement, earned }: { achievement: Achievement; e
         <TooltipPrimitive.Content
           side="right"
           sideOffset={6}
-          className="z-50 max-w-[200px] rounded-md border border-gh-border bg-gh-surface shadow-xl p-3 font-mono text-xs animate-[toastIn_0.15s_ease-out]"
+          className="z-50 max-w-[200px] rounded-md border border-gh-border bg-gh-surface shadow-xl p-3 font-mono text-xs animate-tooltip-in"
         >
           <div className="flex items-start gap-2">
             <div className="relative shrink-0">

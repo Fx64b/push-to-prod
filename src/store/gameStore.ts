@@ -4,6 +4,7 @@ import { ACHIEVEMENTS } from '@/data/achievements';
 import { EVENTS, type GameEvent } from '@/data/events';
 import { LEGACY_UPGRADES } from '@/data/legacyUpgrades';
 import { PRODUCERS } from '@/data/producers';
+import { generateProductName } from '@/data/socialPosts';
 import { UPGRADES } from '@/data/upgrades';
 import { producerCost } from '@/utils/costs';
 import { calculateClickValue, calculateLOCps } from '@/utils/production';
@@ -51,6 +52,7 @@ interface GameState {
   lastSaveTime: number;
   prestigeCount: number;
   totalClicks: number;
+  productName: string;
 
   // UI state (not persisted)
   floatingTexts: FloatingText[];
@@ -119,6 +121,7 @@ const DEFAULT_STATE = {
   lastSaveTime: Date.now(),
   prestigeCount: 0,
   totalClicks: 0,
+  productName: generateProductName(),
   floatingTexts: [],
   toastQueue: [],
   pendingClickLoc: 0,
@@ -340,6 +343,7 @@ export const useGameStore = create<GameState>()(
           legacyTokens: state.legacyTokens + tokensEarned,
           legacyUpgrades: state.legacyUpgrades,
           prestigeCount: state.prestigeCount + 1,
+          productName: state.productName,
           achievements: state.achievements,
           activeEventTriggered: state.activeEventTriggered,
           negativeEventssurvived: state.negativeEventssurvived,
@@ -381,7 +385,7 @@ export const useGameStore = create<GameState>()(
       },
 
       newGame: () => {
-        set({ ...DEFAULT_STATE, lastSaveTime: Date.now() });
+        set({ ...DEFAULT_STATE, productName: generateProductName(), lastSaveTime: Date.now() });
       },
     }),
     {

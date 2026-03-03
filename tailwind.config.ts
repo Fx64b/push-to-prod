@@ -31,8 +31,23 @@ const config: Config = {
         'pulse-red': 'pulseRed 0.5s ease-in-out',
         'toast-in': 'toastIn 0.3s ease-out',
         'toast-out': 'toastOut 0.3s ease-in forwards',
+        'tooltip-in': 'tooltipIn 0.12s ease-out',
+        'social-in': 'socialIn 0.3s ease-out forwards',
+        'social-out': 'socialOut 0.35s ease-in forwards',
       },
       keyframes: {
+        socialIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px) scale(0.94)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+        socialOut: {
+          '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+          '100%': { opacity: '0', transform: 'translateY(-8px) scale(0.95)' },
+        },
+        tooltipIn: {
+          '0%': { opacity: '0', transform: 'translateX(-6px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
         floatUp: {
           '0%': { opacity: '1', transform: 'translateY(0)' },
           '100%': { opacity: '0', transform: 'translateY(-60px)' },

@@ -6,10 +6,10 @@ import { AmbientTexts } from '@/components/game/AmbientTexts';
 import { EnterKey } from '@/components/game/EnterKey';
 import { EventBanner } from '@/components/game/EventBanner';
 import { FloatingTexts } from '@/components/game/FloatingTexts';
-import { LegacyPanel } from '@/components/game/LegacyPanel';
 import { LOCDisplay } from '@/components/game/LOCDisplay';
 import { RefactorButton } from '@/components/game/RefactorButton';
 import { Shop } from '@/components/game/Shop';
+import { SocialFeed } from '@/components/game/SocialFeed';
 import { StatsPanel } from '@/components/game/StatsPanel';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { useOfflineProgress } from '@/hooks/useOfflineProgress';
@@ -76,6 +76,7 @@ export default function App() {
   useOfflineProgress();
 
   const _centerRef = useRef<HTMLDivElement>(null);
+  const productName = useGameStore((s) => s.productName);
 
   return (
     <TooltipPrimitive.Provider delayDuration={300}>
@@ -109,12 +110,18 @@ export default function App() {
           >
             <FloatingTexts />
             <AmbientTexts />
+            <SocialFeed />
+
+            {/* Product name — top-right of center panel */}
+            <div className="absolute top-4 right-4 font-mono text-right pointer-events-none select-none">
+              <div className="text-[10px] text-gh-muted uppercase tracking-widest">building</div>
+              <div className="text-gh-purple font-bold text-base leading-tight">{productName}</div>
+              <div className="text-[10px] text-gh-muted opacity-60">#buildinpublic</div>
+            </div>
+
             <LOCDisplay />
             <EnterKey />
-            <div className="flex items-center gap-3">
-              <RefactorButton />
-              <LegacyPanel />
-            </div>
+            <RefactorButton />
           </main>
 
           {/* RIGHT: Shop */}
