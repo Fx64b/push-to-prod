@@ -6,6 +6,7 @@ import { AmbientTexts } from '@/components/game/AmbientTexts';
 import { EnterKey } from '@/components/game/EnterKey';
 import { EventBanner } from '@/components/game/EventBanner';
 import { FloatingTexts } from '@/components/game/FloatingTexts';
+import { LegacyPanel } from '@/components/game/LegacyPanel';
 import { LOCDisplay } from '@/components/game/LOCDisplay';
 import { RefactorButton } from '@/components/game/RefactorButton';
 import { Shop } from '@/components/game/Shop';
@@ -110,7 +111,10 @@ export default function App() {
             <AmbientTexts />
             <LOCDisplay />
             <EnterKey />
-            <RefactorButton />
+            <div className="flex items-center gap-3">
+              <RefactorButton />
+              <LegacyPanel />
+            </div>
           </main>
 
           {/* RIGHT: Shop */}

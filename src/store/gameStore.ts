@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ACHIEVEMENTS } from '@/data/achievements';
 import { EVENTS, type GameEvent } from '@/data/events';
+import { LEGACY_UPGRADES } from '@/data/legacyUpgrades';
 import { PRODUCERS } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
 import { producerCost } from '@/utils/costs';
@@ -34,6 +35,9 @@ interface GameState {
   // Upgrades (purchased IDs)
   upgrades: string[];
 
+  // Legacy upgrades (purchased IDs — survive all resets)
+  legacyUpgrades: string[];
+
   // Achievements (earned IDs)
   achievements: string[];
 
@@ -59,6 +63,7 @@ interface GameState {
   tick: (dt: number) => void;
   buyProducer: (id: string) => void;
   buyUpgrade: (id: string) => void;
+  buyLegacyUpgrade: (id: string) => void;
   prestige: () => void;
   dismissEvent: () => void;
   addOfflineProgress: (loc: number) => void;
@@ -105,6 +110,7 @@ const DEFAULT_STATE = {
   legacyTokens: 0,
   producers: {},
   upgrades: [],
+  legacyUpgrades: [],
   achievements: [],
   activeEvent: null,
   eventEndTime: null,
@@ -170,8 +176,14 @@ export const useGameStore = create<GameState>()(
         const { locps: locpsMult } = getEventMultiplier(activeEvent);
         const baseLOCps = calculateLOCps(state);
 
-        // Legacy token bonus (5% per token)
-        const legacyMult = 1 + state.legacyTokens * 0.05;
+        // Legacy token auto-bonus (5% per token held) × purchased production bonuses
+        const legacyUpgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
+          if (u.effect.type === 'production_bonus' && state.legacyUpgrades.includes(u.id)) {
+            return acc * u.effect.multiplier;
+          }
+          return acc;
+        }, 1);
+        const legacyMult = (1 + state.legacyTokens * 0.05) * legacyUpgradeMult;
 
         const locGained = baseLOCps * locpsMult * legacyMult * dt;
         const newLoc = state.loc + locGained;
@@ -273,15 +285,60 @@ export const useGameStore = create<GameState>()(
         });
       },
 
+      buyLegacyUpgrade: (id: string) => {
+        const state = get();
+        const upgrade = LEGACY_UPGRADES.find((u) => u.id === id);
+        if (!upgrade) return;
+        if (state.legacyUpgrades.includes(id)) return;
+        if (state.legacyTokens < upgrade.cost) return;
+
+        set({
+          legacyTokens: state.legacyTokens - upgrade.cost,
+          legacyUpgrades: [...state.legacyUpgrades, id],
+        });
+      },
+
       prestige: () => {
         const state = get();
         if (state.totalLoc < 1000000) return;
 
         const tokensEarned = Math.max(0, Math.floor(Math.log10(state.totalLoc)) - 5);
 
+        // Apply legacy upgrade effects to the new run's starting state
+        const startProducers: Record<string, number> = {};
+        const keptUpgrades: string[] = [];
+        let startLoc = 0;
+
+        for (const legacyId of state.legacyUpgrades) {
+          const lu = LEGACY_UPGRADES.find((u) => u.id === legacyId);
+          if (!lu) continue;
+
+          if (lu.effect.type === 'start_producer') {
+            for (const { id, count } of lu.effect.producers) {
+              startProducers[id] = (startProducers[id] ?? 0) + count;
+            }
+          } else if (lu.effect.type === 'start_loc') {
+            startLoc += lu.effect.amount;
+          } else if (lu.effect.type === 'keep_upgrade') {
+            if (lu.effect.upgradeId === 'all-click') {
+              for (const u of UPGRADES) {
+                if (u.target === 'click' && state.upgrades.includes(u.id)) {
+                  keptUpgrades.push(u.id);
+                }
+              }
+            } else if (state.upgrades.includes(lu.effect.upgradeId)) {
+              keptUpgrades.push(lu.effect.upgradeId);
+            }
+          }
+        }
+
         set({
           ...DEFAULT_STATE,
+          loc: startLoc,
+          producers: startProducers,
+          upgrades: keptUpgrades,
           legacyTokens: state.legacyTokens + tokensEarned,
+          legacyUpgrades: state.legacyUpgrades,
           prestigeCount: state.prestigeCount + 1,
           achievements: state.achievements,
           activeEventTriggered: state.activeEventTriggered,
