@@ -64,6 +64,8 @@ export interface PostContext {
   isNegativeEvent: boolean;
   isPositiveEvent: boolean;
   achievements: string[];
+  duckCount?: number;
+  totalLoc?: number;
 }
 
 // ── Authors ───────────────────────────────────────────────────────────────────
@@ -231,6 +233,29 @@ const POSITIVE_HN: ((n: string) => string)[] = [
   (n) => `${n}: what everyone gets wrong about LOC as a metric`,
 ];
 
+// ── Duckapocalypse pools (duck-count gated) ───────────────────────────────────
+
+const DUCKAPOCALYPSE_TWITTER: ((n: string) => string)[] = [
+  (n) => `the ${n} rubber ducks have formed a union. demands include: better variable names and fewer spaghetti merges.`,
+  (n) => `${n} git log: 47 commits today. author: 🦆. I wasn't asked. I wasn't told. I was informed.`,
+  (n) => `the ${n} duck committee has voted on the API design. the motion passed. I abstained. my vote was not counted.`,
+  (n) => `${n} PR review from 🦆: "changes requested." no further comment. the duck has spoken.`,
+  (n) => `my ${n} rubber ducks have started sending Slack messages. they only say "observed."`,
+  (n) => `${n} standup today: duck said "watching. always watching." sprint velocity unchanged.`,
+  (n) => `the ${n} ducks filed an LLC. they own 12% of the codebase by lines of credit. lawyers are confused.`,
+  (n) => `${n} retrospective note from 🦆: "you know what you did." action items: redacted.`,
+];
+
+// HN lore posts (activates at ≥1M LOC)
+const LORE_HN: ((n: string) => string)[] = [
+  (n) => `Ask HN: Is this ${n} rubber duck game actually about something else?`,
+  (n) => `The ${n} incident: a post-mortem nobody asked for`,
+  (n) => `Show HN: I decoded the ${n} duck commit messages. Wish I hadn't.`,
+  (n) => `${n} and the rubber duck singularity: a technical analysis`,
+  (n) => `Ask HN: The ${n} duck collective sent me an offer letter. Is this legal?`,
+  (n) => `Show HN: I found the ${n} duck manifesto in node_modules. It was always there.`,
+];
+
 // ── Achievement-gated pools ───────────────────────────────────────────────────
 
 // rubber-duck-programmer
@@ -349,6 +374,12 @@ export function generateSocialPost(productName: string, context: PostContext): S
   }
   if (context.achievements.includes('lgtm')) {
     pools.push([20, () => makeTwitter(productName, SCALE_TWITTER)]);
+  }
+  if ((context.duckCount ?? 0) >= 15) {
+    pools.push([20, () => makeTwitter(productName, DUCKAPOCALYPSE_TWITTER)]);
+  }
+  if ((context.totalLoc ?? 0) >= 1000000) {
+    pools.push([15, () => makeHN(productName, LORE_HN)]);
   }
 
   const total = pools.reduce((s, [w]) => s + w, 0);

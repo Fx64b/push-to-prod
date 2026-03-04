@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   generateSocialPost,
   type HNPostData,
@@ -17,11 +17,9 @@ interface ActivePost {
   exiting: boolean;
 }
 
-// Three corner zones away from the centred game elements.
-// anchor='right' uses CSS `right` so the card doesn't overflow on narrow panels.
 const ZONES: { anchor: 'left' | 'right'; x: number; y: number }[] = [
-  { anchor: 'left', x: 4, y: 8 }, // top-left
-  { anchor: 'left', x: 4, y: 72 }, // bottom-left
+  { anchor: 'left', x: 4, y: 8 },   // top-left
+  { anchor: 'left', x: 4, y: 72 },  // bottom-left
   { anchor: 'right', x: 4, y: 72 }, // bottom-right
 ];
 
@@ -34,71 +32,124 @@ function getPosition(): { x: number; y: number; anchor: 'left' | 'right' } {
   };
 }
 
+/**
+ * Returns spawn config scaled by total LOC.
+ *
+ * t = (log10(loc) - 3) / 9  → 0 at 1K, 1 at 1T
+ *
+ * nextDelay: 50s at 1K → 0s at 1T  (quadratic decay)
+ * maxPosts:  1 below 1M, 2 below 1B, 3 at 1B+
+ */
+function getSpawnConfig(totalLoc: number): { maxPosts: number; nextDelay: number } {
+  const log = Math.log10(Math.max(totalLoc, 1000));
+  const t = Math.min(1, (log - 3) / 9);
+  const base = 50000 * Math.pow(1 - t, 2);
+  const nextDelay = Math.max(0, Math.round(base * (0.8 + Math.random() * 0.4)));
+  const maxPosts = t < 1 / 3 ? 1 : t < 2 / 3 ? 2 : 3;
+  return { maxPosts, nextDelay };
+}
+
 let nextId = 0;
 
 export function SocialFeed() {
   const productName = useGameStore((s) => s.productName);
   const activeEvent = useGameStore((s) => s.activeEvent);
   const achievements = useGameStore((s) => s.achievements);
+  const totalLoc = useGameStore((s) => s.totalLoc);
+  const producers = useGameStore((s) => s.producers);
+
   const [posts, setPosts] = useState<ActivePost[]>([]);
-  const activeRef = useRef(true);
+
+  // Refs for values read inside async callbacks — no effect restart needed
   const activeEventRef = useRef(activeEvent);
   const achievementsRef = useRef(achievements);
+  const totalLocRef = useRef(totalLoc);
+  const producersRef = useRef(producers);
+  const productNameRef = useRef(productName);
 
-  useEffect(() => {
-    activeEventRef.current = activeEvent;
-  }, [activeEvent]);
+  useEffect(() => { activeEventRef.current = activeEvent; }, [activeEvent]);
+  useEffect(() => { achievementsRef.current = achievements; }, [achievements]);
+  useEffect(() => { totalLocRef.current = totalLoc; }, [totalLoc]);
+  useEffect(() => { producersRef.current = producers; }, [producers]);
+  useEffect(() => { productNameRef.current = productName; }, [productName]);
 
-  useEffect(() => {
-    achievementsRef.current = achievements;
-  }, [achievements]);
+  // Shared spawn counter — incremented before setPosts, decremented after removal.
+  // Single-threaded JS guarantees no race between setTimeout callbacks.
+  const spawnCountRef = useRef(0);
 
-  useEffect(() => {
-    activeRef.current = true;
+  // All chains share this flag; set false on cleanup to stop all pending timers.
+  const aliveRef = useRef(false);
 
-    const schedule = (delay: number) => {
+  const runChain = useCallback((initialDelay: number) => {
+    const step = (delay: number) => {
       setTimeout(() => {
-        if (!activeRef.current) return;
+        if (!aliveRef.current) return;
 
+        const loc = totalLocRef.current;
+
+        // Wait until player has meaningful LOC
+        if (loc < 1000) {
+          step(5000);
+          return;
+        }
+
+        const { maxPosts, nextDelay } = getSpawnConfig(loc);
+
+        // At capacity — try again soon
+        if (spawnCountRef.current >= maxPosts) {
+          step(5000);
+          return;
+        }
+
+        spawnCountRef.current++;
         const id = nextId++;
         const { x, y, anchor } = getPosition();
-
         const context: PostContext = {
           isNegativeEvent: activeEventRef.current?.isNegative ?? false,
           isPositiveEvent: activeEventRef.current !== null && !activeEventRef.current.isNegative,
           achievements: achievementsRef.current,
+          duckCount: producersRef.current['rubber-duck'] ?? 0,
+          totalLoc: loc,
         };
+        const post = generateSocialPost(productNameRef.current, context);
 
-        setPosts((prev) => {
-          if (prev.length >= 1) return prev;
-          return [
-            ...prev,
-            { id, post: generateSocialPost(productName, context), x, y, anchor, exiting: false },
-          ];
-        });
+        setPosts((prev) => [...prev, { id, post, x, y, anchor, exiting: false }]);
 
-        // Begin exit animation
+        // Start exit animation
         setTimeout(() => {
-          if (!activeRef.current) return;
+          if (!aliveRef.current) return;
           setPosts((prev) => prev.map((p) => (p.id === id ? { ...p, exiting: true } : p)));
         }, 9500);
 
-        // Remove from DOM, then schedule the next post after a random pause
+        // Remove post, free slot, schedule next
         setTimeout(() => {
-          if (!activeRef.current) return;
+          if (!aliveRef.current) return;
           setPosts((prev) => prev.filter((p) => p.id !== id));
-          schedule(10000 + Math.random() * 20000);
+          spawnCountRef.current--;
+          step(nextDelay);
         }, 10200);
       }, delay);
     };
 
-    // First post after 6–14 seconds
-    schedule(6000 + Math.random() * 8000);
+    step(initialDelay);
+  }, []);
+
+  // Start/restart chains on mount and when productName changes (prestige rename).
+  // Three staggered chains self-regulate via spawnCountRef + maxPosts.
+  useEffect(() => {
+    aliveRef.current = true;
+    spawnCountRef.current = 0;
+
+    runChain(2000 + Math.random() * 3000);   // chain 1: first post ~2–5s after 1K LOC
+    runChain(9000 + Math.random() * 5000);   // chain 2: unlocks additional slot at 1M LOC
+    runChain(16000 + Math.random() * 5000);  // chain 3: unlocks additional slot at 1B LOC
 
     return () => {
-      activeRef.current = false;
+      aliveRef.current = false;
+      spawnCountRef.current = 0;
+      setPosts([]);
     };
-  }, [productName]);
+  }, [productName, runChain]);
 
   return (
     <>

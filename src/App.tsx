@@ -7,6 +7,7 @@ import { EnterKey } from '@/components/game/EnterKey';
 import { EventBanner } from '@/components/game/EventBanner';
 import { FloatingTexts } from '@/components/game/FloatingTexts';
 import { LOCDisplay } from '@/components/game/LOCDisplay';
+import { NewsTicker } from '@/components/game/NewsTicker';
 import { RefactorButton } from '@/components/game/RefactorButton';
 import { Shop } from '@/components/game/Shop';
 import { SocialFeed } from '@/components/game/SocialFeed';
@@ -123,6 +124,11 @@ export default function App() {
             <LOCDisplay />
             <EnterKey />
             <RefactorButton />
+
+            {/* News ticker */}
+            <div className="absolute bottom-0 left-0 right-0">
+              <NewsTicker />
+            </div>
           </main>
 
           {/* RIGHT: Shop */}

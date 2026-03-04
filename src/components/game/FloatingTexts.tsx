@@ -1,12 +1,9 @@
-import { useEffect } from 'react';
+import { memo } from 'react';
 import { type FloatingText, useGameStore } from '@/store/gameStore';
 
-function FloatingTextItem({ text, onDone }: { text: FloatingText; onDone: () => void }) {
-  useEffect(() => {
-    const timer = setTimeout(onDone, 1000);
-    return () => clearTimeout(timer);
-  }, [onDone]);
-
+// Memoized so existing items don't re-render when new ones are added.
+// Cleanup is handled in the tick loop (no per-item timers needed).
+const FloatingTextItem = memo(function FloatingTextItem({ text }: { text: FloatingText }) {
   return (
     <div
       className="absolute pointer-events-none font-mono font-bold text-gh-green text-sm animate-[floatUp_1s_ease-out_forwards] z-10"
@@ -15,16 +12,15 @@ function FloatingTextItem({ text, onDone }: { text: FloatingText; onDone: () => 
       {text.value}
     </div>
   );
-}
+});
 
 export function FloatingTexts() {
   const floatingTexts = useGameStore((s) => s.floatingTexts);
-  const removeFloatingText = useGameStore((s) => s.removeFloatingText);
 
   return (
     <>
       {floatingTexts.map((ft) => (
-        <FloatingTextItem key={ft.id} text={ft} onDone={() => removeFloatingText(ft.id)} />
+        <FloatingTextItem key={ft.id} text={ft} />
       ))}
     </>
   );

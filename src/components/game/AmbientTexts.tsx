@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { getDuckapocalypseStage } from '@/data/lore';
 import { useGameStore } from '@/store/gameStore';
 
 interface AmbientText {
@@ -9,9 +10,16 @@ interface AmbientText {
   color: string;
 }
 
+const DUCK_SOUNDS_BY_STAGE: Record<number, string[]> = {
+  0: ['quack', '*quack*', 'quack?', '...', 'hmm', 'quack quack'],
+  1: ['quack', '*quack*', 'quack?', '...', 'you know what you did', 'changes requested', 'git blame: you', 'observed.'],
+  2: ['*quack*', 'we remember', '// TODO: reckoning', 'in committee', 'motion passed', 'changes requested', 'observed.'],
+  3: ['🦆', 'PR #∞', 'we are the code', 'quack.exe', 'we have always been here', '🦆🦆🦆', 'motion passed unanimously'],
+};
+
 const PRODUCER_SOUNDS: Record<string, { sounds: string[]; color: string }> = {
   'rubber-duck': {
-    sounds: ['quack', '*quack*', 'quack?', '...', 'hmm', 'quack quack'],
+    sounds: DUCK_SOUNDS_BY_STAGE[0],
     color: 'text-yellow-400',
   },
   'mechanical-keyboard': {
@@ -62,12 +70,15 @@ export function AmbientTexts() {
   const producers = useGameStore((s) => s.producers);
   const [texts, setTexts] = useState<AmbientText[]>([]);
 
+  const duckStage = getDuckapocalypseStage(producers['rubber-duck'] ?? 0);
+
   const spawn = useCallback((producerId: string) => {
     const def = PRODUCER_SOUNDS[producerId];
     if (!def) return;
+    const sounds = producerId === 'rubber-duck' ? DUCK_SOUNDS_BY_STAGE[duckStage] : def.sounds;
     const text: AmbientText = {
       id: ambientId++,
-      text: pick(def.sounds),
+      text: pick(sounds),
       // cluster around center area, near the LOC counter
       x: 25 + Math.random() * 50,
       y: 25 + Math.random() * 40,
@@ -77,7 +88,7 @@ export function AmbientTexts() {
     setTimeout(() => {
       setTexts((prev) => prev.filter((t) => t.id !== text.id));
     }, 2200);
-  }, []);
+  }, [duckStage]);
 
   useEffect(() => {
     // 500ms tick: for each owned producer, roll to spawn

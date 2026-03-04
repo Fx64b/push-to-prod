@@ -34,8 +34,13 @@ const config: Config = {
         'tooltip-in': 'tooltipIn 0.12s ease-out',
         'social-in': 'socialIn 0.3s ease-out forwards',
         'social-out': 'socialOut 0.35s ease-in forwards',
+        'marquee': 'marquee 35s linear infinite',
       },
       keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(100vw)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
         socialIn: {
           '0%': { opacity: '0', transform: 'translateY(10px) scale(0.94)' },
           '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },

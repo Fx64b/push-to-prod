@@ -14,6 +14,7 @@ export interface FloatingText {
   value: string;
   x: number;
   y: number;
+  createdAt: number;
 }
 
 export interface ToastNotification {
@@ -54,6 +55,11 @@ interface GameState {
   totalClicks: number;
   productName: string;
 
+  // Cached derived values — recomputed only when producers/upgrades/legacyUpgrades change
+  cachedLOCps: number;
+  cachedClickValue: number;
+  cachedLegacyMult: number;
+
   // UI state (not persisted)
   floatingTexts: FloatingText[];
   toastQueue: ToastNotification[];
@@ -69,18 +75,51 @@ interface GameState {
   prestige: () => void;
   dismissEvent: () => void;
   addOfflineProgress: (loc: number) => void;
-  removeFloatingText: (id: number) => void;
   dismissToast: (id: string) => void;
   newGame: () => void;
 }
 
+// ── Cache helpers ────────────────────────────────────────────────────────────
+
+interface CacheInput {
+  producers: Record<string, number>;
+  upgrades: string[];
+  locPerClick: number;
+  legacyUpgrades: string[];
+  legacyTokens: number;
+}
+
+function computeLegacyMult(legacyUpgrades: string[], legacyTokens: number): number {
+  const upgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
+    if (u.effect.type === 'production_bonus' && legacyUpgrades.includes(u.id)) {
+      return acc * u.effect.multiplier;
+    }
+    return acc;
+  }, 1);
+  return (1 + legacyTokens * 0.05) * upgradeMult;
+}
+
+function computeCaches(s: CacheInput) {
+  return {
+    cachedLOCps: calculateLOCps(s),
+    cachedClickValue: calculateClickValue(s),
+    cachedLegacyMult: computeLegacyMult(s.legacyUpgrades, s.legacyTokens),
+  };
+}
+
+// ── Module-level singletons ───────────────────────────────────────────────────
+
 let floatingTextId = 0;
+let lastFloatingTextTime = 0;
+const FLOAT_THROTTLE_MS = 150; // max ~6 floating texts/sec during spam
 
 // Event probability per tick (100ms interval)
 // Average 1 event every 60s = 1/600 per tick
 const EVENT_CHANCE_PER_TICK = 1 / 600;
 const MIN_EVENT_INTERVAL = 30; // seconds
 let lastEventTime = 0;
+
+// ── Event multiplier ────────────────────────────────────────────────────────
 
 function getEventMultiplier(event: GameEvent | null): {
   locps: number;
@@ -105,6 +144,8 @@ function getEventMultiplier(event: GameEvent | null): {
   }
 }
 
+// ── Default state ─────────────────────────────────────────────────────────────
+
 const DEFAULT_STATE = {
   loc: 0,
   totalLoc: 0,
@@ -122,11 +163,16 @@ const DEFAULT_STATE = {
   prestigeCount: 0,
   totalClicks: 0,
   productName: generateProductName(),
+  cachedLOCps: 0,
+  cachedClickValue: 1,
+  cachedLegacyMult: 1,
   floatingTexts: [],
   toastQueue: [],
   pendingClickLoc: 0,
   displayedLOCps: 0,
 };
+
+// ── Store ─────────────────────────────────────────────────────────────────────
 
 export const useGameStore = create<GameState>()(
   persist(
@@ -138,22 +184,32 @@ export const useGameStore = create<GameState>()(
         const { clickDisabled, click: clickMult } = getEventMultiplier(state.activeEvent);
         if (clickDisabled) return;
 
-        const clickVal = calculateClickValue(state) * clickMult;
+        const clickVal = state.cachedClickValue * clickMult;
         const newLoc = state.loc + clickVal;
         const newTotalLoc = state.totalLoc + clickVal;
 
-        const floatingText: FloatingText = {
-          id: floatingTextId++,
-          value: `+${Math.floor(clickVal)}`,
-          x: x ?? 50,
-          y: y ?? 50,
-        };
+        // Throttle visible floating texts — still count every click for LOC
+        const now = Date.now();
+        let floatingTexts = state.floatingTexts;
+        if (now - lastFloatingTextTime >= FLOAT_THROTTLE_MS) {
+          lastFloatingTextTime = now;
+          floatingTexts = [
+            ...floatingTexts,
+            {
+              id: floatingTextId++,
+              value: `+${Math.floor(clickVal)}`,
+              x: x ?? 50,
+              y: y ?? 50,
+              createdAt: now,
+            },
+          ];
+        }
 
         set({
           loc: newLoc,
           totalLoc: newTotalLoc,
           totalClicks: state.totalClicks + 1,
-          floatingTexts: [...state.floatingTexts, floatingText],
+          floatingTexts,
           pendingClickLoc: state.pendingClickLoc + clickVal,
         });
       },
@@ -175,20 +231,9 @@ export const useGameStore = create<GameState>()(
           eventEndTime = null;
         }
 
-        // Calculate LOC production
+        // Calculate LOC production using cached values
         const { locps: locpsMult } = getEventMultiplier(activeEvent);
-        const baseLOCps = calculateLOCps(state);
-
-        // Legacy token auto-bonus (5% per token held) × purchased production bonuses
-        const legacyUpgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
-          if (u.effect.type === 'production_bonus' && state.legacyUpgrades.includes(u.id)) {
-            return acc * u.effect.multiplier;
-          }
-          return acc;
-        }, 1);
-        const legacyMult = (1 + state.legacyTokens * 0.05) * legacyUpgradeMult;
-
-        const locGained = baseLOCps * locpsMult * legacyMult * dt;
+        const locGained = state.cachedLOCps * locpsMult * state.cachedLegacyMult * dt;
         const newLoc = state.loc + locGained;
         const newTotalLoc = state.totalLoc + locGained;
 
@@ -241,6 +286,12 @@ export const useGameStore = create<GameState>()(
         const alpha = 0.85;
         const displayedLOCps = state.displayedLOCps * alpha + actualRate * (1 - alpha);
 
+        // Clean up expired floating texts (avoids individual setTimeout per text)
+        const floatingTexts =
+          state.floatingTexts.length > 0
+            ? state.floatingTexts.filter((f) => now - f.createdAt < 1000)
+            : state.floatingTexts;
+
         set({
           loc: newLoc,
           totalLoc: newTotalLoc,
@@ -253,6 +304,7 @@ export const useGameStore = create<GameState>()(
           lastSaveTime: now,
           pendingClickLoc: 0,
           displayedLOCps,
+          floatingTexts,
         });
       },
 
@@ -263,16 +315,12 @@ export const useGameStore = create<GameState>()(
 
         const owned = state.producers[id] ?? 0;
         const cost = producerCost(producer, owned);
-
         if (state.loc < cost) return;
 
-        set({
-          loc: state.loc - cost,
-          producers: {
-            ...state.producers,
-            [id]: owned + 1,
-          },
-        });
+        const newProducers = { ...state.producers, [id]: owned + 1 };
+        const { cachedLOCps } = computeCaches({ ...state, producers: newProducers });
+
+        set({ loc: state.loc - cost, producers: newProducers, cachedLOCps });
       },
 
       buyUpgrade: (id: string) => {
@@ -282,10 +330,10 @@ export const useGameStore = create<GameState>()(
         if (state.upgrades.includes(id)) return;
         if (state.loc < upgrade.cost) return;
 
-        set({
-          loc: state.loc - upgrade.cost,
-          upgrades: [...state.upgrades, id],
-        });
+        const newUpgrades = [...state.upgrades, id];
+        const { cachedLOCps, cachedClickValue } = computeCaches({ ...state, upgrades: newUpgrades });
+
+        set({ loc: state.loc - upgrade.cost, upgrades: newUpgrades, cachedLOCps, cachedClickValue });
       },
 
       buyLegacyUpgrade: (id: string) => {
@@ -295,10 +343,11 @@ export const useGameStore = create<GameState>()(
         if (state.legacyUpgrades.includes(id)) return;
         if (state.legacyTokens < upgrade.cost) return;
 
-        set({
-          legacyTokens: state.legacyTokens - upgrade.cost,
-          legacyUpgrades: [...state.legacyUpgrades, id],
-        });
+        const newLegacyTokens = state.legacyTokens - upgrade.cost;
+        const newLegacyUpgrades = [...state.legacyUpgrades, id];
+        const cachedLegacyMult = computeLegacyMult(newLegacyUpgrades, newLegacyTokens);
+
+        set({ legacyTokens: newLegacyTokens, legacyUpgrades: newLegacyUpgrades, cachedLegacyMult });
       },
 
       prestige: () => {
@@ -307,7 +356,6 @@ export const useGameStore = create<GameState>()(
 
         const tokensEarned = Math.max(0, Math.floor(Math.log10(state.totalLoc)) - 5);
 
-        // Apply legacy upgrade effects to the new run's starting state
         const startProducers: Record<string, number> = {};
         const keptUpgrades: string[] = [];
         let startLoc = 0;
@@ -335,12 +383,21 @@ export const useGameStore = create<GameState>()(
           }
         }
 
+        const newLegacyTokens = state.legacyTokens + tokensEarned;
+        const cacheInput: CacheInput = {
+          producers: startProducers,
+          upgrades: keptUpgrades,
+          locPerClick: 1,
+          legacyUpgrades: state.legacyUpgrades,
+          legacyTokens: newLegacyTokens,
+        };
+
         set({
           ...DEFAULT_STATE,
           loc: startLoc,
           producers: startProducers,
           upgrades: keptUpgrades,
-          legacyTokens: state.legacyTokens + tokensEarned,
+          legacyTokens: newLegacyTokens,
           legacyUpgrades: state.legacyUpgrades,
           prestigeCount: state.prestigeCount + 1,
           productName: state.productName,
@@ -350,6 +407,7 @@ export const useGameStore = create<GameState>()(
           lastSaveTime: Date.now(),
           floatingTexts: [],
           toastQueue: [],
+          ...computeCaches(cacheInput),
         });
       },
 
@@ -372,12 +430,6 @@ export const useGameStore = create<GameState>()(
         }));
       },
 
-      removeFloatingText: (id: number) => {
-        set((state) => ({
-          floatingTexts: state.floatingTexts.filter((f) => f.id !== id),
-        }));
-      },
-
       dismissToast: (id: string) => {
         set((state) => ({
           toastQueue: state.toastQueue.filter((t) => t.id !== id),
@@ -385,21 +437,37 @@ export const useGameStore = create<GameState>()(
       },
 
       newGame: () => {
-        set({ ...DEFAULT_STATE, productName: generateProductName(), lastSaveTime: Date.now() });
+        set({
+          ...DEFAULT_STATE,
+          ...computeCaches(DEFAULT_STATE),
+          productName: generateProductName(),
+          lastSaveTime: Date.now(),
+        });
       },
     }),
     {
       name: 'push-to-prod-v1',
-      // Don't persist UI-only state
       partialize: (state) => {
         const {
           floatingTexts: _ft,
           toastQueue: _tq,
           pendingClickLoc: _pc,
           displayedLOCps: _dl,
+          cachedLOCps: _cl,
+          cachedClickValue: _ccv,
+          cachedLegacyMult: _clm,
           ...rest
         } = state;
         return rest;
+      },
+      // Recompute derived caches after loading from storage
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          const caches = computeCaches(state);
+          state.cachedLOCps = caches.cachedLOCps;
+          state.cachedClickValue = caches.cachedClickValue;
+          state.cachedLegacyMult = caches.cachedLegacyMult;
+        }
       },
     },
   ),
