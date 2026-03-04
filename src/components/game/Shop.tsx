@@ -13,11 +13,12 @@ export function Shop() {
   const producers = useGameStore((s) => s.producers);
   const upgrades = useGameStore((s) => s.upgrades);
 
+  const visibleProducers = PRODUCERS.filter((p) => (p.unlockLoc ?? 0) <= totalLoc);
+  const hiddenCount = PRODUCERS.length - visibleProducers.length;
+
   const availableUpgrades = UPGRADES.filter(
     (u) => !upgrades.includes(u.id) && u.unlockCondition({ totalLoc, producers, upgrades }),
   );
-
-  const upgradeCount = availableUpgrades.length;
 
   return (
     <div className="flex flex-col h-full font-mono">
@@ -28,9 +29,9 @@ export function Shop() {
         </TabButton>
         <TabButton active={activeTab === 'upgrades'} onClick={() => setActiveTab('upgrades')}>
           ⬆️ Upgrades
-          {upgradeCount > 0 && (
+          {availableUpgrades.length > 0 && (
             <span className="ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full bg-gh-yellow/30 text-gh-yellow font-bold">
-              {upgradeCount}
+              {availableUpgrades.length}
             </span>
           )}
         </TabButton>
@@ -38,8 +39,18 @@ export function Shop() {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
-        {activeTab === 'producers' &&
-          PRODUCERS.map((p) => <ProducerCard key={p.id} producer={p} />)}
+        {activeTab === 'producers' && (
+          <>
+            {visibleProducers.map((p) => (
+              <ProducerCard key={p.id} producer={p} />
+            ))}
+            {hiddenCount > 0 && (
+              <p className="text-center text-[11px] text-gh-muted/50 italic py-1">
+                {hiddenCount} more producer{hiddenCount > 1 ? 's' : ''} unlock at higher LOC
+              </p>
+            )}
+          </>
+        )}
 
         {activeTab === 'upgrades' &&
           (availableUpgrades.length === 0 ? (

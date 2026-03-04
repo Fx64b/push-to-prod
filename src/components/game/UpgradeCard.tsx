@@ -14,14 +14,19 @@ const TARGET_LABELS: Record<string, string> = {
   all: '🌍 Global',
   'rubber-duck': '🦆 Rubber Duck',
   'mechanical-keyboard': '⌨️ Mech Keyboard',
+  'coffee-machine': '☕ Coffee Machine',
   autocomplete: '✨ Autocomplete',
   'stackoverflow-tab': '📋 Stack Overflow Tab',
   'junior-dev': '👶 Junior Dev',
   'senior-dev': '🧙 Senior Dev',
+  'tech-lead': '📊 Tech Lead',
   '10x-engineer': '⚡ 10x Engineer',
   'github-copilot': '🤖 GitHub Copilot',
   'ai-agent': '🦾 AI Agent',
+  'cloud-cluster': '☁️ Cloud Cluster',
   agi: '🧠 AGI',
+  'quantum-computer': '⚛️ Quantum Computer',
+  'the-singularity': '∞ The Singularity',
 };
 
 // Short labels for the card badge (no producer name, just icon)
@@ -30,14 +35,19 @@ const TARGET_ICONS: Record<string, string> = {
   all: '🌍 Global',
   'rubber-duck': '🦆',
   'mechanical-keyboard': '⌨️',
+  'coffee-machine': '☕',
   autocomplete: '✨',
   'stackoverflow-tab': '📋',
   'junior-dev': '👶',
   'senior-dev': '🧙',
+  'tech-lead': '📊',
   '10x-engineer': '⚡',
   'github-copilot': '🤖',
   'ai-agent': '🦾',
+  'cloud-cluster': '☁️',
   agi: '🧠',
+  'quantum-computer': '⚛️',
+  'the-singularity': '∞',
 };
 
 export function UpgradeCard({ upgrade }: UpgradeCardProps) {

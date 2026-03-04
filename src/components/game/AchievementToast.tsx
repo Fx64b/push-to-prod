@@ -14,7 +14,7 @@ function Toast({
     const timer = setTimeout(() => {
       setVisible(false);
       setTimeout(() => onDismiss(toast.id), 300);
-    }, 4000);
+    }, 40000);
     return () => clearTimeout(timer);
   }, [toast.id, onDismiss]);
 

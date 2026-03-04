@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   generateSocialPost,
   type HNPostData,
+  type PostContext,
   type SocialPostData,
   type TwitterPostData,
 } from '@/data/socialPosts';
@@ -12,25 +13,24 @@ interface ActivePost {
   post: SocialPostData;
   x: number;
   y: number;
+  anchor: 'left' | 'right';
   exiting: boolean;
 }
 
-// Zones that avoid the vertically-centered game elements.
-// x/y are `left`/`top` percentages within the center panel.
-const ZONES = [
-  { x: 2, y: 5 }, // top-left
-  { x: 2, y: 38 }, // mid-left
-  { x: 2, y: 70 }, // bottom-left
-  { x: 61, y: 22 }, // upper-right (below product name)
-  { x: 61, y: 38 }, // mid-right
-  { x: 61, y: 70 }, // bottom-right
+// Three corner zones away from the centred game elements.
+// anchor='right' uses CSS `right` so the card doesn't overflow on narrow panels.
+const ZONES: { anchor: 'left' | 'right'; x: number; y: number }[] = [
+  { anchor: 'left', x: 4, y: 8 }, // top-left
+  { anchor: 'left', x: 4, y: 72 }, // bottom-left
+  { anchor: 'right', x: 4, y: 72 }, // bottom-right
 ];
 
-function getPosition(): { x: number; y: number } {
+function getPosition(): { x: number; y: number; anchor: 'left' | 'right' } {
   const zone = ZONES[Math.floor(Math.random() * ZONES.length)];
   return {
     x: zone.x + (Math.random() * 3 - 1.5),
     y: zone.y + (Math.random() * 3 - 1.5),
+    anchor: zone.anchor,
   };
 }
 
@@ -38,8 +38,20 @@ let nextId = 0;
 
 export function SocialFeed() {
   const productName = useGameStore((s) => s.productName);
+  const activeEvent = useGameStore((s) => s.activeEvent);
+  const achievements = useGameStore((s) => s.achievements);
   const [posts, setPosts] = useState<ActivePost[]>([]);
   const activeRef = useRef(true);
+  const activeEventRef = useRef(activeEvent);
+  const achievementsRef = useRef(achievements);
+
+  useEffect(() => {
+    activeEventRef.current = activeEvent;
+  }, [activeEvent]);
+
+  useEffect(() => {
+    achievementsRef.current = achievements;
+  }, [achievements]);
 
   useEffect(() => {
     activeRef.current = true;
@@ -49,14 +61,21 @@ export function SocialFeed() {
         if (!activeRef.current) return;
 
         const id = nextId++;
-        const { x, y } = getPosition();
+        const { x, y, anchor } = getPosition();
 
-        if (posts.length < 3) {
-          setPosts((prev) => {
-            if (prev.length >= 1) return prev;
-            return [...prev, { id, post: generateSocialPost(productName), x, y, exiting: false }];
-          });
-        }
+        const context: PostContext = {
+          isNegativeEvent: activeEventRef.current?.isNegative ?? false,
+          isPositiveEvent: activeEventRef.current !== null && !activeEventRef.current.isNegative,
+          achievements: achievementsRef.current,
+        };
+
+        setPosts((prev) => {
+          if (prev.length >= 1) return prev;
+          return [
+            ...prev,
+            { id, post: generateSocialPost(productName, context), x, y, anchor, exiting: false },
+          ];
+        });
 
         // Begin exit animation
         setTimeout(() => {
@@ -73,8 +92,8 @@ export function SocialFeed() {
       }, delay);
     };
 
-    // First post after 60–140 seconds
-    schedule(60000 + Math.random() * 8000);
+    // First post after 6–14 seconds
+    schedule(6000 + Math.random() * 8000);
 
     return () => {
       activeRef.current = false;
@@ -83,11 +102,13 @@ export function SocialFeed() {
 
   return (
     <>
-      {posts.map(({ id, post, x, y, exiting }) => (
+      {posts.map(({ id, post, x, y, anchor, exiting }) => (
         <div
           key={id}
           className={`absolute pointer-events-none select-none ${exiting ? 'animate-social-out' : 'animate-social-in'}`}
-          style={{ left: `${x}%`, top: `${y}%` }}
+          style={
+            anchor === 'right' ? { right: `${x}%`, top: `${y}%` } : { left: `${x}%`, top: `${y}%` }
+          }
         >
           {post.type === 'twitter' ? <TwitterCard data={post.data} /> : <HNCard data={post.data} />}
         </div>
@@ -102,12 +123,9 @@ function TwitterCard({ data }: { data: TwitterPostData }) {
   return (
     <div className="w-96 rounded-2xl border border-white/10 bg-black p-3 shadow-2xl font-sans">
       <div className="flex items-start gap-2.5">
-        {/* Avatar */}
         <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-base shrink-0 leading-none">
           {data.avatar}
         </div>
-
-        {/* Body */}
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-1 flex-wrap leading-tight">
             <span className="text-white font-bold text-[13px] leading-none">{data.username}</span>
@@ -134,7 +152,6 @@ function TwitterCard({ data }: { data: TwitterPostData }) {
 function HNCard({ data }: { data: HNPostData }) {
   return (
     <div className="w-96 rounded border border-[#e8e3d9] bg-[#f6f6ef] p-3 shadow-2xl font-sans">
-      {/* HN header bar */}
       <div className="flex items-center gap-1.5 mb-2">
         <div className="w-4 h-4 bg-[#ff6600] flex items-center justify-center text-white text-[10px] font-bold rounded-sm shrink-0">
           Y
@@ -143,17 +160,13 @@ function HNCard({ data }: { data: HNPostData }) {
           Hacker News
         </span>
       </div>
-
-      {/* Title row */}
       <div className="flex items-start gap-2">
         <span className="text-[#ff6600] font-bold text-sm leading-none shrink-0 mt-0.5">▲</span>
         <p className="text-[#000000] text-[12px] leading-snug font-medium">{data.title}</p>
       </div>
-
-      {/* Meta */}
       <div className="text-[#828282] text-[10px] mt-2 leading-snug">
         <span className="text-[#ff6600] font-bold">{data.points}</span> points by{' '}
-        <span className="hover:underline">{data.user}</span> · {data.hoursAgo}h ago ·{' '}
+        <span>{data.user}</span> · {data.hoursAgo}h ago ·{' '}
         <span className="font-medium">{data.comments} comments</span>
       </div>
     </div>
