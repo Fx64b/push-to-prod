@@ -14,6 +14,7 @@ import { StatsPanel } from '@/components/game/StatsPanel';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { useOfflineProgress } from '@/hooks/useOfflineProgress';
 import { useGameStore } from '@/store/gameStore';
+import { Analytics } from "@vercel/analytics/next"
 
 function SettingsPopover() {
   const [open, setOpen] = useState(false);
@@ -133,6 +134,7 @@ export default function App() {
         {/* Achievement toasts */}
         <AchievementToast />
       </div>
+      <Analytics />
     </TooltipPrimitive.Provider>
   );
 }
