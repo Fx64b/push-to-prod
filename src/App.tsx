@@ -109,6 +109,13 @@ export default function App() {
           <main
             ref={_centerRef}
             className="flex-1 flex flex-col items-center justify-center gap-6 p-6 relative overflow-hidden"
+            onMouseEnter={() => {
+              const active = document.activeElement;
+              const btn = document.querySelector<HTMLButtonElement>('[data-enter-key]');
+              if (btn && (!active || active === document.body || active === btn)) {
+                btn.focus({ preventScroll: true });
+              }
+            }}
           >
             <FloatingTexts />
             <AmbientTexts />

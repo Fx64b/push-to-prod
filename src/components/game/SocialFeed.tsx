@@ -45,7 +45,9 @@ function getSpawnConfig(totalLoc: number): { maxPosts: number; nextDelay: number
   const t = Math.min(1, (log - 3) / 9);
   const base = 50000 * Math.pow(1 - t, 2);
   const nextDelay = Math.max(0, Math.round(base * (0.8 + Math.random() * 0.4)));
-  const maxPosts = t < 1 / 3 ? 1 : t < 2 / 3 ? 2 : 3;
+  // Stay at 1 post for most of the game; only open extra slots near 1T (10^12)
+  // t=0.78 ≈ 10B, t=0.89 ≈ 100B, t=1 = 1T
+  const maxPosts = t < 0.78 ? 1 : t < 0.89 ? 2 : 3;
   return { maxPosts, nextDelay };
 }
 

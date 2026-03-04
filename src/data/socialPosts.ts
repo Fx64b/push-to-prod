@@ -338,13 +338,15 @@ function makeHN(productName: string, titles: ((n: string) => string)[]): SocialP
 export function generateSocialPost(productName: string, context: PostContext): SocialPostData {
   type Pool = [number, () => SocialPostData];
 
+  const hnUnlocked = (context.totalLoc ?? 0) >= 5000;
+
   const pools: Pool[] = [
     [
       60,
       () =>
-        Math.random() < 0.6
-          ? makeTwitter(productName, DEFAULT_TWITTER)
-          : makeHN(productName, DEFAULT_HN),
+        hnUnlocked && Math.random() >= 0.6
+          ? makeHN(productName, DEFAULT_HN)
+          : makeTwitter(productName, DEFAULT_TWITTER),
     ],
   ];
 
@@ -352,18 +354,18 @@ export function generateSocialPost(productName: string, context: PostContext): S
     pools.push([
       50,
       () =>
-        Math.random() < 0.65
-          ? makeTwitter(productName, NEGATIVE_TWITTER)
-          : makeHN(productName, NEGATIVE_HN),
+        hnUnlocked && Math.random() >= 0.65
+          ? makeHN(productName, NEGATIVE_HN)
+          : makeTwitter(productName, NEGATIVE_TWITTER),
     ]);
   }
   if (context.isPositiveEvent) {
     pools.push([
       50,
       () =>
-        Math.random() < 0.65
-          ? makeTwitter(productName, POSITIVE_TWITTER)
-          : makeHN(productName, POSITIVE_HN),
+        hnUnlocked && Math.random() >= 0.65
+          ? makeHN(productName, POSITIVE_HN)
+          : makeTwitter(productName, POSITIVE_TWITTER),
     ]);
   }
   if (context.achievements.includes('rubber-duck-programmer')) {
@@ -375,7 +377,7 @@ export function generateSocialPost(productName: string, context: PostContext): S
   if (context.achievements.includes('lgtm')) {
     pools.push([20, () => makeTwitter(productName, SCALE_TWITTER)]);
   }
-  if ((context.duckCount ?? 0) >= 15) {
+  if ((context.duckCount ?? 0) >= 50) {
     pools.push([20, () => makeTwitter(productName, DUCKAPOCALYPSE_TWITTER)]);
   }
   if ((context.totalLoc ?? 0) >= 1000000) {
