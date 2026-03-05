@@ -56,7 +56,7 @@ export function AchievementToast() {
   if (visibleToasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 flex flex-col gap-2 z-50 pointer-events-none">
+    <div className="fixed bottom-16 md:bottom-4 right-4 flex flex-col gap-2 z-50 pointer-events-none">
       {visibleToasts.map((toast) => (
         <div key={toast.id} className="pointer-events-auto">
           <Toast toast={toast} onDismiss={dismissToast} />
