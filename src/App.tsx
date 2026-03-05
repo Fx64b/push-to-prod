@@ -73,12 +73,38 @@ function SettingsPopover() {
   );
 }
 
+type MobileTab = 'stats' | 'game' | 'shop';
+
+function MobileTabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        flex-1 flex flex-col items-center justify-center gap-0.5 py-2
+        font-mono text-[11px] transition-colors
+        ${active ? 'text-gh-blue border-t-2 border-gh-blue -mt-px' : 'text-gh-muted border-t-2 border-transparent -mt-px'}
+      `}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function App() {
   useGameLoop();
   useOfflineProgress();
 
   const _centerRef = useRef<HTMLDivElement>(null);
   const productName = useGameStore((s) => s.productName);
+  const [mobileTab, setMobileTab] = useState<MobileTab>('game');
 
   return (
     <TooltipPrimitive.Provider delayDuration={300}>
@@ -98,8 +124,8 @@ export default function App() {
           <EventBanner />
         </div>
 
-        {/* Main 3-column layout */}
-        <div className="flex flex-1 overflow-hidden">
+        {/* Desktop: 3-column layout */}
+        <div className="hidden md:flex flex-1 overflow-hidden">
           {/* LEFT: Stats panel */}
           <aside className="w-48 shrink-0 border-r border-gh-border bg-gh-surface/30 p-3 overflow-y-auto">
             <StatsPanel />
@@ -142,6 +168,63 @@ export default function App() {
           <aside className="w-72 shrink-0 border-l border-gh-border bg-gh-surface/30 overflow-hidden flex flex-col">
             <Shop />
           </aside>
+        </div>
+
+        {/* Mobile: single panel + bottom tab bar */}
+        <div className="flex md:hidden flex-1 flex-col overflow-hidden">
+          {/* Active panel */}
+          <div className="flex-1 overflow-hidden">
+            {mobileTab === 'stats' && (
+              <div className="h-full overflow-y-auto p-3 bg-gh-surface/30">
+                <StatsPanel />
+              </div>
+            )}
+
+            {mobileTab === 'game' && (
+              <main className="h-full flex flex-col items-center justify-center gap-5 p-4 relative overflow-hidden">
+                <FloatingTexts />
+                <AmbientTexts />
+
+                {/* Product name */}
+                <div className="absolute top-3 right-3 font-mono text-right pointer-events-none select-none">
+                  <div className="text-[9px] text-gh-muted uppercase tracking-widest">building</div>
+                  <div className="text-gh-purple font-bold text-sm leading-tight">{productName}</div>
+                  <div className="text-[9px] text-gh-muted opacity-60">#buildinpublic</div>
+                </div>
+
+                <LOCDisplay />
+                <EnterKey />
+                <RefactorButton />
+
+                {/* News ticker */}
+                <div className="absolute bottom-0 left-0 right-0">
+                  <NewsTicker />
+                </div>
+              </main>
+            )}
+
+            {mobileTab === 'shop' && (
+              <div className="h-full flex flex-col bg-gh-surface/30">
+                <Shop />
+              </div>
+            )}
+          </div>
+
+          {/* Bottom tab bar */}
+          <nav className="border-t border-gh-border bg-gh-surface shrink-0 flex safe-bottom">
+            <MobileTabButton active={mobileTab === 'stats'} onClick={() => setMobileTab('stats')}>
+              <span className="text-base leading-none">📊</span>
+              <span>Stats</span>
+            </MobileTabButton>
+            <MobileTabButton active={mobileTab === 'game'} onClick={() => setMobileTab('game')}>
+              <span className="text-base leading-none">⌨️</span>
+              <span>Game</span>
+            </MobileTabButton>
+            <MobileTabButton active={mobileTab === 'shop'} onClick={() => setMobileTab('shop')}>
+              <span className="text-base leading-none">🛒</span>
+              <span>Shop</span>
+            </MobileTabButton>
+          </nav>
         </div>
 
         {/* Achievement toasts */}
