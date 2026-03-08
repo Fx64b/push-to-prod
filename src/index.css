@@ -41,3 +41,8 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
+
+/* iOS safe area for bottom tab bar */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
