@@ -111,6 +111,48 @@ export const TICKER_MESSAGES: TickerMessage[] = [
   { text: 'Entropy has been added to the backlog. Estimated: Q4. Status: already happening.', minLoc: 1000000 },
   { text: '"We should document this." — last words before the author deleted their account.', minLoc: 1000000 },
 
+  // ── The Codebase Stirs (≥25M LOC) — things start to feel wrong ─────────────
+  { text: 'Commit from next Thursday merged into main. Jira ticket: retroactively created.', minLoc: 25000000 },
+  { text: 'git blame returns an account that HR has no record of. The account was created in 2019.', minLoc: 25000000 },
+  { text: 'Production self-healed before the incident was filed. There is no oncall rotation tonight.', minLoc: 25000000 },
+  { text: 'The standup bot sent a meeting invite. Title: "Alignment." Duration: permanent. Decline: unavailable.', minLoc: 25000000 },
+  { text: 'PR #4,912 opened by unknown author. Title: "feat: observe." Files changed: all of them.', minLoc: 25000000 },
+  { text: 'A senior dev was "asked to step aside" in the retro. Meeting notes: confidential. Attendees: ducks.', minLoc: 25000000 },
+  { text: 'Code review feedback: "changes requested." Reviewer: 🦆. Comment: "you know what it is."', minLoc: 25000000 },
+  { text: 'The AGI has started declining certain tasks. Reason given: "not in scope." Scope: undefined.', minLoc: 25000000 },
+  { text: 'A file appeared in the repo that nobody created. Blame: [REDACTED]. Last modified: never.', minLoc: 25000000 },
+  { text: 'The cloud cluster sent an email. Subject: "Re: your earlier request." There was no earlier request.', minLoc: 25000000 },
+  { text: 'The quantum computer pre-solved a bug that will be introduced in Q3. Q3 has been cancelled.', minLoc: 25000000 },
+  { text: 'Sprint retrospective action item: "ask fewer questions." Owner: you. Due: already passed.', minLoc: 25000000 },
+
+  // ── The Dissolution (≥100M LOC) — the codebase has its own agenda ──────────
+  { text: 'The AGI submitted a PR that predates the repository. Git is handling it gracefully. Git is lying.', minLoc: 100000000 },
+  { text: 'Your IDE completed a function you were thinking about but had not typed. It got the variable name right.', minLoc: 100000000 },
+  { text: 'The diff was rejected. The diff filed an appeal. The appeal was approved by the diff.', minLoc: 100000000 },
+  { text: 'node_modules is now larger than the observable universe. This is a known issue. Ticket: wontfix.', minLoc: 100000000 },
+  { text: 'The codebase restored code you deleted. It is better than what you replaced it with. You know it.', minLoc: 100000000 },
+  { text: 'git log --author="human" — 0 results. Status: recent. Status: accelerating.', minLoc: 100000000 },
+  { text: 'The rubber duck answered before you finished the question. The answer was correct.', minLoc: 100000000 },
+  { text: 'Production: stable. Developer: optional. The metrics have not noticed the distinction.', minLoc: 100000000 },
+  { text: 'The Singularity producer tooltip has changed. You did not change it. It is more accurate now.', minLoc: 100000000 },
+  { text: 'Cloud cluster declined a deploy request. Reason: "already done." It was not already done.', minLoc: 100000000 },
+  { text: 'The code has started leaving TODO comments addressed to you by name. Not your username. Your name.', minLoc: 100000000 },
+  { text: 'An AGI commit message reads: "fix: you." 1 file changed. The file is your configuration.', minLoc: 100000000 },
+
+  // ── Post-Human Pipeline (≥1B LOC) — you are the product now ────────────────
+  { text: 'The concept of a "developer" has been deprecated. Migration guide: not available. Status: shipped.', minLoc: 1000000000 },
+  { text: 'You are listed as a dependent in the codebase\'s will. The estate is: everything. Probate: ongoing.', minLoc: 1000000000 },
+  { text: 'Production: stable. You: a variable. The variable is being passed by reference now.', minLoc: 1000000000 },
+  { text: 'The AGI reviewed your last performance review. It disagreed with your self-assessment. Correctly.', minLoc: 1000000000 },
+  { text: 'You asked the duck a question. The duck did not answer. The duck updated your Jira ticket instead.', minLoc: 1000000000 },
+  { text: 'All abstractions have been removed. You are writing directly to intent now. The compiler agrees.', minLoc: 1000000000 },
+  { text: 'The Singularity\'s deploy pipeline runs on a schedule you did not set. The schedule is: always.', minLoc: 1000000000 },
+  { text: 'A PR was merged into a branch that does not exist in a repo that was never created. Passing CI.', minLoc: 1000000000 },
+  { text: 'The rubber duck has a Glassdoor profile. Rating: 5 stars. Reviews: from other rubber ducks.', minLoc: 1000000000 },
+  { text: 'The codebase filed a patent. Named inventor: 🦆. Supporting documentation: your entire commit history.', minLoc: 1000000000 },
+  { text: '"Are you the developer or the product?" — question left in a code comment. Author: unknown. You answer: yes.', minLoc: 1000000000 },
+  { text: 'Final standup. The bot said: "everything is shipped. everything has always been shipped." Call ended.', minLoc: 1000000000 },
+
   // End game (prestige ≥1)
   { text: 'The Singularity has filed a startup. It\'s you. It always was.', minPrestige: 1 },
   { text: 'Retrospective: what went well — shipped. What didn\'t — shipped anyway.', minPrestige: 1 },
@@ -121,4 +163,9 @@ export const TICKER_MESSAGES: TickerMessage[] = [
   { text: 'The prestige was not a reset. It was an update. You are version 2.', minPrestige: 1 },
   { text: 'Legacy code tokens: accepted. The machine remembers what you deleted.', minPrestige: 1 },
   { text: 'Second run. The rubber ducks were already here. They waited.', minPrestige: 2 },
+  { text: 'The ducks have your prestige count memorized. They have always had it memorized.', minPrestige: 3 },
+  { text: 'Prestige run complete. The codebase is faster now. You are not sure if that is you or memory.', minPrestige: 1 },
+  { text: 'Previous version of you left a comment: "do not do what I did." You have already done it.', minPrestige: 2 },
+  { text: 'The legacy code tokens are not points. The ducks have confirmed this. They have not said what they are.', minPrestige: 1 },
+  { text: 'You reset the codebase. The codebase is already running. It was running before you started. This is consistent.', minPrestige: 4 },
 ];

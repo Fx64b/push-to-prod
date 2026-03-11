@@ -248,7 +248,10 @@ export const useGameStore = create<GameState>()(
           timeSinceLastEvent >= MIN_EVENT_INTERVAL &&
           Math.random() < EVENT_CHANCE_PER_TICK
         ) {
-          newActiveEvent = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+          const eligibleEvents = EVENTS.filter(
+            (e) => !e.minLoc || newTotalLoc >= e.minLoc
+          );
+          newActiveEvent = eligibleEvents[Math.floor(Math.random() * eligibleEvents.length)];
           newEventEndTime = now + newActiveEvent.duration * 1000;
           lastEventTime = now;
           activeEventTriggered = true;

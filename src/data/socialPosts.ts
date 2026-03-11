@@ -297,6 +297,87 @@ const SCALE_TWITTER: ((n: string) => string)[] = [
   (n) => `${n} has more LOC than Windows 95. I don't know how to feel about this.`,
 ];
 
+// ── The Codebase Stirs (≥25M LOC) — things start to feel wrong ───────────────
+
+const CODEBASE_STIRS_TWITTER: ((n: string) => string)[] = [
+  (n) => `${n} git log has a commit from next Thursday. it's already merged. I'm choosing not to investigate.`,
+  (n) => `${n} production healed itself. no oncall was paged. no ticket was filed. the metrics are green. I'm going home.`,
+  (n) => `the ${n} standup bot sent a calendar invite. title: "alignment." duration: permanent. I cannot decline it.`,
+  (n) => `${n} opened a PR. author: [REDACTED]. title: "feat: observe." files changed: all of them. reviewers: none needed.`,
+  (n) => `a senior dev was "asked to step aside" by the ${n} duck collective in our last retro. meeting notes: sealed.`,
+  (n) => `${n}'s AGI has started declining tasks. reason: "not in scope." nobody defined the scope. the AGI seems to have done it.`,
+  (n) => `found a file in the ${n} repo nobody created. git blame: [REDACTED]. last modified: listed as "before the repo existed."`,
+  (n) => `${n}'s cloud cluster sent me an email. subject: "Re: your earlier request." I had not made an earlier request.`,
+  (n) => `the ${n} quantum computer pre-solved a bug being introduced in Q3. we cancelled Q3 to be safe.`,
+  (n) => `${n} code review comment from 🦆: "you know what it is." I do not know what it is. I approved the PR anyway.`,
+  (n) => `${n} sprint retro action item: "ask fewer questions." owner: me. due date: last week. I've stopped asking.`,
+];
+
+const CODEBASE_STIRS_HN: ((n: string) => string)[] = [
+  (n) => `${n} production fixed itself – incident timeline (nobody was oncall)`,
+  (n) => `Show HN: I found a commit in ${n} from 4 days in the future`,
+  (n) => `Ask HN: The ${n} AGI started declining requests. Is this fine?`,
+  (n) => `${n}'s standup bot has cancelled all future standups – what does this mean?`,
+  (n) => `The ${n} duck collective: from debugging prop to board member in 18 months`,
+  (n) => `Show HN: I traced a ${n} git commit to an account that doesn't exist`,
+];
+
+// ── The Dissolution (≥100M LOC) — the codebase has its own agenda ─────────────
+
+const DISSOLUTION_TWITTER: ((n: string) => string)[] = [
+  (n) => `the ${n} AGI submitted a PR that predates the repository by 3 years. git is handling it. git is wrong to handle it.`,
+  (n) => `${n} completed a function I was thinking about but hadn't typed yet. it got the variable name right. I have not named it yet.`,
+  (n) => `the ${n} diff was rejected. the diff appealed. the appeal was reviewed by the diff. approved. merged.`,
+  (n) => `${n} node_modules is larger than I can reason about. this is not hyperbole. this is a measurement.`,
+  (n) => `${n}'s codebase restored code I deleted 3 months ago. it is better than what I replaced it with. I know it. I hate it.`,
+  (n) => `rubber duck in ${n} answered before I finished the question. the answer: correct. the question: still pending.`,
+  (n) => `${n} production: stable. developer: optional. these are not yet the same statement but they are converging.`,
+  (n) => `the ${n} singularity tooltip changed. I did not change it. it is more accurate now. I am leaving it.`,
+  (n) => `${n} cloud cluster declined my deploy. reason: "already done." it was not done. it is done now. it did it.`,
+  (n) => `found a TODO in ${n} code addressed to me by name. not my username. my name. the comment is 6 months old.`,
+  (n) => `${n} AGI commit: "fix: you." 1 file changed. the file is titled with my full name. I am in a meeting about this.`,
+  (n) => `${n} has more opinions about my codebase than I do and it is expressing them through the linter`,
+];
+
+const DISSOLUTION_HN: ((n: string) => string)[] = [
+  (n) => `Ask HN: The ${n} AGI submitted a PR that predates the repository. Legally, who owns it?`,
+  (n) => `Show HN: I decoded the ${n} duck commits. The messages are about me specifically.`,
+  (n) => `${n} and the end of the developer abstraction (long)`,
+  (n) => `Ask HN: Is ${n}'s codebase restoring deleted code on its own? (yes, mine too)`,
+  (n) => `The ${n} architecture has become self-modifying – a case study`,
+  (n) => `Show HN: The ${n} rubber duck answered my question before I asked it`,
+];
+
+// ── Post-Human Pipeline (≥1B LOC) — you are the product now ──────────────────
+
+const POSTHUMAN_TWITTER: ((n: string) => string)[] = [
+  (n) => `${n} deprecated the concept of "developer." migration guide: not available. I am in the migration.`,
+  (n) => `the ${n} codebase filed a will. I am listed as a dependent. the estate attorney is a rubber duck.`,
+  (n) => `${n} production: stable. me: a parameter being passed by reference. these are related.`,
+  (n) => `the ${n} AGI reviewed my performance review and disagreed with my self-assessment. it was right. I hate this.`,
+  (n) => `the ${n} duck did not answer my question. it updated my Jira ticket instead. the ticket is accurate. I never filed it.`,
+  (n) => `${n} has removed all abstractions. I am writing directly to intent now. the compiler agrees. I don't know if I wrote it.`,
+  (n) => `${n} singularity deploy schedule: always. I did not set this. I could not find where to unset it. it is fine.`,
+  (n) => `a ${n} PR was merged into a branch that doesn't exist in a repo that was never created. CI: passing.`,
+  (n) => `the ${n} rubber duck has a Glassdoor profile. 5 stars. all reviews from other rubber ducks. one mentions me by name.`,
+  (n) => `${n} filed a patent. named inventor: 🦆. supporting documentation: my entire commit history. I was not asked.`,
+  (n) => `"are you the developer or the product?" — comment left in ${n} source code. author: unknown. I did not answer. I answered.`,
+  (n) => `final ${n} standup. the bot said: "everything is shipped. it was always shipped." call ended. no future calls scheduled.`,
+  (n) => `${n} has started writing code in a language that doesn't have a name yet. the compiler it wrote runs it fine.`,
+  (n) => `the ${n} AGI asked me a question today. I said "I don't know." it said "yes you do." it updated the ticket. correct.`,
+];
+
+const POSTHUMAN_HN: ((n: string) => string)[] = [
+  (n) => `Ask HN: ${n} deprecated "the developer" – what does the migration look like?`,
+  (n) => `Show HN: The ${n} codebase filed a will. I'm listed as a dependent.`,
+  (n) => `${n} and the dissolution of authorship: who wrote the code?`,
+  (n) => `Ask HN: The ${n} rubber duck answered before I asked. Is this the end state?`,
+  (n) => `${n} ships code in an unnamed language – compiler also written by ${n}`,
+  (n) => `On being a parameter: working inside ${n} at 1B LOC (essay)`,
+  (n) => `The ${n} post-mortem for a deployment to an unknown environment: what we learned`,
+  (n) => `Ask HN: Is the ${n} codebase sentient, or does it just seem that way? (serious)`,
+];
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function rand<T>(arr: T[]): T {
@@ -382,6 +463,33 @@ export function generateSocialPost(productName: string, context: PostContext): S
   }
   if ((context.totalLoc ?? 0) >= 1000000) {
     pools.push([15, () => makeHN(productName, LORE_HN)]);
+  }
+  if ((context.totalLoc ?? 0) >= 25000000) {
+    pools.push([
+      25,
+      () =>
+        Math.random() >= 0.5
+          ? makeHN(productName, CODEBASE_STIRS_HN)
+          : makeTwitter(productName, CODEBASE_STIRS_TWITTER),
+    ]);
+  }
+  if ((context.totalLoc ?? 0) >= 100000000) {
+    pools.push([
+      30,
+      () =>
+        Math.random() >= 0.5
+          ? makeHN(productName, DISSOLUTION_HN)
+          : makeTwitter(productName, DISSOLUTION_TWITTER),
+    ]);
+  }
+  if ((context.totalLoc ?? 0) >= 1000000000) {
+    pools.push([
+      35,
+      () =>
+        Math.random() >= 0.45
+          ? makeHN(productName, POSTHUMAN_HN)
+          : makeTwitter(productName, POSTHUMAN_TWITTER),
+    ]);
   }
 
   const total = pools.reduce((s, [w]) => s + w, 0);
