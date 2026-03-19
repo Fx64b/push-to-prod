@@ -17,14 +17,13 @@ interface ActivePost {
   exiting: boolean;
 }
 
-const ZONES: { anchor: 'left' | 'right'; x: number; y: number }[] = [
-  { anchor: 'left', x: 4, y: 8 },   // top-left
-  { anchor: 'left', x: 4, y: 72 },  // bottom-left
-  { anchor: 'right', x: 4, y: 72 }, // bottom-right
-];
-
-function getPosition(): { x: number; y: number; anchor: 'left' | 'right' } {
-  const zone = ZONES[Math.floor(Math.random() * ZONES.length)];
+function getPosition(topZoneY: number): { x: number; y: number; anchor: 'left' | 'right' } {
+  const zones = [
+    { anchor: 'left' as const, x: 4, y: topZoneY }, // top-left
+    { anchor: 'left' as const, x: 4, y: 72 },       // bottom-left
+    { anchor: 'right' as const, x: 4, y: 72 },      // bottom-right
+  ];
+  const zone = zones[Math.floor(Math.random() * zones.length)];
   return {
     x: zone.x + (Math.random() * 3 - 1.5),
     y: zone.y + (Math.random() * 3 - 1.5),
@@ -53,7 +52,7 @@ function getSpawnConfig(totalLoc: number): { maxPosts: number; nextDelay: number
 
 let nextId = 0;
 
-export function SocialFeed() {
+export function SocialFeed({ topZoneY = 8 }: { topZoneY?: number }) {
   const productName = useGameStore((s) => s.productName);
   const activeEvent = useGameStore((s) => s.activeEvent);
   const achievements = useGameStore((s) => s.achievements);
@@ -68,12 +67,14 @@ export function SocialFeed() {
   const totalLocRef = useRef(totalLoc);
   const producersRef = useRef(producers);
   const productNameRef = useRef(productName);
+  const topZoneYRef = useRef(topZoneY);
 
   useEffect(() => { activeEventRef.current = activeEvent; }, [activeEvent]);
   useEffect(() => { achievementsRef.current = achievements; }, [achievements]);
   useEffect(() => { totalLocRef.current = totalLoc; }, [totalLoc]);
   useEffect(() => { producersRef.current = producers; }, [producers]);
   useEffect(() => { productNameRef.current = productName; }, [productName]);
+  useEffect(() => { topZoneYRef.current = topZoneY; }, [topZoneY]);
 
   // Shared spawn counter — incremented before setPosts, decremented after removal.
   // Single-threaded JS guarantees no race between setTimeout callbacks.
@@ -105,7 +106,7 @@ export function SocialFeed() {
 
         spawnCountRef.current++;
         const id = nextId++;
-        const { x, y, anchor } = getPosition();
+        const { x, y, anchor } = getPosition(topZoneYRef.current);
         const context: PostContext = {
           isNegativeEvent: activeEventRef.current?.isNegative ?? false,
           isPositiveEvent: activeEventRef.current !== null && !activeEventRef.current.isNegative,
