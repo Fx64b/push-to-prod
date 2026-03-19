@@ -17,6 +17,7 @@ import { StatsPanel } from '@/components/game/StatsPanel';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { useOfflineProgress } from '@/hooks/useOfflineProgress';
 import { useGameStore } from '@/store/gameStore';
+import { WelcomePopup } from '@/components/game/WelcomePopup';
 import { Analytics } from "@vercel/analytics/react"
 
 function SettingsPopover() {
@@ -236,6 +237,9 @@ export default function App() {
 
         {/* Achievement toasts */}
         <AchievementToast />
+
+        {/* Welcome popup — shown only on first visit */}
+        <WelcomePopup />
       </div>
       <Analytics />
     </TooltipPrimitive.Provider>
