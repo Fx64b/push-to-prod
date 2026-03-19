@@ -4,6 +4,7 @@ import { useGameStore } from '@/store/gameStore';
 export function WelcomePopup() {
   const totalClicks = useGameStore((s) => s.totalClicks);
   const totalLoc = useGameStore((s) => s.totalLoc);
+  const productName = useGameStore((s) => s.productName);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -55,7 +56,9 @@ export function WelcomePopup() {
                 Every great codebase started with a single line of code.
               </p>
               <p className="text-gh-muted text-xs leading-relaxed">
-                You've just joined a scrappy startup with big dreams and zero tests.
+                You're the founding engineer at{' '}
+                <span className="text-gh-purple font-bold">{productName}</span>
+                {' '}— a scrappy startup with big dreams and zero tests.
                 Press <kbd className="px-1.5 py-0.5 bg-gh-bg border border-gh-border rounded text-gh-green text-xs">ENTER</kbd> to write your first lines of code.
               </p>
               <p className="text-gh-yellow/80 text-xs leading-relaxed">
