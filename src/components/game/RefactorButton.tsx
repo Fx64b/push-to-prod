@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { formatLOC } from '@/utils/format';
 
-const PRESTIGE_THRESHOLD = 1_000_000;
+const PRESTIGE_THRESHOLD = 10_000_000;
 
 export function RefactorButton() {
   const totalLoc = useGameStore((s) => s.totalLoc);
