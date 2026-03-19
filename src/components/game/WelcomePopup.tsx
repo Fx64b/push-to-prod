@@ -11,7 +11,7 @@ export function WelcomePopup() {
     if (totalClicks === 0 && totalLoc === 0) {
       setVisible(true);
     }
-  }, []);
+  }, [totalClicks, totalLoc]);
 
   if (!visible) return null;
 
