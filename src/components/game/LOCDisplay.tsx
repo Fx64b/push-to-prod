@@ -1,5 +1,5 @@
 import { useGameStore } from '@/store/gameStore';
-import { formatLOC, formatRate } from '@/utils/format';
+import { formatLOC, formatRate, getCommitInfo } from '@/utils/format';
 
 export function LOCDisplay() {
   const loc = useGameStore((s) => s.loc);
@@ -7,8 +7,7 @@ export function LOCDisplay() {
   const activeEvent = useGameStore((s) => s.activeEvent);
   const displayedLOCps = useGameStore((s) => s.displayedLOCps);
 
-  const commits = Math.floor(totalLoc / 1000);
-  const progressToNextCommit = (totalLoc % 1000) / 1000;
+  const { commits, threshold, progress: progressToNextCommit } = getCommitInfo(totalLoc);
 
   return (
     <div className="flex flex-col items-center gap-3 py-4">
@@ -39,7 +38,7 @@ export function LOCDisplay() {
       <div className="w-full max-w-xs">
         <div className="flex justify-between text-xs font-mono text-gh-muted mb-1">
           <span>commit #{commits.toLocaleString()}</span>
-          <span>{formatLOC(totalLoc % 1000)} / 1K LOC</span>
+          <span>{formatLOC(progressToNextCommit * threshold)} / {formatLOC(threshold)} LOC</span>
         </div>
         <div className="h-1.5 bg-gh-surface rounded-full overflow-hidden border border-gh-border">
           <div

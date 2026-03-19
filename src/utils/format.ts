@@ -22,6 +22,35 @@ export function formatLOC(n: number): string {
   return Math.floor(n).toLocaleString('en-US');
 }
 
+// Each era spans 10x more commits; LOC-per-commit scales up 10x per era.
+// Era 0: commits  0–9,      1K LOC/commit
+// Era 1: commits 10–99,    10K LOC/commit
+// Era 2: commits 100–999, 100K LOC/commit  … and so on.
+const COMMIT_ERA_SIZE = 10; // commits per era
+
+export function getCommitInfo(totalLoc: number): {
+  commits: number;
+  threshold: number;
+  progress: number;
+} {
+  let remaining = Math.max(0, totalLoc);
+  let commits = 0;
+  let threshold = 1_000;
+
+  while (true) {
+    const eraLoc = COMMIT_ERA_SIZE * threshold;
+    if (remaining < eraLoc) break;
+    remaining -= eraLoc;
+    commits += COMMIT_ERA_SIZE;
+    threshold *= 10;
+  }
+
+  const commitsInEra = Math.floor(remaining / threshold);
+  commits += commitsInEra;
+  const progress = (remaining % threshold) / threshold;
+  return { commits, threshold, progress };
+}
+
 export function formatRate(n: number): string {
   return `${formatLOC(n)}/s`;
 }
