@@ -19,7 +19,7 @@ export const PRODUCERS: Producer[] = [
     baseLOCps: 0.1,
     baseCost: 10,
     icon: '🦆',
-    costScaling: 1.07,
+    costScaling: 1.09,
   },
   {
     id: 'mechanical-keyboard',
