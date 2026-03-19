@@ -35,7 +35,7 @@ export function getCommitInfo(totalLoc: number): {
 } {
   let remaining = Math.max(0, totalLoc);
   let commits = 0;
-  let threshold = 1_000;
+  let threshold = 250;
 
   while (true) {
     const eraLoc = COMMIT_ERA_SIZE * threshold;
