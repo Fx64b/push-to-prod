@@ -24,6 +24,8 @@ export interface ToastNotification {
   icon: string;
 }
 
+export type TechStack = 'typescript' | 'rust' | 'php' | 'blockchain';
+
 interface GameState {
   // Resources
   loc: number;
@@ -49,6 +51,13 @@ interface GameState {
   activeEventTriggered: boolean;
   negativeEventssurvived: number;
 
+  // Technical debt (0–100, only active after all legacy items bought)
+  technicalDebt: number;
+
+  // Tech Stack prestige
+  techStack: TechStack | null;
+  pivotCount: number;
+
   // Meta
   lastSaveTime: number;
   prestigeCount: number;
@@ -73,6 +82,7 @@ interface GameState {
   buyUpgrade: (id: string) => void;
   buyLegacyUpgrade: (id: string) => void;
   prestige: () => void;
+  pivot: (stack: TechStack) => void;
   dismissEvent: () => void;
   addOfflineProgress: (loc: number) => void;
   dismissToast: (id: string) => void;
@@ -105,6 +115,58 @@ function computeCaches(s: CacheInput) {
     cachedClickValue: calculateClickValue(s),
     cachedLegacyMult: computeLegacyMult(s.legacyUpgrades, s.legacyTokens),
   };
+}
+
+// ── Tech Stack helpers ────────────────────────────────────────────────────────
+
+export function getStackMult(techStack: TechStack | null): { production: number; click: number } {
+  switch (techStack) {
+    case 'typescript': return { production: 1.3, click: 1.0 };
+    case 'rust': return { production: 2.0, click: 1.0 };
+    case 'php': return { production: 1.2, click: 3.0 };
+    case 'blockchain': return { production: 1.5, click: 1.0 };
+    default: return { production: 1.0, click: 1.0 };
+  }
+}
+
+// ── Technical Debt helpers ────────────────────────────────────────────────────
+
+function allLegacyBought(legacyUpgrades: string[]): boolean {
+  return LEGACY_UPGRADES.every((u) => legacyUpgrades.includes(u.id));
+}
+
+function calcDebtRate(producers: Record<string, number>): number {
+  const generated =
+    (producers['junior-dev'] ?? 0) * 0.005 +
+    (producers['stackoverflow-tab'] ?? 0) * 0.003 +
+    (producers['linkedin-influencer'] ?? 0) * 0.007 +
+    (producers['offshore-team'] ?? 0) * 0.005 +
+    (producers['github-copilot'] ?? 0) * 0.010;
+  const reduced =
+    (producers['senior-dev'] ?? 0) * 0.004 +
+    (producers['tech-lead'] ?? 0) * 0.002 +
+    (producers['the-pm'] ?? 0) * 0.001;
+  return generated - reduced;
+}
+
+export function getDebtPenalty(debt: number): number {
+  if (debt >= 100) return 0.15; // critical — near-total production loss
+  if (debt >= 75) return 0.4;  // severe
+  if (debt >= 50) return 0.7;  // significant
+  if (debt >= 25) return 0.9;  // mild
+  return 1.0;                  // no penalty
+}
+
+// ── Weighted event selection ──────────────────────────────────────────────────
+
+function pickWeightedEvent(events: GameEvent[]): GameEvent {
+  const totalWeight = events.reduce((sum, e) => sum + (e.weight ?? 1), 0);
+  let r = Math.random() * totalWeight;
+  for (const event of events) {
+    r -= (event.weight ?? 1);
+    if (r <= 0) return event;
+  }
+  return events[events.length - 1];
 }
 
 // ── Module-level singletons ───────────────────────────────────────────────────
@@ -159,6 +221,9 @@ const DEFAULT_STATE = {
   eventEndTime: null,
   activeEventTriggered: false,
   negativeEventssurvived: 0,
+  technicalDebt: 0,
+  techStack: null as TechStack | null,
+  pivotCount: 0,
   lastSaveTime: Date.now(),
   prestigeCount: 0,
   totalClicks: 0,
@@ -184,7 +249,8 @@ export const useGameStore = create<GameState>()(
         const { clickDisabled, click: clickMult } = getEventMultiplier(state.activeEvent);
         if (clickDisabled) return;
 
-        const clickVal = state.cachedClickValue * clickMult;
+        const { click: stackClickMult } = getStackMult(state.techStack);
+        const clickVal = state.cachedClickValue * clickMult * stackClickMult;
         const newLoc = state.loc + clickVal;
         const newTotalLoc = state.totalLoc + clickVal;
 
@@ -233,9 +299,19 @@ export const useGameStore = create<GameState>()(
 
         // Calculate LOC production using cached values
         const { locps: locpsMult } = getEventMultiplier(activeEvent);
-        const locGained = state.cachedLOCps * locpsMult * state.cachedLegacyMult * dt;
-        const newLoc = state.loc + locGained;
-        const newTotalLoc = state.totalLoc + locGained;
+        const { production: stackProductionMult } = getStackMult(state.techStack);
+        const debtActive = allLegacyBought(state.legacyUpgrades);
+        const debtPenalty = debtActive ? getDebtPenalty(state.technicalDebt) : 1.0;
+        const locGained = state.cachedLOCps * locpsMult * state.cachedLegacyMult * stackProductionMult * debtPenalty * dt;
+        let newLoc = state.loc + locGained;
+        let newTotalLoc = state.totalLoc + locGained;
+
+        // Update technical debt (only when all legacy items bought)
+        let newTechnicalDebt = state.technicalDebt;
+        if (debtActive) {
+          const debtRate = calcDebtRate(state.producers);
+          newTechnicalDebt = Math.max(0, Math.min(100, state.technicalDebt + debtRate * dt));
+        }
 
         // Roll for new event
         let newActiveEvent = activeEvent;
@@ -251,10 +327,16 @@ export const useGameStore = create<GameState>()(
           const eligibleEvents = EVENTS.filter(
             (e) => !e.minLoc || newTotalLoc >= e.minLoc
           );
-          newActiveEvent = eligibleEvents[Math.floor(Math.random() * eligibleEvents.length)];
+          newActiveEvent = pickWeightedEvent(eligibleEvents);
           newEventEndTime = now + newActiveEvent.duration * 1000;
           lastEventTime = now;
           activeEventTriggered = true;
+
+          // Apply loc_burst immediately when the event fires
+          if (newActiveEvent.effectType === 'loc_burst') {
+            newLoc += newActiveEvent.effectValue;
+            newTotalLoc += newActiveEvent.effectValue;
+          }
         }
 
         // Check achievements
@@ -267,6 +349,9 @@ export const useGameStore = create<GameState>()(
           negativeEventssurvived,
           prestigeCount: state.prestigeCount,
           activeEventTriggered,
+          technicalDebt: newTechnicalDebt,
+          techStack: state.techStack,
+          pivotCount: state.pivotCount,
         };
 
         const newAchievements = [...state.achievements];
@@ -302,6 +387,7 @@ export const useGameStore = create<GameState>()(
           eventEndTime: newEventEndTime,
           negativeEventssurvived,
           activeEventTriggered,
+          technicalDebt: newTechnicalDebt,
           achievements: newAchievements,
           toastQueue: newToasts,
           lastSaveTime: now,
@@ -407,6 +493,70 @@ export const useGameStore = create<GameState>()(
           achievements: state.achievements,
           activeEventTriggered: state.activeEventTriggered,
           negativeEventssurvived: state.negativeEventssurvived,
+          techStack: state.techStack, // stack survives prestige
+          pivotCount: state.pivotCount,
+          lastSaveTime: Date.now(),
+          floatingTexts: [],
+          toastQueue: [],
+          ...computeCaches(cacheInput),
+        });
+      },
+
+      pivot: (stack: TechStack) => {
+        const state = get();
+        if (state.prestigeCount < 5) return;
+
+        const tokensEarned = Math.max(0, Math.floor(Math.log10(Math.max(state.totalLoc, 1000000))) - 5);
+
+        const startProducers: Record<string, number> = {};
+        const keptUpgrades: string[] = [];
+        let startLoc = 0;
+
+        for (const legacyId of state.legacyUpgrades) {
+          const lu = LEGACY_UPGRADES.find((u) => u.id === legacyId);
+          if (!lu) continue;
+          if (lu.effect.type === 'start_producer') {
+            for (const { id, count } of lu.effect.producers) {
+              startProducers[id] = (startProducers[id] ?? 0) + count;
+            }
+          } else if (lu.effect.type === 'start_loc') {
+            startLoc += lu.effect.amount;
+          } else if (lu.effect.type === 'keep_upgrade') {
+            if (lu.effect.upgradeId === 'all-click') {
+              for (const u of UPGRADES) {
+                if (u.target === 'click' && state.upgrades.includes(u.id)) {
+                  keptUpgrades.push(u.id);
+                }
+              }
+            } else if (state.upgrades.includes(lu.effect.upgradeId)) {
+              keptUpgrades.push(lu.effect.upgradeId);
+            }
+          }
+        }
+
+        const newLegacyTokens = state.legacyTokens + tokensEarned;
+        const cacheInput: CacheInput = {
+          producers: startProducers,
+          upgrades: keptUpgrades,
+          locPerClick: 1,
+          legacyUpgrades: state.legacyUpgrades,
+          legacyTokens: newLegacyTokens,
+        };
+
+        set({
+          ...DEFAULT_STATE,
+          loc: startLoc,
+          producers: startProducers,
+          upgrades: keptUpgrades,
+          legacyTokens: newLegacyTokens,
+          legacyUpgrades: state.legacyUpgrades,
+          prestigeCount: state.prestigeCount + 1,
+          productName: state.productName,
+          achievements: state.achievements,
+          activeEventTriggered: state.activeEventTriggered,
+          negativeEventssurvived: state.negativeEventssurvived,
+          techStack: stack,
+          pivotCount: state.pivotCount + 1,
           lastSaveTime: Date.now(),
           floatingTexts: [],
           toastQueue: [],

@@ -12,11 +12,40 @@ export interface Achievement {
     negativeEventssurvived: number;
     prestigeCount: number;
     activeEventTriggered: boolean;
+    technicalDebt: number;
+    techStack: string | null;
+    pivotCount: number;
   }) => boolean;
 }
 
-// All 15 producer IDs
+// All producer IDs (original 15 + 7 new)
 const ALL_PRODUCERS = [
+  'rubber-duck',
+  'mechanical-keyboard',
+  'coffee-machine',
+  'autocomplete',
+  'stackoverflow-tab',
+  'junior-dev',
+  'linkedin-influencer',
+  'senior-dev',
+  'offshore-team',
+  'tech-lead',
+  'scrum-master',
+  '10x-engineer',
+  'the-pm',
+  'github-copilot',
+  'ai-agent',
+  'cloud-cluster',
+  'agi',
+  'quantum-computer',
+  'the-singularity',
+  'blockchain',
+  'the-consultant',
+  'digital-twin',
+];
+
+// First 10 original producers (for tiered ownership achievements)
+const CORE_PRODUCERS = [
   'rubber-duck',
   'mechanical-keyboard',
   'coffee-machine',
@@ -27,15 +56,7 @@ const ALL_PRODUCERS = [
   'tech-lead',
   '10x-engineer',
   'github-copilot',
-  'ai-agent',
-  'cloud-cluster',
-  'agi',
-  'quantum-computer',
-  'the-singularity',
 ];
-
-// First 10 original producers (for tiered ownership achievements)
-const CORE_PRODUCERS = ALL_PRODUCERS.slice(0, 10);
 
 export const ACHIEVEMENTS: Achievement[] = [
   // ── LOC milestones ────────────────────────────────────────────────────────────
@@ -102,6 +123,13 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🌌',
     condition: ({ totalLoc }) => totalLoc >= 1000000000000,
   },
+  {
+    id: 'post-human',
+    name: 'Post-Human Pipeline',
+    description: '1 quadrillion lines. The word "developer" no longer applies.',
+    icon: '🌀',
+    condition: ({ totalLoc }) => totalLoc >= 1000000000000000,
+  },
 
   // ── Click milestones ──────────────────────────────────────────────────────────
   {
@@ -125,6 +153,13 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🆘',
     condition: ({ totalClicks }) => totalClicks >= 100000,
   },
+  {
+    id: 'jira-ticket-4892',
+    name: 'JIRA Ticket #4892',
+    description: 'Clicked exactly 4,892 times. Someone will open a ticket about this.',
+    icon: '🎫',
+    condition: ({ totalClicks }) => totalClicks === 4892,
+  },
 
   // ── Producer achievements ─────────────────────────────────────────────────────
   {
@@ -147,6 +182,26 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Your desk is 40% duck. The rest is keyboard.',
     icon: '🪖',
     condition: ({ producers }) => (producers['rubber-duck'] ?? 0) >= 25,
+  },
+  {
+    id: 'duck-ceo',
+    name: 'Duck CEO',
+    description: '1,000 rubber ducks. They run the company now.',
+    icon: '🦆👔',
+    condition: ({ producers }) => (producers['rubber-duck'] ?? 0) >= 1000,
+  },
+  {
+    id: 'duck-majority',
+    name: 'They Have Voting Rights Now',
+    description: 'Rubber ducks outnumber all other producers combined.',
+    icon: '🗳️',
+    condition: ({ producers }) => {
+      const ducks = producers['rubber-duck'] ?? 0;
+      const others = Object.entries(producers)
+        .filter(([id]) => id !== 'rubber-duck')
+        .reduce((sum, [, count]) => sum + count, 0);
+      return ducks > 0 && ducks > others;
+    },
   },
   {
     id: 'type-a-personality',
@@ -177,6 +232,34 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: ({ producers }) => (producers['senior-dev'] ?? 0) >= 1,
   },
   {
+    id: 'thought-leader',
+    name: 'Thought Leader',
+    description: '25 LinkedIn Influencer Devs. None of them have pushed code this quarter.',
+    icon: '💡',
+    condition: ({ producers }) => (producers['linkedin-influencer'] ?? 0) >= 25,
+  },
+  {
+    id: 'offshore-everything',
+    name: 'Offshore Everything',
+    description: '10 offshore teams. Your Slack is 94% timezone confusions.',
+    icon: '🌏',
+    condition: ({ producers }) => (producers['offshore-team'] ?? 0) >= 10,
+  },
+  {
+    id: 'unsubstantiated-velocity',
+    name: 'Unsubstantiated Velocity',
+    description: '5 Scrum Masters. Sprint velocity: unknowable. Chart: going up.',
+    icon: '📈',
+    condition: ({ producers }) => (producers['scrum-master'] ?? 0) >= 5,
+  },
+  {
+    id: 'its-on-the-roadmap',
+    name: "It's On The Roadmap",
+    description: 'Hired your first PM. Nothing has shipped since.',
+    icon: '🗺️',
+    condition: ({ producers }) => (producers['the-pm'] ?? 0) >= 1,
+  },
+  {
     id: '10x-team',
     name: '10x Team',
     description: 'Hired at least one of every core producer.',
@@ -189,6 +272,13 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Hired at least one of every producer. Even the weird ones.',
     icon: '🤝',
     condition: ({ producers }) => ALL_PRODUCERS.every((id) => (producers[id] ?? 0) >= 1),
+  },
+  {
+    id: 'full-stack',
+    name: 'Full Stack Developer',
+    description: 'Every single producer in the roster. The stack overflows.',
+    icon: '🥞',
+    condition: ({ producers }) => ALL_PRODUCERS.every((id) => (producers[id] ?? 0) >= 5),
   },
   {
     id: 'big-o-h-no',
@@ -210,6 +300,28 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: '100 of each core producer. Do you have a life? Go touch grass.',
     icon: '🤯',
     condition: ({ producers }) => CORE_PRODUCERS.every((id) => (producers[id] ?? 0) >= 100),
+  },
+  {
+    id: 'web3-enjoyer',
+    name: 'Web3 Enjoyer',
+    description: 'Deployed your first Blockchain. The whitepaper is mostly emojis.',
+    icon: '⛓️',
+    condition: ({ producers }) => (producers['blockchain'] ?? 0) >= 1,
+  },
+  {
+    id: 'digital-self',
+    name: 'Digital Me',
+    description: 'Created your first Digital Twin. It already has more stars on GitHub.',
+    icon: '👤',
+    condition: ({ producers }) => (producers['digital-twin'] ?? 0) >= 1,
+  },
+  {
+    id: 'pair-programming-hater',
+    name: 'Pair Programming Hater',
+    description: 'Reached 100K LOC with at most 1 of any producer.',
+    icon: '🙅',
+    condition: ({ totalLoc, producers }) =>
+      totalLoc >= 100000 && Object.values(producers).every((count) => count <= 1),
   },
 
   // ── Event achievements ────────────────────────────────────────────────────────
@@ -241,6 +353,20 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🛡️',
     condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 25,
   },
+  {
+    id: 'chaos-enjoyer',
+    name: 'Chaos Enjoyer',
+    description: 'Survived 100 negative events. Pain is a feature.',
+    icon: '🌪️',
+    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 100,
+  },
+  {
+    id: 'five-stages',
+    name: 'The Five Stages',
+    description: 'Survived 5 events back-to-back. Bargaining has failed.',
+    icon: '😶',
+    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 5,
+  },
 
   // ── Upgrade achievements ───────────────────────────────────────────────────────
   {
@@ -263,6 +389,36 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Bought the Rewrite in Rust upgrade. 🦀',
     icon: '🦀',
     condition: ({ upgrades }) => upgrades.includes('rewrite-in-rust'),
+  },
+  {
+    id: 'move-fast',
+    name: 'Move Fast and Break Things',
+    description: 'Bought the upgrade. Production is already down.',
+    icon: '💨',
+    condition: ({ upgrades }) => upgrades.includes('move-fast-break-things'),
+  },
+  {
+    id: 'yolo-deploy',
+    name: 'YOLO Deploy',
+    description: "Bought 'We Don't Need Tests'. The tests never forgave you.",
+    icon: '🎲',
+    condition: ({ upgrades }) => upgrades.includes('we-dont-need-tests'),
+  },
+
+  // ── Technical Debt achievements ────────────────────────────────────────────────
+  {
+    id: 'debt-ceiling',
+    name: 'Debt Ceiling',
+    description: 'Technical debt reached maximum. Congress has been notified.',
+    icon: '📉',
+    condition: ({ technicalDebt }) => technicalDebt >= 100,
+  },
+  {
+    id: 'well-fix-it-in-post',
+    name: "We'll Fix It In Post",
+    description: 'Technical debt has been above 75 for a very long time. It is structural now.',
+    icon: '🏚️',
+    condition: ({ technicalDebt }) => technicalDebt >= 75,
   },
 
   // ── Prestige achievements ──────────────────────────────────────────────────────
@@ -294,6 +450,43 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🌀',
     condition: ({ prestigeCount }) => prestigeCount >= 10,
   },
+  {
+    id: 'its-not-a-phase-ach',
+    name: "It's Not a Phase",
+    description: 'Prestiged 25 times. You are the prestige.',
+    icon: '♾️',
+    condition: ({ prestigeCount }) => prestigeCount >= 25,
+  },
+
+  // ── Tech Stack achievements ────────────────────────────────────────────────────
+  {
+    id: 'pivoted',
+    name: 'We Pivoted',
+    description: "Chose a tech stack. The investors weren't told.",
+    icon: '🔀',
+    condition: ({ techStack }) => techStack !== null,
+  },
+  {
+    id: 'rustacean-stack',
+    name: 'Rustacean Supremacy',
+    description: "Chose Rust as your tech stack. You've been waiting for this.",
+    icon: '🦀',
+    condition: ({ techStack }) => techStack === 'rust',
+  },
+  {
+    id: 'php-enjoyer',
+    name: 'PHP Enjoyer',
+    description: "Chose PHP. You've seen things the others haven't.",
+    icon: '🐘',
+    condition: ({ techStack }) => techStack === 'php',
+  },
+  {
+    id: 'blockchain-stack-ach',
+    name: 'To The Moon',
+    description: 'Chose Blockchain. The hype is the product.',
+    icon: '🚀',
+    condition: ({ techStack }) => techStack === 'blockchain',
+  },
 
   // ── Meme / joke achievements ──────────────────────────────────────────────────
   {
@@ -319,5 +512,15 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '📶',
     condition: ({ totalLoc, producers }) =>
       totalLoc >= 500000 && Object.values(producers).reduce((a, b) => a + b, 0) > 0,
+  },
+  {
+    id: 'it-was-like-this',
+    name: 'It Was Like This When I Got Here',
+    description: 'Prestiged immediately after your first hire.',
+    icon: '🤷',
+    condition: ({ prestigeCount, producers }) => {
+      const total = Object.values(producers).reduce((a, b) => a + b, 0);
+      return prestigeCount >= 1 && total === 0;
+    },
   },
 ];

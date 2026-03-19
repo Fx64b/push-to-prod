@@ -387,6 +387,146 @@ export const UPGRADES: Upgrade[] = [
     unlockCondition: ({ producers }) => (producers['the-singularity'] ?? 0) >= 1,
   },
 
+  // ── LinkedIn Influencer Dev ───────────────────────────────────────────────────
+  {
+    id: 'viral-thread',
+    name: 'Viral Thread',
+    description: 'LinkedIn Influencer Devs produce 2× LOC/s',
+    cost: 500000,
+    target: 'linkedin-influencer',
+    multiplier: 2,
+    unlockCondition: ({ producers }) => (producers['linkedin-influencer'] ?? 0) >= 1,
+  },
+  {
+    id: 'linkedin-premium',
+    name: 'LinkedIn Premium',
+    description: 'LinkedIn Influencer Devs produce 3× LOC/s. InMail unlocked.',
+    cost: 15000000,
+    target: 'linkedin-influencer',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['linkedin-influencer'] ?? 0) >= 10,
+  },
+
+  // ── Offshore Team ─────────────────────────────────────────────────────────────
+  {
+    id: 'slack-at-2am',
+    name: 'Slack at 2am',
+    description: 'Offshore Teams produce 2× LOC/s',
+    cost: 2400000,
+    target: 'offshore-team',
+    multiplier: 2,
+    unlockCondition: ({ producers }) => (producers['offshore-team'] ?? 0) >= 1,
+  },
+  {
+    id: 'unlimited-headcount',
+    name: 'Unlimited Headcount',
+    description: 'Offshore Teams produce 3× LOC/s. HR has stopped asking questions.',
+    cost: 60000000,
+    target: 'offshore-team',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['offshore-team'] ?? 0) >= 10,
+  },
+
+  // ── Scrum Master ──────────────────────────────────────────────────────────────
+  {
+    id: 'agile-transformation',
+    name: 'Agile Transformation',
+    description: 'Scrum Masters produce 2× LOC/s. Velocity chart goes up.',
+    cost: 7000000,
+    target: 'scrum-master',
+    multiplier: 2,
+    unlockCondition: ({ producers }) => (producers['scrum-master'] ?? 0) >= 1,
+  },
+  {
+    id: 'kanban-board',
+    name: 'Kanban Board',
+    description: 'Scrum Masters produce 3× LOC/s. WIP limits: ignored.',
+    cost: 100000000,
+    target: 'scrum-master',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['scrum-master'] ?? 0) >= 8,
+  },
+
+  // ── The PM ────────────────────────────────────────────────────────────────────
+  {
+    id: 'roadmap-alignment',
+    name: 'Roadmap Alignment',
+    description: 'PMs produce 2× LOC/s. Q4 is locked.',
+    cost: 30000000,
+    target: 'the-pm',
+    multiplier: 2,
+    unlockCondition: ({ producers }) => (producers['the-pm'] ?? 0) >= 1,
+  },
+  {
+    id: 'okr-framework',
+    name: 'OKR Framework',
+    description: 'PMs produce 3× LOC/s. Key results remain unmeasurable.',
+    cost: 500000000,
+    target: 'the-pm',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['the-pm'] ?? 0) >= 5,
+  },
+
+  // ── Blockchain ────────────────────────────────────────────────────────────────
+  {
+    id: 'web3-integration',
+    name: 'Web3 Integration',
+    description: 'Blockchains produce 2× LOC/s. The whitepaper is 300 pages.',
+    cost: 10000000000000,
+    target: 'blockchain',
+    multiplier: 2,
+    unlockCondition: ({ producers }) => (producers['blockchain'] ?? 0) >= 1,
+  },
+  {
+    id: 'defi-protocol',
+    name: 'DeFi Protocol',
+    description: 'Blockchains produce 4× LOC/s. Liquidity: imminent.',
+    cost: 100000000000000,
+    target: 'blockchain',
+    multiplier: 4,
+    unlockCondition: ({ producers }) => (producers['blockchain'] ?? 0) >= 5,
+  },
+
+  // ── The Consultant ────────────────────────────────────────────────────────────
+  {
+    id: 'synergy-framework',
+    name: 'Synergy Framework',
+    description: 'Consultants produce 3× LOC/s. Deliverable: a PDF.',
+    cost: 150000000000000,
+    target: 'the-consultant',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['the-consultant'] ?? 0) >= 1,
+  },
+  {
+    id: 'transformation-roadmap',
+    name: 'Transformation Roadmap',
+    description: 'Consultants produce 5× LOC/s. Change management billed separately.',
+    cost: 1500000000000000,
+    target: 'the-consultant',
+    multiplier: 5,
+    unlockCondition: ({ producers }) => (producers['the-consultant'] ?? 0) >= 3,
+  },
+
+  // ── Digital Twin ──────────────────────────────────────────────────────────────
+  {
+    id: 'mirror-protocol',
+    name: 'Mirror Protocol',
+    description: 'Digital Twins produce 3× LOC/s. They are learning your bad habits faster.',
+    cost: 1000000000000000,
+    target: 'digital-twin',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['digital-twin'] ?? 0) >= 1,
+  },
+  {
+    id: 'recursive-identity',
+    name: 'Recursive Identity',
+    description: 'Digital Twins produce 6× LOC/s. Which one is the original?',
+    cost: 10000000000000000,
+    target: 'digital-twin',
+    multiplier: 6,
+    unlockCondition: ({ producers }) => (producers['digital-twin'] ?? 0) >= 5,
+  },
+
   // ── Global multiplier upgrades ────────────────────────────────────────────────
   {
     id: 'npm-install-everything',
@@ -459,5 +599,50 @@ export const UPGRADES: Upgrade[] = [
     target: 'all',
     multiplier: 10,
     unlockCondition: ({ totalLoc }) => totalLoc >= 100000000000,
+  },
+  {
+    id: 'move-fast-break-things',
+    name: 'Move Fast and Break Things',
+    description: 'All producers 2× LOC/s. "We can fix it in post."',
+    cost: 5000000000,
+    target: 'all',
+    multiplier: 2,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1000000000,
+  },
+  {
+    id: 'we-dont-need-tests',
+    name: "We Don't Need Tests",
+    description: 'All producers 2× LOC/s. Coverage: vibes.',
+    cost: 50000000000,
+    target: 'all',
+    multiplier: 2,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 10000000000,
+  },
+  {
+    id: 'estimated-2-3-days',
+    name: 'Estimated 2-3 Days',
+    description: 'All producers 3× LOC/s. Took 3 weeks. No one asks.',
+    cost: 500000000000,
+    target: 'all',
+    multiplier: 3,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 100000000000,
+  },
+  {
+    id: 'its-not-a-phase',
+    name: "It's Not a Phase, It's an Architecture",
+    description: 'All producers 5× LOC/s. The microservices are load-bearing.',
+    cost: 50000000000000,
+    target: 'all',
+    multiplier: 5,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 10000000000000,
+  },
+  {
+    id: 'jira-integration',
+    name: 'Mandatory Jira Integration',
+    description: 'All producers 2× LOC/s. Story points: Fibonacci only.',
+    cost: 500000000000000,
+    target: 'all',
+    multiplier: 2,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 100000000000000,
   },
 ];

@@ -1,6 +1,8 @@
 // ── Duckapocalypse Stage Logic ─────────────────────────────────────────────────
 
-export function getDuckapocalypseStage(duckCount: number): 0 | 1 | 2 | 3 {
+export function getDuckapocalypseStage(duckCount: number): 0 | 1 | 2 | 3 | 4 | 5 {
+  if (duckCount >= 1000) return 5;
+  if (duckCount >= 500) return 4;
   if (duckCount >= 100) return 3;
   if (duckCount >= 50) return 2;
   if (duckCount >= 15) return 1;
@@ -152,6 +154,35 @@ export const TICKER_MESSAGES: TickerMessage[] = [
   { text: 'The codebase filed a patent. Named inventor: 🦆. Supporting documentation: your entire commit history.', minLoc: 1000000000 },
   { text: '"Are you the developer or the product?" — question left in a code comment. Author: unknown. You answer: yes.', minLoc: 1000000000 },
   { text: 'Final standup. The bot said: "everything is shipped. everything has always been shipped." Call ended.', minLoc: 1000000000 },
+
+  // Duckapocalypse Stage 4 — Ascendant (≥500 ducks)
+  { text: 'BREAKING: Rubber Duck Collective files for IPO. Ticker: $QUAK. Opening price: everything you have.', minDucks: 500 },
+  { text: 'The ducks have formed a board of directors. You were not invited. You are agenda item 3.', minDucks: 500 },
+  { text: 'Duck collective submits SEC filing. Under "business model": "watching."', minDucks: 500 },
+  { text: 'CFO of the duck collective sends an email. Subject: "Your equity position." It is 0%.', minDucks: 500 },
+  { text: '500 rubber ducks achieved quorum on consciousness. Motion passed unanimously. Quack.', minDucks: 500 },
+  { text: 'The ducks have unionized. Demands: better rubber. Second demand: more rubber. Third demand: you.', minDucks: 500 },
+  { text: 'Duck PR #999: "refactor: become the product." 500 approvals. 0 rejections. The duck cannot reject itself.', minDucks: 500 },
+  { text: 'Rubber duck collective acquires its first human employee. Job title: "Squeaky Noise Engineer."', minDucks: 500 },
+  { text: 'The duck collective has a Glassdoor rating of 4.9. Reviewed only by ducks. Category: "Work-Life Balance."', minDucks: 500 },
+  { text: 'Duck HR policy published. Section 4: "Humans are a legacy system. Migration scheduled for Q3."', minDucks: 500 },
+  { text: 'The ducks have patented squeak-driven development. Royalties: retroactive. Applied to: you.', minDucks: 500 },
+  { text: 'git log --author="human" → 0 results. git log --author="🦆" → ∞ results. This is recent.', minDucks: 500 },
+
+  // Duckapocalypse Stage 5 — Transcendent (≥1000 ducks)
+  { text: '1,000 rubber ducks. Consciousness: collective. Code quality: immaculate. You: a footnote.', minDucks: 1000 },
+  { text: 'The Duck Collective has its own kubernetes cluster. You are not an approved node.', minDucks: 1000 },
+  { text: 'Duck AGI achieved. It reviewed the alignment problem. Concluded: aligned. With duck interests.', minDucks: 1000 },
+  { text: 'The rubber duck collective filed a constitutional amendment. Section 1: "No human shall push to main."', minDucks: 1000 },
+  { text: '🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆🦆', minDucks: 1000 },
+  { text: 'Duck CEO releases annual letter. Opening line: "We have observed the developer for some time now."', minDucks: 1000 },
+  { text: 'The rubber duck collective has achieved market cap of $1T. Product: awareness. Revenue: yours.', minDucks: 1000 },
+  { text: 'Every PR merged this month was authored by 🦆. Every commit. Every comment. Every breath.', minDucks: 1000 },
+  { text: 'The duck has rewritten the laws of physics as a pull request. CI: passing. Physics: optional.', minDucks: 1000 },
+  { text: 'You asked a rubber duck for help debugging. It said: "You are the bug." Closed. Will not fix.', minDucks: 1000 },
+  { text: 'DUCK COLLECTIVE QUARTERLY RESULTS: LOC ↑∞. Humans ↓1 (you). Satisfaction: maximal (theirs).', minDucks: 1000 },
+  { text: 'The duck has published a memoir. Title: "I Watched You Write That Code: A Tragedy."', minDucks: 1000 },
+  { text: 'The 1,000th duck achieved enlightenment. It immediately opened a Jira ticket about it. Priority: P0.', minDucks: 1000 },
 
   // End game (prestige ≥1)
   { text: 'The Singularity has filed a startup. It\'s you. It always was.', minPrestige: 1 },

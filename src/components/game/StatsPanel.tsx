@@ -19,6 +19,7 @@ export function StatsPanel() {
   const totalClicks = useGameStore((s) => s.totalClicks);
   const prestigeCount = useGameStore((s) => s.prestigeCount);
   const legacyTokens = useGameStore((s) => s.legacyTokens);
+  const techStack = useGameStore((s) => s.techStack);
 
   const locps = useGameStore((s) => s.displayedLOCps);
 
@@ -48,6 +49,18 @@ export function StatsPanel() {
           )}
           {legacyTokens > 0 && (
             <StatRow label="Legacy Tokens" value={legacyTokens.toString()} color="text-gh-yellow" />
+          )}
+          {techStack && (
+            <StatRow
+              label="Tech Stack"
+              value={
+                techStack === 'typescript' ? '🔷 TypeScript' :
+                techStack === 'rust' ? '🦀 Rust' :
+                techStack === 'php' ? '🐘 PHP' :
+                '⛓️ Blockchain'
+              }
+              color="text-gh-blue"
+            />
           )}
         </div>
       </div>
