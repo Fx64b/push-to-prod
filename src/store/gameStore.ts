@@ -321,6 +321,7 @@ export const useGameStore = create<GameState>()(
         const timeSinceLastEvent = (now - lastEventTime) / 1000;
         if (
           !activeEvent &&
+          newTotalLoc >= 1000 &&
           timeSinceLastEvent >= MIN_EVENT_INTERVAL &&
           Math.random() < EVENT_CHANCE_PER_TICK
         ) {

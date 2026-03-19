@@ -52,7 +52,7 @@ export function WelcomePopup() {
             {/* Lore hint */}
             <div className="space-y-3 text-sm text-gh-text/90">
               <p>
-                Every great codebase started with a single keystroke.
+                Every great codebase started with a single line of code.
               </p>
               <p className="text-gh-muted text-xs leading-relaxed">
                 You've just joined a scrappy startup with big dreams and zero tests.
