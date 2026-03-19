@@ -5,6 +5,8 @@ export interface Producer {
   baseLOCps: number;
   baseCost: number;
   icon: string;
+  /** Cost multiplier per unit owned. Defaults to 1.15 if omitted. */
+  costScaling?: number;
   /** Hide in shop until this much total LOC has been earned. Omit = always visible. */
   unlockLoc?: number;
 }
@@ -17,6 +19,7 @@ export const PRODUCERS: Producer[] = [
     baseLOCps: 0.1,
     baseCost: 10,
     icon: '🦆',
+    costScaling: 1.09,
   },
   {
     id: 'mechanical-keyboard',

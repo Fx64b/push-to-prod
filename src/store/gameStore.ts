@@ -442,7 +442,7 @@ export const useGameStore = create<GameState>()(
 
       prestige: () => {
         const state = get();
-        if (state.totalLoc < 1000000) return;
+        if (state.totalLoc < 10000000) return;
 
         const tokensEarned = Math.max(0, Math.floor(Math.log10(state.totalLoc)) - 5);
 

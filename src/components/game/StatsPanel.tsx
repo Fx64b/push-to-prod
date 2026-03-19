@@ -6,7 +6,7 @@ import { PRODUCERS, type Producer } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
 import { useGameStore } from '@/store/gameStore';
 import { producerCost } from '@/utils/costs';
-import { formatLOC, formatRate } from '@/utils/format';
+import { formatLOC, formatRate, getCommitInfo } from '@/utils/format';
 import { calculateClickValue } from '@/utils/production';
 
 export function StatsPanel() {
@@ -28,6 +28,8 @@ export function StatsPanel() {
     [producers, upgrades, locPerClick],
   );
 
+  const { commits } = getCommitInfo(totalLoc);
+
   const ownedProducers = PRODUCERS.filter((p) => (producers[p.id] ?? 0) > 0);
 
   return (
@@ -42,7 +44,7 @@ export function StatsPanel() {
           <StatRow label="Total LOC" value={formatLOC(totalLoc)} />
           <StatRow label="LOC/s" value={formatRate(locps)} color="text-gh-blue" />
           <StatRow label="Per click" value={formatLOC(clickValue)} />
-          <StatRow label="Commits" value={Math.floor(totalLoc / 1000).toLocaleString()} />
+          <StatRow label="Commits" value={commits.toLocaleString()} />
           <StatRow label="Clicks" value={totalClicks.toLocaleString()} />
           {prestigeCount > 0 && (
             <StatRow label="Refactors" value={prestigeCount.toString()} color="text-gh-purple" />

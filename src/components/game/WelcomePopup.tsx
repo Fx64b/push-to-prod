@@ -5,13 +5,14 @@ export function WelcomePopup() {
   const totalClicks = useGameStore((s) => s.totalClicks);
   const totalLoc = useGameStore((s) => s.totalLoc);
   const productName = useGameStore((s) => s.productName);
+  const prestigeCount = useGameStore((s) => s.prestigeCount);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (totalClicks === 0 && totalLoc === 0) {
+    if (totalClicks === 0 && totalLoc === 0 && prestigeCount === 0) {
       setVisible(true);
     }
-  }, [totalClicks, totalLoc]);
+  }, [totalClicks, totalLoc, prestigeCount]);
 
   if (!visible) return null;
 
