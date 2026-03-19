@@ -108,7 +108,7 @@ export default function App() {
 
   return (
     <TooltipPrimitive.Provider delayDuration={300}>
-      <div className="min-h-screen bg-gh-bg flex flex-col text-gh-text">
+      <div className="h-screen overflow-hidden bg-gh-bg flex flex-col text-gh-text">
         {/* Header */}
         <header className="border-b border-gh-border bg-gh-surface/50 px-4 py-2 flex items-center justify-between shrink-0">
           <div className="font-mono">
@@ -120,7 +120,7 @@ export default function App() {
         </header>
 
         {/* Event banner */}
-        <div className="px-4 pt-2">
+        <div className="px-4 pt-2 shrink-0">
           <EventBanner />
         </div>
 
@@ -184,6 +184,7 @@ export default function App() {
               <main className="h-full flex flex-col items-center justify-center gap-5 p-4 relative overflow-hidden">
                 <FloatingTexts />
                 <AmbientTexts />
+                <SocialFeed topZoneY={22} />
 
                 {/* Product name */}
                 <div className="absolute top-3 right-3 font-mono text-right pointer-events-none select-none">
