@@ -8,8 +8,10 @@ import { EventBanner } from '@/components/game/EventBanner';
 import { FloatingTexts } from '@/components/game/FloatingTexts';
 import { LOCDisplay } from '@/components/game/LOCDisplay';
 import { NewsTicker } from '@/components/game/NewsTicker';
+import { PivotButton } from '@/components/game/PivotButton';
 import { RefactorButton } from '@/components/game/RefactorButton';
 import { Shop } from '@/components/game/Shop';
+import { TechDebtMeter } from '@/components/game/TechDebtMeter';
 import { SocialFeed } from '@/components/game/SocialFeed';
 import { StatsPanel } from '@/components/game/StatsPanel';
 import { useGameLoop } from '@/hooks/useGameLoop';
@@ -157,6 +159,8 @@ export default function App() {
             <LOCDisplay />
             <EnterKey />
             <RefactorButton />
+            <PivotButton />
+            <TechDebtMeter />
 
             {/* News ticker */}
             <div className="absolute bottom-0 left-0 right-0">
@@ -196,6 +200,8 @@ export default function App() {
                 <LOCDisplay />
                 <EnterKey />
                 <RefactorButton />
+                <PivotButton />
+                <TechDebtMeter />
 
                 {/* News ticker */}
                 <div className="absolute bottom-0 left-0 right-0">
