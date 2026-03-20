@@ -7,6 +7,7 @@ import { PRODUCERS } from '@/data/producers';
 import { generateProductName } from '@/data/socialPosts';
 import { UPGRADES } from '@/data/upgrades';
 import { producerCost } from '@/utils/costs';
+import { formatLOC } from '@/utils/format';
 import { calculateClickValue, calculateLOCps } from '@/utils/production';
 
 export interface FloatingText {
@@ -264,7 +265,7 @@ export const useGameStore = create<GameState>()(
             ...floatingTexts,
             {
               id: floatingTextId++,
-              value: `+${Math.floor(clickVal)}`,
+              value: `+${formatLOC(clickVal)}`,
               x: x ?? 50,
               y: y ?? 50,
               createdAt: now,
