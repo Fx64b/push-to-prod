@@ -83,6 +83,12 @@ export function SocialFeed({ topZoneY = 8 }: { topZoneY?: number }) {
   // All chains share this flag; set false on cleanup to stop all pending timers.
   const aliveRef = useRef(false);
 
+  // Track which post IDs have already been removed to guard against double-removal.
+  const removedRef = useRef(new Set<number>());
+
+  // dismiss callbacks registered per-post so the rendered card can trigger early removal.
+  const dismissCallbacks = useRef(new Map<number, () => void>());
+
   const runChain = useCallback((initialDelay: number) => {
     const step = (delay: number) => {
       setTimeout(() => {
@@ -116,19 +122,32 @@ export function SocialFeed({ topZoneY = 8 }: { topZoneY?: number }) {
         };
         const post = generateSocialPost(productNameRef.current, context);
 
+        const removePost = () => {
+          if (removedRef.current.has(id)) return;
+          removedRef.current.add(id);
+          setPosts((prev) => prev.filter((p) => p.id !== id));
+          dismissCallbacks.current.delete(id);
+          spawnCountRef.current--;
+        };
+
+        // Register dismiss callback so click can trigger it early
+        dismissCallbacks.current.set(id, () => {
+          setPosts((prev) => prev.map((p) => (p.id === id ? { ...p, exiting: true } : p)));
+          setTimeout(removePost, 350);
+        });
+
         setPosts((prev) => [...prev, { id, post, x, y, anchor, exiting: false }]);
 
         // Start exit animation
         setTimeout(() => {
-          if (!aliveRef.current) return;
+          if (!aliveRef.current || removedRef.current.has(id)) return;
           setPosts((prev) => prev.map((p) => (p.id === id ? { ...p, exiting: true } : p)));
         }, 9500);
 
         // Remove post, free slot, schedule next
         setTimeout(() => {
           if (!aliveRef.current) return;
-          setPosts((prev) => prev.filter((p) => p.id !== id));
-          spawnCountRef.current--;
+          removePost();
           step(nextDelay);
         }, 10200);
       }, delay);
@@ -150,6 +169,8 @@ export function SocialFeed({ topZoneY = 8 }: { topZoneY?: number }) {
     return () => {
       aliveRef.current = false;
       spawnCountRef.current = 0;
+      removedRef.current.clear();
+      dismissCallbacks.current.clear();
       setPosts([]);
     };
   }, [productName, runChain]);
@@ -159,7 +180,8 @@ export function SocialFeed({ topZoneY = 8 }: { topZoneY?: number }) {
       {posts.map(({ id, post, x, y, anchor, exiting }) => (
         <div
           key={id}
-          className={`absolute pointer-events-none select-none ${exiting ? 'animate-social-out' : 'animate-social-in'}`}
+          onClick={() => dismissCallbacks.current.get(id)?.()}
+          className={`absolute pointer-events-auto select-none cursor-pointer ${exiting ? 'animate-social-out' : 'animate-social-in'}`}
           style={
             anchor === 'right' ? { right: `${x}%`, top: `${y}%` } : { left: `${x}%`, top: `${y}%` }
           }

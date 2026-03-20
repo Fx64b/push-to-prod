@@ -5,9 +5,7 @@ import { useGameStore } from '@/store/gameStore';
 export function NewsTicker() {
   const totalLoc = useGameStore((s) => s.totalLoc);
   const prestigeCount = useGameStore((s) => s.prestigeCount);
-  const producers = useGameStore((s) => s.producers);
-
-  const duckCount = producers['rubber-duck'] ?? 0;
+  const duckCount = useGameStore((s) => s.producers['rubber-duck'] ?? 0);
   const stage = getDuckapocalypseStage(duckCount);
 
   const eligible = useMemo(() => {
@@ -63,18 +61,63 @@ export function NewsTicker() {
         ? 'text-gh-red'
         : 'text-gh-muted';
 
+  const ducksToShow = useMemo(() => {
+    if (duckCount === 0) return [];
+    const count = Math.min(Math.ceil(Math.sqrt(duckCount)), 20);
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      duration: 12 + ((i * 4.3 + 8) % 18),
+      delay: -((i * 5.7 + 3) % 25),
+      hopDuration: 0.3 + (i % 4) * 0.08,
+    }));
+  }, [duckCount]);
+
   if (!displayed) return null;
 
   return (
-    <div
-      className={`w-full overflow-hidden border-t border-gh-border bg-gh-surface/40 py-1.5 px-3 font-mono text-sm ${textColor}`}
-    >
-      <span
-        className="inline-block animate-marquee whitespace-nowrap"
-        onAnimationIteration={handleAnimationIteration}
+    <div className="relative w-full">
+      {ducksToShow.length > 0 && (
+        <div className="absolute bottom-full h-5 w-full overflow-hidden pointer-events-none" aria-hidden="true">
+          {ducksToShow.map((duck) => (
+            <span
+              key={duck.id}
+              style={{
+                position: 'absolute',
+                top: '50%',
+                marginTop: '-8px',
+                pointerEvents: 'none',
+                animationName: 'duckWalkH',
+                animationDuration: `${duck.duration}s`,
+                animationDelay: `${duck.delay}s`,
+                animationTimingFunction: 'linear',
+                animationIterationCount: 'infinite',
+              }}
+            >
+              <span
+                style={{
+                  display: 'inline-block',
+                  animationName: 'duckHop',
+                  animationDuration: `${duck.hopDuration}s`,
+                  animationTimingFunction: 'ease-in-out',
+                  animationIterationCount: 'infinite',
+                }}
+              >
+                🦆
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
+      <div
+        className={`w-full overflow-hidden border-t border-gh-border bg-gh-surface/40 px-3 py-1.5 font-mono text-sm ${textColor}`}
       >
-        📡&nbsp;{displayed.text}
-      </span>
+        <span
+          className="inline-block animate-marquee whitespace-nowrap"
+          onAnimationIteration={handleAnimationIteration}
+        >
+          📡&nbsp;{displayed.text}
+        </span>
+      </div>
     </div>
   );
 }

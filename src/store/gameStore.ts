@@ -87,6 +87,7 @@ interface GameState {
   addOfflineProgress: (loc: number) => void;
   dismissToast: (id: string) => void;
   newGame: () => void;
+  setLoc: (loc: number) => void;
 }
 
 // ── Cache helpers ────────────────────────────────────────────────────────────
@@ -575,6 +576,13 @@ export const useGameStore = create<GameState>()(
             ? state.negativeEventssurvived + 1
             : state.negativeEventssurvived,
         });
+      },
+
+      setLoc: (loc: number) => {
+        set((state) => ({
+          loc,
+          totalLoc: Math.max(state.totalLoc, loc),
+        }));
       },
 
       addOfflineProgress: (loc: number) => {

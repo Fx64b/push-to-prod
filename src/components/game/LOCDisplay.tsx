@@ -1,5 +1,6 @@
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useGameStore } from '@/store/gameStore';
-import { formatLOC, formatRate, getCommitInfo } from '@/utils/format';
+import { formatLOC, formatRate, getCommitInfo, splitLOC } from '@/utils/format';
 
 export function LOCDisplay() {
   const loc = useGameStore((s) => s.loc);
@@ -9,6 +10,8 @@ export function LOCDisplay() {
 
   const { commits, threshold, progress: progressToNextCommit } = getCommitInfo(totalLoc);
 
+  const split = splitLOC(loc);
+
   return (
     <div className="flex flex-col items-center gap-3 py-4">
       {/* Main LOC counter */}
@@ -17,7 +20,28 @@ export function LOCDisplay() {
           className="text-5xl font-mono font-bold tabular-nums text-gh-green"
           style={{ textShadow: '0 0 20px rgba(57, 211, 83, 0.4)' }}
         >
-          {formatLOC(loc)}
+          {split ? (
+            <>
+              {split.num}
+              <TooltipPrimitive.Root>
+                <TooltipPrimitive.Trigger asChild>
+                  <span className="cursor-default underline decoration-dotted decoration-gh-green/40">
+                    {split.label}
+                  </span>
+                </TooltipPrimitive.Trigger>
+                <TooltipPrimitive.Portal>
+                  <TooltipPrimitive.Content
+                    side="top"
+                    className="animate-tooltip-in bg-gh-surface border border-gh-border text-gh-muted font-mono text-xs px-2 py-1 rounded shadow-lg z-50"
+                  >
+                    {split.full}
+                  </TooltipPrimitive.Content>
+                </TooltipPrimitive.Portal>
+              </TooltipPrimitive.Root>
+            </>
+          ) : (
+            formatLOC(loc)
+          )}
         </div>
         <div className="text-gh-muted text-sm font-mono mt-1">lines of code</div>
       </div>

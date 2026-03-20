@@ -1,9 +1,22 @@
 const SUFFIXES = [
-  { value: 1e15, label: 'Qa' },
-  { value: 1e12, label: 'T' },
-  { value: 1e9, label: 'B' },
-  { value: 1e6, label: 'M' },
-  { value: 1e3, label: 'K' },
+  { value: 1e54, label: 'Spd', full: 'septendecillion' },
+  { value: 1e51, label: 'Sxd', full: 'sexdecillion' },
+  { value: 1e48, label: 'Qid', full: 'quindecillion' },
+  { value: 1e45, label: 'Qad', full: 'quattuordecillion' },
+  { value: 1e42, label: 'Td',  full: 'tredecillion' },
+  { value: 1e39, label: 'Dd',  full: 'duodecillion' },
+  { value: 1e36, label: 'Ud',  full: 'undecillion' },
+  { value: 1e33, label: 'Dc',  full: 'decillion' },
+  { value: 1e30, label: 'No',  full: 'nonillion' },
+  { value: 1e27, label: 'Oc',  full: 'octillion' },
+  { value: 1e24, label: 'Sp',  full: 'septillion' },
+  { value: 1e21, label: 'Sx',  full: 'sextillion' },
+  { value: 1e18, label: 'Qi',  full: 'quintillion' },
+  { value: 1e15, label: 'Qa',  full: 'quadrillion' },
+  { value: 1e12, label: 'T',   full: 'trillion' },
+  { value: 1e9,  label: 'B',   full: 'billion' },
+  { value: 1e6,  label: 'M',   full: 'million' },
+  { value: 1e3,  label: 'K',   full: 'thousand' },
 ];
 
 export function formatLOC(n: number): string {
@@ -13,13 +26,27 @@ export function formatLOC(n: number): string {
   for (const { value, label } of SUFFIXES) {
     if (n >= value) {
       const divided = n / value;
-      // Always 3 decimal places to keep width stable (e.g. 1.350K not 1.35K)
       const decimals = divided >= 100 ? 1 : divided >= 10 ? 2 : 3;
       return divided.toFixed(decimals) + label;
     }
   }
 
   return Math.floor(n).toLocaleString('en-US');
+}
+
+/** Returns the number string and suffix label+fullname separately for tooltip rendering. */
+export function splitLOC(n: number): { num: string; label: string; full: string } | null {
+  if (!Number.isFinite(n) || Number.isNaN(n) || n < 0) return null;
+
+  for (const { value, label, full } of SUFFIXES) {
+    if (n >= value) {
+      const divided = n / value;
+      const decimals = divided >= 100 ? 1 : divided >= 10 ? 2 : 3;
+      return { num: divided.toFixed(decimals), label, full };
+    }
+  }
+
+  return null;
 }
 
 // Each era spans 10x more commits; LOC-per-commit scales up 10x per era.

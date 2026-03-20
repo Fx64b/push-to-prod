@@ -18,6 +18,7 @@ import { useGameLoop } from '@/hooks/useGameLoop';
 import { useOfflineProgress } from '@/hooks/useOfflineProgress';
 import { useGameStore } from '@/store/gameStore';
 import { WelcomePopup } from '@/components/game/WelcomePopup';
+import { DevPanel } from '@/components/game/DevPanel';
 import { Analytics } from "@vercel/analytics/react"
 
 function SettingsPopover() {
@@ -119,7 +120,10 @@ export default function App() {
             <span className="text-gh-muted"> to </span>
             <span className="text-gh-blue font-bold">prod</span>
           </div>
-          <SettingsPopover />
+          <div className="flex items-center gap-2 relative">
+            <DevPanel />
+            <SettingsPopover />
+          </div>
         </header>
 
         {/* Event banner */}

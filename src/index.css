@@ -46,3 +46,14 @@ body {
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Duck parade animations */
+@keyframes duckWalkH {
+  from { transform: translateX(110vw); }
+  to   { transform: translateX(-60px); }
+}
+
+@keyframes duckHop {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}

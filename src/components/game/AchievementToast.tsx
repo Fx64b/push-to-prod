@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { type ToastNotification, useGameStore } from '@/store/gameStore';
 
 function Toast({
@@ -10,19 +10,22 @@ function Toast({
 }) {
   const [visible, setVisible] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(false);
-      setTimeout(() => onDismiss(toast.id), 300);
-    }, 40000);
-    return () => clearTimeout(timer);
+  const dismiss = useCallback(() => {
+    setVisible(false);
+    setTimeout(() => onDismiss(toast.id), 300);
   }, [toast.id, onDismiss]);
+
+  useEffect(() => {
+    const timer = setTimeout(dismiss, 40000);
+    return () => clearTimeout(timer);
+  }, [dismiss]);
 
   return (
     <div
+      onClick={dismiss}
       className={`
         flex items-start gap-3 p-3 rounded-md border border-gh-border bg-gh-surface
-        shadow-lg font-mono text-sm
+        shadow-lg font-mono text-sm cursor-pointer
         transition-all duration-300
         ${visible ? 'animate-[toastIn_0.3s_ease-out] opacity-100' : 'opacity-0 translate-x-full'}
         max-w-xs w-full

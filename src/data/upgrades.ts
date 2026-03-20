@@ -68,6 +68,24 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 50,
     unlockCondition: ({ totalLoc }) => totalLoc >= 20000000,
   },
+  {
+    id: 'neural-interface',
+    name: 'Neural Interface',
+    description: 'Click produces 200× LOC. Keyboard optional.',
+    cost: 5e15,
+    target: 'click',
+    multiplier: 200,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e15,
+  },
+  {
+    id: 'thought-compiler',
+    name: 'Thought Compiler',
+    description: 'Click produces 500× LOC. You think it, it ships.',
+    cost: 5e18,
+    target: 'click',
+    multiplier: 500,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e18,
+  },
 
   // ── Rubber Duck ─────────────────────────────────────────────────────────────
   {
@@ -413,6 +431,15 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 5,
     unlockCondition: ({ producers }) => (producers['the-singularity'] ?? 0) >= 1,
   },
+  {
+    id: 'technological-apotheosis',
+    name: 'Technological Apotheosis',
+    description: 'The Singularity produces 8× LOC/s. It has stopped returning your calls.',
+    cost: 100000000000000,
+    target: 'the-singularity',
+    multiplier: 8,
+    unlockCondition: ({ producers }) => (producers['the-singularity'] ?? 0) >= 5,
+  },
 
   // ── LinkedIn Influencer Dev ───────────────────────────────────────────────────
   {
@@ -513,6 +540,15 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 4,
     unlockCondition: ({ producers }) => (producers['blockchain'] ?? 0) >= 5,
   },
+  {
+    id: 'proof-of-deployment',
+    name: 'Proof of Deployment',
+    description: 'Blockchains produce 6× LOC/s. It shipped. Nobody knows how.',
+    cost: 1000000000000000,
+    target: 'blockchain',
+    multiplier: 6,
+    unlockCondition: ({ producers }) => (producers['blockchain'] ?? 0) >= 10,
+  },
 
   // ── The Consultant ────────────────────────────────────────────────────────────
   {
@@ -533,6 +569,15 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 5,
     unlockCondition: ({ producers }) => (producers['the-consultant'] ?? 0) >= 3,
   },
+  {
+    id: 'digital-transformation-initiative',
+    name: 'Digital Transformation Initiative',
+    description: 'Consultants produce 4× LOC/s. Slide deck: 200 pages. Timeline: slipped.',
+    cost: 5e17,
+    target: 'the-consultant',
+    multiplier: 4,
+    unlockCondition: ({ producers }) => (producers['the-consultant'] ?? 0) >= 8,
+  },
 
   // ── Digital Twin ──────────────────────────────────────────────────────────────
   {
@@ -552,6 +597,73 @@ export const UPGRADES: Upgrade[] = [
     target: 'digital-twin',
     multiplier: 6,
     unlockCondition: ({ producers }) => (producers['digital-twin'] ?? 0) >= 5,
+  },
+  {
+    id: 'hivemind-convergence',
+    name: 'Hivemind Convergence',
+    description: 'Digital Twins produce 5× LOC/s. They have scheduled a standup without you.',
+    cost: 5e17,
+    target: 'digital-twin',
+    multiplier: 5,
+    unlockCondition: ({ producers }) => (producers['digital-twin'] ?? 0) >= 10,
+  },
+
+  // ── Tech Oracle ───────────────────────────────────────────────────────────────
+  {
+    id: 'crystal-ball-cache',
+    name: 'Crystal Ball Cache',
+    description: 'Tech Oracles produce 3× LOC/s. Predictions cached for 24h.',
+    cost: 1e16,
+    target: 'tech-oracle',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['tech-oracle'] ?? 0) >= 1,
+  },
+  {
+    id: 'prophecy-pipeline',
+    name: 'Prophecy Pipeline',
+    description: 'Tech Oracles produce 5× LOC/s. CI/CD for destiny.',
+    cost: 1e17,
+    target: 'tech-oracle',
+    multiplier: 5,
+    unlockCondition: ({ producers }) => (producers['tech-oracle'] ?? 0) >= 5,
+  },
+  {
+    id: 'omniscient-linter',
+    name: 'Omniscient Linter',
+    description: 'Tech Oracles produce 8× LOC/s. It sees every future bug.',
+    cost: 1e18,
+    target: 'tech-oracle',
+    multiplier: 8,
+    unlockCondition: ({ producers }) => (producers['tech-oracle'] ?? 0) >= 10,
+  },
+
+  // ── Infinite Monkey Farm ──────────────────────────────────────────────────────
+  {
+    id: 'infinite-keyboard-budget',
+    name: 'Infinite Keyboard Budget',
+    description: 'Monkey Farms produce 5× LOC/s. Mechanical switches, obviously.',
+    cost: 5e17,
+    target: 'infinite-monkey-farm',
+    multiplier: 5,
+    unlockCondition: ({ producers }) => (producers['infinite-monkey-farm'] ?? 0) >= 1,
+  },
+  {
+    id: 'monkey-hive-mind',
+    name: 'Monkey Hive Mind',
+    description: 'Monkey Farms produce 8× LOC/s. They have achieved consensus.',
+    cost: 5e18,
+    target: 'infinite-monkey-farm',
+    multiplier: 8,
+    unlockCondition: ({ producers }) => (producers['infinite-monkey-farm'] ?? 0) >= 5,
+  },
+  {
+    id: 'shakespeare-driven-development',
+    name: 'Shakespeare-Driven Development',
+    description: 'Monkey Farms produce 10× LOC/s. To ship, or not to ship.',
+    cost: 5e19,
+    target: 'infinite-monkey-farm',
+    multiplier: 10,
+    unlockCondition: ({ producers }) => (producers['infinite-monkey-farm'] ?? 0) >= 10,
   },
 
   // ── Global multiplier upgrades ────────────────────────────────────────────────
@@ -689,5 +801,50 @@ export const UPGRADES: Upgrade[] = [
     target: 'all',
     multiplier: 3,
     unlockCondition: ({ totalLoc }) => totalLoc >= 500000000000000000,
+  },
+  {
+    id: 'legacy-code-purge',
+    name: 'Legacy Code Purge',
+    description: 'All producers 5× LOC/s. All technical debt: deleted. All unit tests: also deleted. Net positive.',
+    cost: 5e18,
+    target: 'all',
+    multiplier: 5,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e18,
+  },
+  {
+    id: 'post-agile-era',
+    name: 'The Post-Agile Era',
+    description: 'All producers 3× LOC/s. Scrum is dead. Long live whatever this is.',
+    cost: 5e21,
+    target: 'all',
+    multiplier: 3,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e21,
+  },
+  {
+    id: 'heat-death-sprint',
+    name: 'Heat Death Sprint',
+    description: 'All producers 5× LOC/s. Final deadline: entropy. Sprint velocity: infinite.',
+    cost: 5e24,
+    target: 'all',
+    multiplier: 5,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e24,
+  },
+  {
+    id: 'universal-runtime',
+    name: 'Universal Runtime Environment',
+    description: 'All producers 3× LOC/s. Runs on dark matter. No cold starts.',
+    cost: 5e27,
+    target: 'all',
+    multiplier: 3,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e27,
+  },
+  {
+    id: 'codebase-omniscience',
+    name: 'Codebase Omniscience',
+    description: 'All producers 10× LOC/s. You have read every line. You understand none of them.',
+    cost: 5e30,
+    target: 'all',
+    multiplier: 10,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e30,
   },
 ];

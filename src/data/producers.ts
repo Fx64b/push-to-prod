@@ -196,4 +196,22 @@ export const PRODUCERS: Producer[] = [
     icon: '👤',
     unlockLoc: 100000000000,
   },
+  {
+    id: 'tech-oracle',
+    name: 'Tech Oracle',
+    flavor: 'Sees all possible future architectures. Recommends GraphQL every time.',
+    baseLOCps: 2500000000,
+    baseCost: 500000000000000,
+    icon: '🔮',
+    unlockLoc: 1000000000000,
+  },
+  {
+    id: 'infinite-monkey-farm',
+    name: 'Infinite Monkey Farm',
+    flavor: 'Given infinite budget and infinite time, they will eventually ship something clean.',
+    baseLOCps: 20000000000,
+    baseCost: 5000000000000000,
+    icon: '🐒',
+    unlockLoc: 1000000000000000,
+  },
 ];
