@@ -19,7 +19,7 @@ import { useOfflineProgress } from '@/hooks/useOfflineProgress';
 import { useGameStore } from '@/store/gameStore';
 import { WelcomePopup } from '@/components/game/WelcomePopup';
 import { DevPanel } from '@/components/game/DevPanel';
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react';
 
 function SettingsPopover() {
   const [open, setOpen] = useState(false);
@@ -198,7 +198,9 @@ export default function App() {
                 {/* Product name */}
                 <div className="absolute top-3 right-3 font-mono text-right pointer-events-none select-none">
                   <div className="text-[9px] text-gh-muted uppercase tracking-widest">building</div>
-                  <div className="text-gh-purple font-bold text-sm leading-tight">{productName}</div>
+                  <div className="text-gh-purple font-bold text-sm leading-tight">
+                    {productName}
+                  </div>
                   <div className="text-[9px] text-gh-muted opacity-60">#buildinpublic</div>
                 </div>
 

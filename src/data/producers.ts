@@ -172,7 +172,7 @@ export const PRODUCERS: Producer[] = [
   {
     id: 'blockchain',
     name: 'Blockchain',
-    flavor: "Nobody asked for it. You built it anyway. The whitepaper writes itself.",
+    flavor: 'Nobody asked for it. You built it anyway. The whitepaper writes itself.',
     baseLOCps: 30000000,
     baseCost: 500000000000,
     icon: '⛓️',
@@ -190,7 +190,8 @@ export const PRODUCERS: Producer[] = [
   {
     id: 'digital-twin',
     name: 'Digital Twin of Yourself',
-    flavor: 'Has your commit history, your bad habits, and your imposter syndrome. More productive.',
+    flavor:
+      'Has your commit history, your bad habits, and your imposter syndrome. More productive.',
     baseLOCps: 500000000,
     baseCost: 50000000000000,
     icon: '👤',

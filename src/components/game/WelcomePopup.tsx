@@ -53,14 +53,15 @@ export function WelcomePopup() {
 
             {/* Lore hint */}
             <div className="space-y-3 text-sm text-gh-text/90">
-              <p>
-                Every great codebase started with a single line of code.
-              </p>
+              <p>Every great codebase started with a single line of code.</p>
               <p className="text-gh-muted text-xs leading-relaxed">
                 You're the founding engineer at{' '}
-                <span className="text-gh-purple font-bold">{productName}</span>
-                {' '}— a scrappy startup with big dreams and zero tests.
-                Press <kbd className="px-1.5 py-0.5 bg-gh-bg border border-gh-border rounded text-gh-green text-xs">ENTER</kbd> to write your first lines of code.
+                <span className="text-gh-purple font-bold">{productName}</span> — a scrappy startup
+                with big dreams and zero tests. Press{' '}
+                <kbd className="px-1.5 py-0.5 bg-gh-bg border border-gh-border rounded text-gh-green text-xs">
+                  ENTER
+                </kbd>{' '}
+                to write your first lines of code.
               </p>
               <p className="text-gh-yellow/80 text-xs leading-relaxed">
                 ⚠️ Rumour has it the rubber ducks in the office have been{' '}
@@ -76,9 +77,7 @@ export function WelcomePopup() {
               $ git init &amp;&amp; ship it
             </button>
 
-            <p className="text-center text-[10px] text-gh-muted/60">
-              click anywhere to dismiss
-            </p>
+            <p className="text-center text-[10px] text-gh-muted/60">click anywhere to dismiss</p>
           </div>
         </div>
       </div>

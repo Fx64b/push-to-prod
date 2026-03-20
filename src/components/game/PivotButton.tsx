@@ -73,7 +73,10 @@ export function PivotButton() {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
 
           <div className="relative z-10 w-full max-w-lg bg-gh-bg border border-gh-border rounded-lg shadow-2xl font-mono overflow-hidden">
             {/* Header */}
@@ -89,7 +92,10 @@ export function PivotButton() {
               {STACKS.map((stack) => (
                 <button
                   key={stack.id}
-                  onClick={() => { setSelected(stack.id); setConfirming(false); }}
+                  onClick={() => {
+                    setSelected(stack.id);
+                    setConfirming(false);
+                  }}
                   className={`w-full text-left p-3 rounded border transition-all ${
                     selected === stack.id
                       ? 'border-gh-yellow bg-gh-yellow/10'
@@ -99,7 +105,9 @@ export function PivotButton() {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xl">{stack.emoji}</span>
                     <span className="font-bold text-gh-text text-sm">{stack.name}</span>
-                    <span className="ml-auto text-[11px] text-gh-blue font-bold">{stack.bonus}</span>
+                    <span className="ml-auto text-[11px] text-gh-blue font-bold">
+                      {stack.bonus}
+                    </span>
                   </div>
                   <p className="text-gh-muted text-[11px] italic pl-7">"{stack.tagline}"</p>
                 </button>
@@ -113,7 +121,11 @@ export function PivotButton() {
               </p>
               <div className="flex gap-2 shrink-0">
                 <button
-                  onClick={() => { setOpen(false); setSelected(null); setConfirming(false); }}
+                  onClick={() => {
+                    setOpen(false);
+                    setSelected(null);
+                    setConfirming(false);
+                  }}
                   className="px-3 py-1.5 rounded border border-gh-border text-gh-muted text-xs hover:border-gh-text/40 transition-colors"
                 >
                   Cancel
@@ -125,8 +137,8 @@ export function PivotButton() {
                     !selected
                       ? 'border-gh-border/40 text-gh-muted cursor-not-allowed'
                       : confirming
-                      ? 'border-gh-red bg-gh-red/20 text-gh-red animate-pulse'
-                      : 'border-gh-yellow/60 bg-gh-yellow/10 text-gh-yellow hover:bg-gh-yellow/20'
+                        ? 'border-gh-red bg-gh-red/20 text-gh-red animate-pulse'
+                        : 'border-gh-yellow/60 bg-gh-yellow/10 text-gh-yellow hover:bg-gh-yellow/20'
                   }`}
                 >
                   {confirming ? '⚠️ Confirm Pivot?' : 'Pivot →'}

@@ -123,11 +123,16 @@ function computeCaches(s: CacheInput) {
 
 export function getStackMult(techStack: TechStack | null): { production: number; click: number } {
   switch (techStack) {
-    case 'typescript': return { production: 1.3, click: 1.0 };
-    case 'rust': return { production: 2.0, click: 1.0 };
-    case 'php': return { production: 1.2, click: 3.0 };
-    case 'blockchain': return { production: 1.5, click: 1.0 };
-    default: return { production: 1.0, click: 1.0 };
+    case 'typescript':
+      return { production: 1.3, click: 1.0 };
+    case 'rust':
+      return { production: 2.0, click: 1.0 };
+    case 'php':
+      return { production: 1.2, click: 3.0 };
+    case 'blockchain':
+      return { production: 1.5, click: 1.0 };
+    default:
+      return { production: 1.0, click: 1.0 };
   }
 }
 
@@ -143,7 +148,7 @@ function calcDebtRate(producers: Record<string, number>): number {
     (producers['stackoverflow-tab'] ?? 0) * 0.003 +
     (producers['linkedin-influencer'] ?? 0) * 0.007 +
     (producers['offshore-team'] ?? 0) * 0.005 +
-    (producers['github-copilot'] ?? 0) * 0.010;
+    (producers['github-copilot'] ?? 0) * 0.01;
   const reduced =
     (producers['senior-dev'] ?? 0) * 0.004 +
     (producers['tech-lead'] ?? 0) * 0.002 +
@@ -153,10 +158,10 @@ function calcDebtRate(producers: Record<string, number>): number {
 
 export function getDebtPenalty(debt: number): number {
   if (debt >= 100) return 0.15; // critical — near-total production loss
-  if (debt >= 75) return 0.4;  // severe
-  if (debt >= 50) return 0.7;  // significant
-  if (debt >= 25) return 0.9;  // mild
-  return 1.0;                  // no penalty
+  if (debt >= 75) return 0.4; // severe
+  if (debt >= 50) return 0.7; // significant
+  if (debt >= 25) return 0.9; // mild
+  return 1.0; // no penalty
 }
 
 // ── Weighted event selection ──────────────────────────────────────────────────
@@ -165,7 +170,7 @@ function pickWeightedEvent(events: GameEvent[]): GameEvent {
   const totalWeight = events.reduce((sum, e) => sum + (e.weight ?? 1), 0);
   let r = Math.random() * totalWeight;
   for (const event of events) {
-    r -= (event.weight ?? 1);
+    r -= event.weight ?? 1;
     if (r <= 0) return event;
   }
   return events[events.length - 1];
@@ -304,7 +309,13 @@ export const useGameStore = create<GameState>()(
         const { production: stackProductionMult } = getStackMult(state.techStack);
         const debtActive = allLegacyBought(state.legacyUpgrades);
         const debtPenalty = debtActive ? getDebtPenalty(state.technicalDebt) : 1.0;
-        const locGained = state.cachedLOCps * locpsMult * state.cachedLegacyMult * stackProductionMult * debtPenalty * dt;
+        const locGained =
+          state.cachedLOCps *
+          locpsMult *
+          state.cachedLegacyMult *
+          stackProductionMult *
+          debtPenalty *
+          dt;
         let newLoc = state.loc + locGained;
         let newTotalLoc = state.totalLoc + locGained;
 
@@ -327,9 +338,7 @@ export const useGameStore = create<GameState>()(
           timeSinceLastEvent >= MIN_EVENT_INTERVAL &&
           Math.random() < EVENT_CHANCE_PER_TICK
         ) {
-          const eligibleEvents = EVENTS.filter(
-            (e) => !e.minLoc || newTotalLoc >= e.minLoc
-          );
+          const eligibleEvents = EVENTS.filter((e) => !e.minLoc || newTotalLoc >= e.minLoc);
           newActiveEvent = pickWeightedEvent(eligibleEvents);
           newEventEndTime = now + newActiveEvent.duration * 1000;
           lastEventTime = now;
@@ -423,9 +432,17 @@ export const useGameStore = create<GameState>()(
         if (state.loc < upgrade.cost) return;
 
         const newUpgrades = [...state.upgrades, id];
-        const { cachedLOCps, cachedClickValue } = computeCaches({ ...state, upgrades: newUpgrades });
+        const { cachedLOCps, cachedClickValue } = computeCaches({
+          ...state,
+          upgrades: newUpgrades,
+        });
 
-        set({ loc: state.loc - upgrade.cost, upgrades: newUpgrades, cachedLOCps, cachedClickValue });
+        set({
+          loc: state.loc - upgrade.cost,
+          upgrades: newUpgrades,
+          cachedLOCps,
+          cachedClickValue,
+        });
       },
 
       buyLegacyUpgrade: (id: string) => {
@@ -509,7 +526,10 @@ export const useGameStore = create<GameState>()(
         const state = get();
         if (state.prestigeCount < 5) return;
 
-        const tokensEarned = Math.max(0, Math.floor(Math.log10(Math.max(state.totalLoc, 1000000))) - 5);
+        const tokensEarned = Math.max(
+          0,
+          Math.floor(Math.log10(Math.max(state.totalLoc, 1000000))) - 5,
+        );
 
         const startProducers: Record<string, number> = {};
         const keptUpgrades: string[] = [];

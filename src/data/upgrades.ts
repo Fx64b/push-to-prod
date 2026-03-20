@@ -805,7 +805,8 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'legacy-code-purge',
     name: 'Legacy Code Purge',
-    description: 'All producers 5× LOC/s. All technical debt: deleted. All unit tests: also deleted. Net positive.',
+    description:
+      'All producers 5× LOC/s. All technical debt: deleted. All unit tests: also deleted. Net positive.',
     cost: 5e18,
     target: 'all',
     multiplier: 5,

@@ -56,10 +56,13 @@ export function StatsPanel() {
             <StatRow
               label="Tech Stack"
               value={
-                techStack === 'typescript' ? '🔷 TypeScript' :
-                techStack === 'rust' ? '🦀 Rust' :
-                techStack === 'php' ? '🐘 PHP' :
-                '⛓️ Blockchain'
+                techStack === 'typescript'
+                  ? '🔷 TypeScript'
+                  : techStack === 'rust'
+                    ? '🦀 Rust'
+                    : techStack === 'php'
+                      ? '🐘 PHP'
+                      : '⛓️ Blockchain'
               }
               color="text-gh-blue"
             />

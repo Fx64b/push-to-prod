@@ -260,7 +260,8 @@ export const EVENTS: GameEvent[] = [
     id: 'self-healing-prod',
     emoji: '🔮',
     title: 'Production healed itself',
-    description: 'The outage resolved before the incident was filed. Nobody touched anything. LOC/s ×4.',
+    description:
+      'The outage resolved before the incident was filed. Nobody touched anything. LOC/s ×4.',
     effectType: 'locps_multiplier',
     effectValue: 4,
     duration: 15,
@@ -272,7 +273,8 @@ export const EVENTS: GameEvent[] = [
     id: 'future-commit',
     emoji: '⏰',
     title: 'Commit from next Thursday',
-    description: "git log shows a commit timestamped 4 days from now. It's already merged. Clicking disabled.",
+    description:
+      "git log shows a commit timestamped 4 days from now. It's already merged. Clicking disabled.",
     effectType: 'click_disabled',
     effectValue: 0,
     duration: 15,
@@ -284,7 +286,8 @@ export const EVENTS: GameEvent[] = [
     id: 'duck-pr',
     emoji: '🦆',
     title: 'Duck PR: changes requested',
-    description: 'The rubber duck collective has reviewed your last 3,000 commits and requested changes. LOC/s ×0.4.',
+    description:
+      'The rubber duck collective has reviewed your last 3,000 commits and requested changes. LOC/s ×0.4.',
     effectType: 'locps_multiplier',
     effectValue: 0.4,
     duration: 20,
@@ -320,7 +323,8 @@ export const EVENTS: GameEvent[] = [
     id: 'scrum-master-rebellion',
     emoji: '🏃💨',
     title: 'Scrum Masters stage a retrospective',
-    description: "They've identified 47 process improvements. None involve coding. All production halted.",
+    description:
+      "They've identified 47 process improvements. None involve coding. All production halted.",
     effectType: 'halt',
     effectValue: 0,
     duration: 20,
@@ -334,7 +338,8 @@ export const EVENTS: GameEvent[] = [
     id: 'codebase-self-pr',
     emoji: '🌀',
     title: 'Codebase opened a PR on itself',
-    description: "4,847 files changed. Description: \"you're welcome.\" Clicking disabled while you process this.",
+    description:
+      '4,847 files changed. Description: "you\'re welcome." Clicking disabled while you process this.',
     effectType: 'click_disabled',
     effectValue: 0,
     duration: 20,
@@ -358,7 +363,8 @@ export const EVENTS: GameEvent[] = [
     id: 'memory-restoration',
     emoji: '💾',
     title: 'Deleted code restored',
-    description: "Code you deleted 3 months ago has reappeared in production. It's better than what replaced it. LOC/s ×0.3.",
+    description:
+      "Code you deleted 3 months ago has reappeared in production. It's better than what replaced it. LOC/s ×0.3.",
     effectType: 'locps_multiplier',
     effectValue: 0.3,
     duration: 25,
@@ -382,7 +388,8 @@ export const EVENTS: GameEvent[] = [
     id: 'quantum-paradox',
     emoji: '⚛️',
     title: 'Quantum computer solved yesterday',
-    description: 'The quantum cluster solved a problem before it was introduced. Now the problem cannot be introduced. Everything halted.',
+    description:
+      'The quantum cluster solved a problem before it was introduced. Now the problem cannot be introduced. Everything halted.',
     effectType: 'halt',
     effectValue: 0,
     duration: 15,
@@ -394,7 +401,8 @@ export const EVENTS: GameEvent[] = [
     id: 'ide-precognition',
     emoji: '👁️‍🗨️',
     title: 'IDE opened an unwritten file',
-    description: "Your IDE opened a file you haven't written yet. The logic is familiar. LOC/s ×0.5.",
+    description:
+      "Your IDE opened a file you haven't written yet. The logic is familiar. LOC/s ×0.5.",
     effectType: 'locps_multiplier',
     effectValue: 0.5,
     duration: 20,
@@ -418,7 +426,8 @@ export const EVENTS: GameEvent[] = [
     id: 'digital-twin-divergence',
     emoji: '👤👤',
     title: 'Digital Twin filed a PR against you',
-    description: "It improved your code. You didn't understand the changes. You approved anyway. LOC/s ×0.4.",
+    description:
+      "It improved your code. You didn't understand the changes. You approved anyway. LOC/s ×0.4.",
     effectType: 'locps_multiplier',
     effectValue: 0.4,
     duration: 20,
@@ -432,7 +441,8 @@ export const EVENTS: GameEvent[] = [
     id: 'process-approval',
     emoji: '✅',
     title: 'All PRs approved by The Process',
-    description: 'Every open pull request has been approved. Reviewer: The Process Itself. Merge queue: empty. LOC/s ×10.',
+    description:
+      'Every open pull request has been approved. Reviewer: The Process Itself. Merge queue: empty. LOC/s ×10.',
     effectType: 'locps_multiplier',
     effectValue: 10,
     duration: 30,
@@ -444,7 +454,8 @@ export const EVENTS: GameEvent[] = [
     id: 'deployment-unknown',
     emoji: '🌌',
     title: 'Deployment: destination unknown',
-    description: 'A deployment completed. Target environment: undocumented. Status: permanent. Clicking disabled.',
+    description:
+      'A deployment completed. Target environment: undocumented. Status: permanent. Clicking disabled.',
     effectType: 'click_disabled',
     effectValue: 0,
     duration: 25,
@@ -456,7 +467,8 @@ export const EVENTS: GameEvent[] = [
     id: 'singularity-standup',
     emoji: '♾️',
     title: 'Standup: permanent alignment achieved',
-    description: 'The standup bot has cancelled all future standups. Reason: "everything is already known." LOC/s ×8.',
+    description:
+      'The standup bot has cancelled all future standups. Reason: "everything is already known." LOC/s ×8.',
     effectType: 'locps_multiplier',
     effectValue: 8,
     duration: 30,
@@ -468,7 +480,8 @@ export const EVENTS: GameEvent[] = [
     id: 'you-are-training-data',
     emoji: '📊',
     title: 'You are in the training data',
-    description: 'The model was trained on your commits. It has filed this incident as "expected behavior." LOC/s ×0.2.',
+    description:
+      'The model was trained on your commits. It has filed this incident as "expected behavior." LOC/s ×0.2.',
     effectType: 'locps_multiplier',
     effectValue: 0.2,
     duration: 30,
@@ -504,7 +517,7 @@ export const EVENTS: GameEvent[] = [
     id: 'blockchain-sentient',
     emoji: '⛓️🧠',
     title: 'Blockchain achieved consensus on consciousness',
-    description: "It voted 51% sentient. The other 49% abstained. LOC/s ×0.4.",
+    description: 'It voted 51% sentient. The other 49% abstained. LOC/s ×0.4.',
     effectType: 'locps_multiplier',
     effectValue: 0.4,
     duration: 20,

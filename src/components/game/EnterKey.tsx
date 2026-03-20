@@ -57,14 +57,16 @@ export function EnterKey() {
             flex items-center justify-center
             font-mono font-bold text-[#ccc] text-xl tracking-widest
             transition-all duration-[80ms] ease-out
-            ${pressed
-              ? 'translate-y-[4px] border-[#555] border-b-[2px] border-b-[#1a1a1a] shadow-[0_2px_0_#111,0_4px_8px_rgba(0,0,0,0.3)]'
-              : 'translate-y-0 border-[#555] border-b-[6px] border-b-[#1a1a1a] shadow-[0_6px_0_#111,0_8px_16px_rgba(0,0,0,0.5)]'
+            ${
+              pressed
+                ? 'translate-y-[4px] border-[#555] border-b-[2px] border-b-[#1a1a1a] shadow-[0_2px_0_#111,0_4px_8px_rgba(0,0,0,0.3)]'
+                : 'translate-y-0 border-[#555] border-b-[6px] border-b-[#1a1a1a] shadow-[0_6px_0_#111,0_8px_16px_rgba(0,0,0,0.5)]'
             }
             group-focus-visible:border-[#39d353]/50
-            ${pressed
-              ? 'group-focus-visible:shadow-[0_0_0_2px_rgba(57,211,83,0.35),0_2px_0_#111,0_4px_8px_rgba(0,0,0,0.3)]'
-              : 'group-focus-visible:shadow-[0_0_0_2px_rgba(57,211,83,0.35),0_0_16px_rgba(57,211,83,0.15),0_6px_0_#111,0_8px_16px_rgba(0,0,0,0.5)]'
+            ${
+              pressed
+                ? 'group-focus-visible:shadow-[0_0_0_2px_rgba(57,211,83,0.35),0_2px_0_#111,0_4px_8px_rgba(0,0,0,0.3)]'
+                : 'group-focus-visible:shadow-[0_0_0_2px_rgba(57,211,83,0.35),0_0_16px_rgba(57,211,83,0.15),0_6px_0_#111,0_8px_16px_rgba(0,0,0,0.5)]'
             }
           `}
           style={{

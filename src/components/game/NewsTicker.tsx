@@ -54,12 +54,7 @@ export function NewsTicker() {
     }
   }, []);
 
-  const textColor =
-    stage === 3
-      ? 'text-yellow-400'
-      : stage === 2
-        ? 'text-gh-red'
-        : 'text-gh-muted';
+  const textColor = stage === 3 ? 'text-yellow-400' : stage === 2 ? 'text-gh-red' : 'text-gh-muted';
 
   const ducksToShow = useMemo(() => {
     if (duckCount === 0) return [];
@@ -77,7 +72,10 @@ export function NewsTicker() {
   return (
     <div className="relative w-full">
       {ducksToShow.length > 0 && (
-        <div className="absolute bottom-full h-5 w-full overflow-hidden pointer-events-none" aria-hidden="true">
+        <div
+          className="absolute bottom-full h-5 w-full overflow-hidden pointer-events-none"
+          aria-hidden="true"
+        >
           {ducksToShow.map((duck) => (
             <span
               key={duck.id}

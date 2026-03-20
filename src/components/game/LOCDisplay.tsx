@@ -62,7 +62,9 @@ export function LOCDisplay() {
       <div className="w-full max-w-xs">
         <div className="flex justify-between text-xs font-mono text-gh-muted mb-1">
           <span>commit #{commits.toLocaleString()}</span>
-          <span>{formatLOC(progressToNextCommit * threshold)} / {formatLOC(threshold)} LOC</span>
+          <span>
+            {formatLOC(progressToNextCommit * threshold)} / {formatLOC(threshold)} LOC
+          </span>
         </div>
         <div className="h-1.5 bg-gh-surface rounded-full overflow-hidden border border-gh-border">
           <div

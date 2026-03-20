@@ -20,8 +20,8 @@ interface ActivePost {
 function getPosition(topZoneY: number): { x: number; y: number; anchor: 'left' | 'right' } {
   const zones = [
     { anchor: 'left' as const, x: 4, y: topZoneY }, // top-left
-    { anchor: 'left' as const, x: 4, y: 72 },       // bottom-left
-    { anchor: 'right' as const, x: 4, y: 72 },      // bottom-right
+    { anchor: 'left' as const, x: 4, y: 72 }, // bottom-left
+    { anchor: 'right' as const, x: 4, y: 72 }, // bottom-right
   ];
   const zone = zones[Math.floor(Math.random() * zones.length)];
   return {
@@ -69,12 +69,24 @@ export function SocialFeed({ topZoneY = 8 }: { topZoneY?: number }) {
   const productNameRef = useRef(productName);
   const topZoneYRef = useRef(topZoneY);
 
-  useEffect(() => { activeEventRef.current = activeEvent; }, [activeEvent]);
-  useEffect(() => { achievementsRef.current = achievements; }, [achievements]);
-  useEffect(() => { totalLocRef.current = totalLoc; }, [totalLoc]);
-  useEffect(() => { producersRef.current = producers; }, [producers]);
-  useEffect(() => { productNameRef.current = productName; }, [productName]);
-  useEffect(() => { topZoneYRef.current = topZoneY; }, [topZoneY]);
+  useEffect(() => {
+    activeEventRef.current = activeEvent;
+  }, [activeEvent]);
+  useEffect(() => {
+    achievementsRef.current = achievements;
+  }, [achievements]);
+  useEffect(() => {
+    totalLocRef.current = totalLoc;
+  }, [totalLoc]);
+  useEffect(() => {
+    producersRef.current = producers;
+  }, [producers]);
+  useEffect(() => {
+    productNameRef.current = productName;
+  }, [productName]);
+  useEffect(() => {
+    topZoneYRef.current = topZoneY;
+  }, [topZoneY]);
 
   // Shared spawn counter — incremented before setPosts, decremented after removal.
   // Single-threaded JS guarantees no race between setTimeout callbacks.
@@ -162,9 +174,9 @@ export function SocialFeed({ topZoneY = 8 }: { topZoneY?: number }) {
     aliveRef.current = true;
     spawnCountRef.current = 0;
 
-    runChain(2000 + Math.random() * 3000);   // chain 1: first post ~2–5s after 1K LOC
-    runChain(9000 + Math.random() * 5000);   // chain 2: unlocks additional slot at 1M LOC
-    runChain(16000 + Math.random() * 5000);  // chain 3: unlocks additional slot at 1B LOC
+    runChain(2000 + Math.random() * 3000); // chain 1: first post ~2–5s after 1K LOC
+    runChain(9000 + Math.random() * 5000); // chain 2: unlocks additional slot at 1M LOC
+    runChain(16000 + Math.random() * 5000); // chain 3: unlocks additional slot at 1B LOC
 
     return () => {
       aliveRef.current = false;
