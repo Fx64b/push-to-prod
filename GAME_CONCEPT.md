@@ -1,7 +1,5 @@
 # push to prod — Game Design Document
 
-> *"Every great codebase started with a single keystroke."*
-
 ---
 
 ## Core Metric
