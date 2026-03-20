@@ -1,7 +1,5 @@
 # push to prod
 
-> Every great codebase started with a single keystroke.
-
 An incremental idle clicker game with a developer theme. Click the ENTER key to write Lines of Code (LOC), buy producers to automate output, and purchase upgrades to scale production. Random events, achievements, and a prestige system keep things interesting.
 
 ## Gameplay
