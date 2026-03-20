@@ -158,7 +158,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: 'JIRA Ticket #4892',
     description: 'Clicked exactly 4,892 times. Someone will open a ticket about this.',
     icon: '🎫',
-    condition: ({ totalClicks }) => totalClicks === 4892,
+    condition: ({ totalClicks }) => totalClicks >= 4892 && totalClicks <= 4900,
   },
 
   // ── Producer achievements ─────────────────────────────────────────────────────

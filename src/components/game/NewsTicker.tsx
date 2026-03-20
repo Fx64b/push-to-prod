@@ -54,7 +54,27 @@ export function NewsTicker() {
     }
   }, []);
 
-  const textColor = stage === 3 ? 'text-yellow-400' : stage === 2 ? 'text-gh-red' : 'text-gh-muted';
+  const textColor =
+    stage >= 4
+      ? 'text-gh-orange'
+      : stage === 3
+        ? 'text-yellow-400'
+        : stage === 2
+          ? 'text-gh-red'
+          : 'text-gh-muted';
+
+  // Stage-based duck lane sizing and duck emoji size
+  const duckLaneHeight = stage >= 5 ? '36px' : stage >= 4 ? '28px' : '20px';
+  const duckFontSize  = stage >= 5 ? '18px' : stage >= 4 ? '16px' : '14px';
+  const duckMarginTop = stage >= 5 ? '-9px' : '-8px';
+
+  // Ticker border/background escalates at stages 4 and 5
+  const tickerStyle =
+    stage >= 5
+      ? { borderColor: 'rgba(227,179,65,0.7)', backgroundColor: 'rgba(227,179,65,0.06)', boxShadow: '0 -3px 14px rgba(227,179,65,0.25)' }
+      : stage >= 4
+        ? { borderColor: 'rgba(227,179,65,0.4)' }
+        : {};
 
   const ducksToShow = useMemo(() => {
     if (duckCount === 0) return [];
@@ -73,7 +93,8 @@ export function NewsTicker() {
     <div className="relative w-full">
       {ducksToShow.length > 0 && (
         <div
-          className="absolute bottom-full h-5 w-full overflow-hidden pointer-events-none"
+          className="absolute bottom-full w-full overflow-hidden pointer-events-none transition-all duration-700"
+          style={{ height: duckLaneHeight }}
           aria-hidden="true"
         >
           {ducksToShow.map((duck) => (
@@ -82,7 +103,7 @@ export function NewsTicker() {
               style={{
                 position: 'absolute',
                 top: '50%',
-                marginTop: '-8px',
+                marginTop: duckMarginTop,
                 pointerEvents: 'none',
                 animationName: 'duckWalkH',
                 animationDuration: `${duck.duration}s`,
@@ -94,6 +115,7 @@ export function NewsTicker() {
               <span
                 style={{
                   display: 'inline-block',
+                  fontSize: duckFontSize,
                   animationName: 'duckHop',
                   animationDuration: `${duck.hopDuration}s`,
                   animationTimingFunction: 'ease-in-out',
@@ -107,7 +129,8 @@ export function NewsTicker() {
         </div>
       )}
       <div
-        className={`w-full overflow-hidden border-t border-gh-border bg-gh-surface/40 px-3 py-1.5 font-mono text-sm ${textColor}`}
+        className={`w-full overflow-hidden border-t bg-gh-surface/40 px-3 py-1.5 font-mono text-sm transition-colors duration-700 ${textColor}`}
+        style={tickerStyle}
       >
         <span
           className="inline-block animate-marquee whitespace-nowrap"

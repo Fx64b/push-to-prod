@@ -41,12 +41,13 @@ function getPosition(topZoneY: number): { x: number; y: number; anchor: 'left' |
  */
 function getSpawnConfig(totalLoc: number): { maxPosts: number; nextDelay: number } {
   const log = Math.log10(Math.max(totalLoc, 1000));
-  const t = Math.min(1, (log - 3) / 9);
-  const base = 50000 * Math.pow(1 - t, 2);
-  const nextDelay = Math.max(0, Math.round(base * (0.8 + Math.random() * 0.4)));
-  // Stay at 1 post for most of the game; only open extra slots near 1T (10^12)
-  // t=0.78 ≈ 10B, t=0.89 ≈ 100B, t=1 = 1T
-  const maxPosts = t < 0.78 ? 1 : t < 0.89 ? 2 : 3;
+  // t: 0 at 1K LOC → 1 at 1T LOC (unclamped so late game slows back down)
+  const t = (log - 3) / 9;
+  // Delay peaks at 50s early, bottoms out around 12s at ~1T, then rises again in late game
+  const base = 50000 * Math.pow(1 - Math.min(t, 1), 2) + 12000 * Math.max(t - 1, 0);
+  const nextDelay = Math.max(12000, Math.round(base * (0.8 + Math.random() * 0.4)));
+  // Max 1 post until 10B, max 2 beyond that — never 3
+  const maxPosts = t < 0.78 ? 1 : 2;
   return { maxPosts, nextDelay };
 }
 
