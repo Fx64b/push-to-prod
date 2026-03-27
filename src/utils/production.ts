@@ -25,11 +25,16 @@ export function calculateLOCps(state: ProductionState): number {
     total += producerLOCps;
   }
 
+  // Global upgrades pool additively: each contributes (multiplier - 1) as a bonus,
+  // then the total bonus is applied once. This prevents the explosive compounding
+  // that occurs when large multipliers stack multiplicatively.
+  let globalBonus = 0;
   for (const upgrade of UPGRADES) {
     if (upgrade.target === 'all' && state.upgrades.includes(upgrade.id)) {
-      total *= upgrade.multiplier;
+      globalBonus += upgrade.multiplier - 1;
     }
   }
+  if (globalBonus > 0) total *= 1 + globalBonus;
 
   return total;
 }

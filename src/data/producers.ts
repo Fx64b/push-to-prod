@@ -11,6 +11,39 @@ export interface Producer {
   unlockLoc?: number;
 }
 
+export interface ProducerEra {
+  name: string;
+  flavor: string;
+  ids: string[];
+}
+
+/**
+ * Eras group producers into narrative phases of the developer empire.
+ * Solo Hacker → team → AI assistance → post-human transcendence.
+ */
+export const PRODUCER_ERAS: ProducerEra[] = [
+  {
+    name: 'Solo Hacker',
+    flavor: 'Just you, caffeine, and a rubber duck.',
+    ids: ['rubber-duck', 'mechanical-keyboard', 'coffee-machine', 'autocomplete', 'stackoverflow-tab'],
+  },
+  {
+    name: 'Build the Team',
+    flavor: "Hiring is easy. Shipping together isn't.",
+    ids: ['junior-dev', 'linkedin-influencer', 'senior-dev', 'offshore-team', 'tech-lead', 'scrum-master', '10x-engineer', 'the-pm'],
+  },
+  {
+    name: 'AI Takeover',
+    flavor: 'You write the tickets. They ship the features.',
+    ids: ['github-copilot', 'ai-agent', 'cloud-cluster', 'agi'],
+  },
+  {
+    name: 'Post-Human',
+    flavor: 'You are no longer the most complex thing in the room.',
+    ids: ['quantum-computer', 'the-singularity', 'blockchain', 'the-consultant', 'digital-twin', 'tech-oracle', 'infinite-monkey-farm'],
+  },
+];
+
 export const PRODUCERS: Producer[] = [
   {
     id: 'rubber-duck',

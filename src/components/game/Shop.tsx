@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PRODUCERS } from '@/data/producers';
+import { PRODUCER_ERAS, PRODUCERS } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
 import { useModifierKeys } from '@/hooks/useModifierKeys';
 import { useGameStore } from '@/store/gameStore';
@@ -64,9 +64,23 @@ export function Shop() {
                 </button>
               ))}
             </div>
-            {visibleProducers.map((p) => (
-              <ProducerCard key={p.id} producer={p} buyAmount={effectiveBuyAmount} />
-            ))}
+            {PRODUCER_ERAS.map((era) => {
+              const eraProducers = visibleProducers.filter((p) => era.ids.includes(p.id));
+              if (eraProducers.length === 0) return null;
+              return (
+                <div key={era.name} className="space-y-1.5">
+                  <div className="pt-1 pb-0.5">
+                    <span className="text-[10px] font-bold text-gh-muted uppercase tracking-widest">
+                      {era.name}
+                    </span>
+                    <p className="text-[10px] text-gh-muted/60 italic leading-tight">{era.flavor}</p>
+                  </div>
+                  {eraProducers.map((p) => (
+                    <ProducerCard key={p.id} producer={p} buyAmount={effectiveBuyAmount} />
+                  ))}
+                </div>
+              );
+            })}
             {hiddenCount > 0 && (
               <p className="text-center text-[11px] text-gh-muted/50 italic py-1">
                 {hiddenCount} more producer{hiddenCount > 1 ? 's' : ''} unlock at higher LOC
