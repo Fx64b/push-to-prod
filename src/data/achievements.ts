@@ -200,7 +200,7 @@ export const ACHIEVEMENTS: Achievement[] = [
       const others = Object.entries(producers)
         .filter(([id]) => id !== 'rubber-duck')
         .reduce((sum, [, count]) => sum + count, 0);
-      return ducks > 0 && ducks > others;
+      return ducks > 10 && others > 0 && ducks > others;
     },
   },
   {

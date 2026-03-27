@@ -65,13 +65,17 @@ export function NewsTicker() {
 
   // Stage-based duck lane sizing and duck emoji size
   const duckLaneHeight = stage >= 5 ? '36px' : stage >= 4 ? '28px' : '20px';
-  const duckFontSize  = stage >= 5 ? '18px' : stage >= 4 ? '16px' : '14px';
+  const duckFontSize = stage >= 5 ? '18px' : stage >= 4 ? '16px' : '14px';
   const duckMarginTop = stage >= 5 ? '-9px' : '-8px';
 
   // Ticker border/background escalates at stages 4 and 5
   const tickerStyle =
     stage >= 5
-      ? { borderColor: 'rgba(227,179,65,0.7)', backgroundColor: 'rgba(227,179,65,0.06)', boxShadow: '0 -3px 14px rgba(227,179,65,0.25)' }
+      ? {
+          borderColor: 'rgba(227,179,65,0.7)',
+          backgroundColor: 'rgba(227,179,65,0.06)',
+          boxShadow: '0 -3px 14px rgba(227,179,65,0.25)',
+        }
       : stage >= 4
         ? { borderColor: 'rgba(227,179,65,0.4)' }
         : {};

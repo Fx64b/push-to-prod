@@ -1,14 +1,19 @@
 import { useState } from 'react';
 import { PRODUCERS } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
+import { useModifierKeys } from '@/hooks/useModifierKeys';
 import { useGameStore } from '@/store/gameStore';
 import { ProducerCard } from './ProducerCard';
 import { UpgradeCard } from './UpgradeCard';
 
 type Tab = 'producers' | 'upgrades';
+type BuyAmount = 1 | 10 | 100;
 
 export function Shop() {
   const [activeTab, setActiveTab] = useState<Tab>('producers');
+  const [buyAmount, setBuyAmount] = useState<BuyAmount>(1);
+  const { ctrl, shift } = useModifierKeys();
+  const effectiveBuyAmount: BuyAmount = shift ? 100 : ctrl ? 10 : buyAmount;
   const totalLoc = useGameStore((s) => s.totalLoc);
   const producers = useGameStore((s) => s.producers);
   const upgrades = useGameStore((s) => s.upgrades);
@@ -41,8 +46,26 @@ export function Shop() {
       <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
         {activeTab === 'producers' && (
           <>
+            <div className="flex gap-1 pb-1 border-b border-gh-border mb-1">
+              {([1, 10, 100] as BuyAmount[]).map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setBuyAmount(n)}
+                  className={`
+                    text-[10px] font-mono font-bold px-2 py-1 rounded transition-colors
+                    ${
+                      effectiveBuyAmount === n
+                        ? 'bg-gh-blue text-white'
+                        : 'text-gh-muted hover:text-gh-text hover:bg-gh-surface'
+                    }
+                  `}
+                >
+                  x{n}
+                </button>
+              ))}
+            </div>
             {visibleProducers.map((p) => (
-              <ProducerCard key={p.id} producer={p} />
+              <ProducerCard key={p.id} producer={p} buyAmount={effectiveBuyAmount} />
             ))}
             {hiddenCount > 0 && (
               <p className="text-center text-[11px] text-gh-muted/50 italic py-1">

@@ -2,24 +2,28 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useCallback } from 'react';
 import type { Producer } from '@/data/producers';
 import { useGameStore } from '@/store/gameStore';
-import { producerCost } from '@/utils/costs';
+import { producerBulkCost, producerCost } from '@/utils/costs';
 import { formatLOC, formatRate } from '@/utils/format';
 
 interface ProducerCardProps {
   producer: Producer;
+  buyAmount?: number;
 }
 
-export function ProducerCard({ producer }: ProducerCardProps) {
+export function ProducerCard({ producer, buyAmount = 1 }: ProducerCardProps) {
   const loc = useGameStore((s) => s.loc);
   const owned = useGameStore((s) => s.producers[producer.id] ?? 0);
   const buyProducer = useGameStore((s) => s.buyProducer);
+  const buyProducerBulk = useGameStore((s) => s.buyProducerBulk);
 
-  const cost = producerCost(producer, owned);
+  const cost =
+    buyAmount === 1 ? producerCost(producer, owned) : producerBulkCost(producer, owned, buyAmount);
   const canAfford = loc >= cost;
 
   const handleBuy = useCallback(() => {
-    buyProducer(producer.id);
-  }, [buyProducer, producer.id]);
+    if (buyAmount === 1) buyProducer(producer.id);
+    else buyProducerBulk(producer.id, buyAmount);
+  }, [buyProducer, buyProducerBulk, producer.id, buyAmount]);
 
   return (
     <TooltipPrimitive.Root>
@@ -63,7 +67,9 @@ export function ProducerCard({ producer }: ProducerCardProps) {
               >
                 {formatLOC(cost)}
               </div>
-              <div className="text-[10px] text-gh-muted">{producer.baseLOCps}/s each</div>
+              <div className="text-[10px] text-gh-muted">
+                {buyAmount > 1 ? `x${buyAmount}` : `${producer.baseLOCps}/s each`}
+              </div>
             </div>
           </div>
         </button>
@@ -104,7 +110,9 @@ export function ProducerCard({ producer }: ProducerCardProps) {
               </div>
             )}
             <div className="flex justify-between">
-              <span className="text-gh-muted">Next cost</span>
+              <span className="text-gh-muted">
+                {buyAmount > 1 ? `Cost ×${buyAmount}` : 'Next cost'}
+              </span>
               <span className="text-gh-yellow">{formatLOC(cost)}</span>
             </div>
           </div>

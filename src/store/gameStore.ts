@@ -6,7 +6,7 @@ import { LEGACY_UPGRADES } from '@/data/legacyUpgrades';
 import { PRODUCERS } from '@/data/producers';
 import { generateProductName } from '@/data/socialPosts';
 import { UPGRADES } from '@/data/upgrades';
-import { producerCost } from '@/utils/costs';
+import { producerBulkCost, producerCost } from '@/utils/costs';
 import { formatLOC } from '@/utils/format';
 import { calculateClickValue, calculateLOCps } from '@/utils/production';
 
@@ -80,6 +80,7 @@ interface GameState {
   click: (x?: number, y?: number) => void;
   tick: (dt: number) => void;
   buyProducer: (id: string) => void;
+  buyProducerBulk: (id: string, count: number) => void;
   buyUpgrade: (id: string) => void;
   buyLegacyUpgrade: (id: string) => void;
   prestige: () => void;
@@ -422,6 +423,21 @@ export const useGameStore = create<GameState>()(
         const { cachedLOCps } = computeCaches({ ...state, producers: newProducers });
 
         set({ loc: state.loc - cost, producers: newProducers, cachedLOCps });
+      },
+
+      buyProducerBulk: (id: string, count: number) => {
+        const state = get();
+        const producer = PRODUCERS.find((p) => p.id === id);
+        if (!producer) return;
+
+        const owned = state.producers[id] ?? 0;
+        const totalCost = producerBulkCost(producer, owned, count);
+        if (state.loc < totalCost) return;
+
+        const newProducers = { ...state.producers, [id]: owned + count };
+        const { cachedLOCps } = computeCaches({ ...state, producers: newProducers });
+
+        set({ loc: state.loc - totalCost, producers: newProducers, cachedLOCps });
       },
 
       buyUpgrade: (id: string) => {
