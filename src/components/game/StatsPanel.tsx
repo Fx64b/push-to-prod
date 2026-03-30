@@ -1,5 +1,6 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useMemo } from 'react';
+import { ArchitecturePanel } from '@/components/game/ArchitecturePanel';
 import { LegacyPanel } from '@/components/game/LegacyPanel';
 import { ACHIEVEMENTS, type Achievement } from '@/data/achievements';
 import { PRODUCERS, type Producer } from '@/data/producers';
@@ -22,6 +23,9 @@ export function StatsPanel() {
   const techStack = useGameStore((s) => s.techStack);
 
   const locps = useGameStore((s) => s.displayedLOCps);
+  const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
+  const architecturePoints = useGameStore((s) => s.architecturePoints);
+  const clicksThisRun = useGameStore((s) => s.clicksThisRun);
 
   const clickValue = useMemo(
     () => calculateClickValue({ producers, upgrades, locPerClick }),
@@ -49,9 +53,16 @@ export function StatsPanel() {
           {prestigeCount > 0 && (
             <StatRow label="Refactors" value={prestigeCount.toString()} color="text-gh-purple" />
           )}
+          {greatRefactorCount > 0 && (
+            <StatRow label="Great Refactors" value={greatRefactorCount.toString()} color="text-gh-yellow" />
+          )}
           {legacyTokens > 0 && (
             <StatRow label="Legacy Tokens" value={legacyTokens.toString()} color="text-gh-yellow" />
           )}
+          {architecturePoints > 0 && (
+            <StatRow label="Arch. Points" value={architecturePoints.toString()} color="text-gh-yellow" />
+          )}
+          <StatRow label="Clicks (run)" value={clicksThisRun.toLocaleString()} color={clicksThisRun >= 1000 ? 'text-gh-green' : 'text-gh-muted'} />
           {techStack && (
             <StatRow
               label="Tech Stack"
@@ -98,9 +109,10 @@ export function StatsPanel() {
         </div>
       </div>
 
-      {/* Legacy Shop — pinned to bottom */}
-      <div className="mt-auto pt-2 border-t border-gh-border">
+      {/* Legacy Shop + Architecture — pinned to bottom */}
+      <div className="mt-auto pt-2 border-t border-gh-border space-y-1.5">
         <LegacyPanel />
+        <ArchitecturePanel />
       </div>
     </div>
   );

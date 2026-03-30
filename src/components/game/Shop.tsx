@@ -17,8 +17,13 @@ export function Shop() {
   const totalLoc = useGameStore((s) => s.totalLoc);
   const producers = useGameStore((s) => s.producers);
   const upgrades = useGameStore((s) => s.upgrades);
+  const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
 
-  const visibleProducers = PRODUCERS.filter((p) => (p.unlockLoc ?? 0) <= totalLoc);
+  const visibleProducers = PRODUCERS.filter(
+    (p) =>
+      (p.unlockLoc ?? 0) <= totalLoc &&
+      (p.unlockGreatRefactor ?? 0) <= greatRefactorCount,
+  );
   const hiddenCount = PRODUCERS.length - visibleProducers.length;
 
   const availableUpgrades = UPGRADES.filter(

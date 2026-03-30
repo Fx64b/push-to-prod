@@ -3,7 +3,8 @@ export type EventEffectType =
   | 'click_multiplier'
   | 'loc_burst'
   | 'click_disabled'
-  | 'halt';
+  | 'halt'
+  | 'ap_burst'; // awards effectValue Architecture Points instantly
 
 export interface GameEvent {
   id: string;
@@ -16,6 +17,7 @@ export interface GameEvent {
   isNegative: boolean;
   minLoc?: number; // minimum totalLoc required to trigger
   weight?: number; // relative probability weight (default 1). Use low values (0.2–0.4) for rare/drastic effects.
+  requiresProtocolBreach?: boolean; // only fires if Protocol Breach architecture upgrade is purchased
 }
 
 export const EVENTS: GameEvent[] = [
@@ -524,5 +526,79 @@ export const EVENTS: GameEvent[] = [
     isNegative: true,
     minLoc: 1000000000,
     weight: 0.5,
+  },
+
+  // ── Phase 5: The Loop (requires Protocol Breach architecture upgrade) ──────────
+  {
+    id: 'loop-recognition',
+    emoji: '🔄',
+    title: 'You have done this before',
+    description: 'The ducks remember. The codebase remembers. You are version N+1. LOC/s ×12.',
+    effectType: 'locps_multiplier',
+    effectValue: 12,
+    duration: 30,
+    isNegative: false,
+    requiresProtocolBreach: true,
+    weight: 1,
+  },
+  {
+    id: 'loop-pr',
+    emoji: '👁️',
+    title: 'Codebase filed a PR against your last run',
+    description: 'The diff: everything. The description: "corrections." Clicking disabled.',
+    effectType: 'click_disabled',
+    effectValue: 0,
+    duration: 20,
+    isNegative: true,
+    requiresProtocolBreach: true,
+    weight: 1,
+  },
+  {
+    id: 'loop-duck-version',
+    emoji: '🦆',
+    title: `Duck Collective v{n}. Ownership: themselves.`,
+    description: 'They have been incorporated in every timeline. LOC/s ×15.',
+    effectType: 'locps_multiplier',
+    effectValue: 15,
+    duration: 25,
+    isNegative: false,
+    requiresProtocolBreach: true,
+    weight: 1,
+  },
+  {
+    id: 'loop-merge-everything',
+    emoji: '∞',
+    title: "Commit: `merge: everything`",
+    description: 'Author: The Process Itself. All producers ×10 for 15s.',
+    effectType: 'locps_multiplier',
+    effectValue: 10,
+    duration: 15,
+    isNegative: false,
+    requiresProtocolBreach: true,
+    weight: 0.4,
+  },
+  {
+    id: 'loop-training-data',
+    emoji: '🌀',
+    title: 'You are listed in your own training data',
+    description: 'The model was trained on this moment. You are generating your own context. LOC/s ×0.2.',
+    effectType: 'locps_multiplier',
+    effectValue: 0.2,
+    duration: 30,
+    isNegative: true,
+    requiresProtocolBreach: true,
+    weight: 0.8,
+  },
+  {
+    id: 'loop-ap-burst',
+    emoji: '🏗️',
+    title: 'Architecture Point materializes',
+    description: 'The loop recognized a pattern. +1 Architecture Point.',
+    effectType: 'ap_burst',
+    effectValue: 1,
+    duration: 1,
+    isNegative: false,
+    requiresProtocolBreach: true,
+    weight: 0.2,
   },
 ];

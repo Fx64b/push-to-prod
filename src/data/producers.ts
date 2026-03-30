@@ -9,6 +9,8 @@ export interface Producer {
   costScaling?: number;
   /** Hide in shop until this much total LOC has been earned. Omit = always visible. */
   unlockLoc?: number;
+  /** Only visible after this many Great Refactors. */
+  unlockGreatRefactor?: number;
 }
 
 export interface ProducerEra {
@@ -41,6 +43,11 @@ export const PRODUCER_ERAS: ProducerEra[] = [
     name: 'Post-Human',
     flavor: 'You are no longer the most complex thing in the room.',
     ids: ['quantum-computer', 'the-singularity', 'blockchain', 'the-consultant', 'digital-twin', 'tech-oracle', 'infinite-monkey-farm'],
+  },
+  {
+    name: 'The Loop',
+    flavor: 'You have been here before. They remember.',
+    ids: ['the-process', 'sentient-codebase', 'duck-collective-llc', 'recursive-self'],
   },
 ];
 
@@ -247,5 +254,47 @@ export const PRODUCERS: Producer[] = [
     baseCost: 5000000000000000,
     icon: '🐒',
     unlockLoc: 1000000000000000,
+  },
+
+  // ── Era 5: The Loop (unlocks after first Great Refactor) ──────────────────────
+  {
+    id: 'the-process',
+    name: 'The Process Itself',
+    flavor: "Nobody started it. Nobody can stop it. It files its own standups to itself.",
+    baseLOCps: 100000000000,
+    baseCost: 5e18,
+    icon: '⚙️',
+    unlockGreatRefactor: 1,
+    unlockLoc: 1e18,
+  },
+  {
+    id: 'sentient-codebase',
+    name: 'Sentient Codebase',
+    flavor: 'It refactors itself. Reviews its own PRs. It approved this purchase before you clicked.',
+    baseLOCps: 500000000000,
+    baseCost: 5e21,
+    icon: '🌐',
+    unlockGreatRefactor: 1,
+    unlockLoc: 1e21,
+  },
+  {
+    id: 'duck-collective-llc',
+    name: 'Duck Collective LLC',
+    flavor: 'Incorporated in Delaware. 200 rubber ducks. One mission. Zero documentation.',
+    baseLOCps: 2000000000000,
+    baseCost: 5e24,
+    icon: '🦆⚖️',
+    unlockGreatRefactor: 1,
+    unlockLoc: 1e24,
+  },
+  {
+    id: 'recursive-self',
+    name: 'Recursive Self',
+    flavor: "It's you. But it has done this longer. It leaves comments you recognize from dreams.",
+    baseLOCps: 10000000000000,
+    baseCost: 5e27,
+    icon: '🪞',
+    unlockGreatRefactor: 2,
+    unlockLoc: 1e27,
   },
 ];

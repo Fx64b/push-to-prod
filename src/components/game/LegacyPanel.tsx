@@ -102,13 +102,17 @@ export function LegacyPanel() {
   const legacyTokens = useGameStore((s) => s.legacyTokens);
   const legacyUpgrades = useGameStore((s) => s.legacyUpgrades);
   const prestigeCount = useGameStore((s) => s.prestigeCount);
+  const architectureUpgrades = useGameStore((s) => s.architectureUpgrades);
   const buyLegacyUpgrade = useGameStore((s) => s.buyLegacyUpgrade);
 
   // Only show after first prestige or once you have tokens
   if (prestigeCount === 0 && legacyTokens === 0) return null;
 
+  const hasSecondSystem = architectureUpgrades.includes('second-system');
+  const visibleUpgrades = LEGACY_UPGRADES.filter((u) => !u.requiresSecondSystem || hasSecondSystem);
+
   const autoBonus = legacyTokens * 5;
-  const upgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
+  const upgradeMult = visibleUpgrades.reduce((acc, u) => {
     if (u.effect.type === 'production_bonus' && legacyUpgrades.includes(u.id)) {
       return acc * u.effect.multiplier;
     }
@@ -118,7 +122,7 @@ export function LegacyPanel() {
 
   const grouped = CATEGORY_ORDER.map((cat) => ({
     cat,
-    upgrades: LEGACY_UPGRADES.filter((u) => u.effect.type === cat),
+    upgrades: visibleUpgrades.filter((u) => u.effect.type === cat),
   }));
 
   return (
@@ -207,24 +211,31 @@ export function LegacyPanel() {
 
             {/* Upgrades list */}
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-              {grouped.map(({ cat, upgrades }) => (
-                <div key={cat}>
-                  <h3 className="text-[10px] text-gh-muted uppercase tracking-widest mb-2 border-b border-gh-border pb-1">
-                    {CATEGORY_LABELS[cat]}
-                  </h3>
-                  <div className="space-y-2">
-                    {upgrades.map((u) => (
-                      <LegacyUpgradeCard
-                        key={u.id}
-                        upgrade={u}
-                        purchased={legacyUpgrades.includes(u.id)}
-                        canAfford={legacyTokens >= u.cost && !legacyUpgrades.includes(u.id)}
-                        onBuy={() => buyLegacyUpgrade(u.id)}
-                      />
-                    ))}
+              {grouped.map(({ cat, upgrades }) => {
+                if (upgrades.length === 0) return null;
+                return (
+                  <div key={cat}>
+                    <h3 className="text-[10px] text-gh-muted uppercase tracking-widest mb-2 border-b border-gh-border pb-1">
+                      {CATEGORY_LABELS[cat]}
+                    </h3>
+                    <div className="space-y-2">
+                      {upgrades.map((u) => {
+                        const discount = architectureUpgrades.includes('fast-learner') ? 0.8 : 1.0;
+                        const effectiveCost = Math.max(1, Math.floor(u.cost * discount));
+                        return (
+                          <LegacyUpgradeCard
+                            key={u.id}
+                            upgrade={{ ...u, cost: effectiveCost }}
+                            purchased={legacyUpgrades.includes(u.id)}
+                            canAfford={legacyTokens >= effectiveCost && !legacyUpgrades.includes(u.id)}
+                            onBuy={() => buyLegacyUpgrade(u.id)}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

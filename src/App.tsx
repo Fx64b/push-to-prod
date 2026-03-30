@@ -3,9 +3,11 @@ import { Download, RotateCcw } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { AchievementToast } from '@/components/game/AchievementToast';
 import { AmbientTexts } from '@/components/game/AmbientTexts';
+import { DuckNestPanel } from '@/components/game/DuckNestPanel';
 import { EnterKey } from '@/components/game/EnterKey';
 import { EventBanner } from '@/components/game/EventBanner';
 import { FloatingTexts } from '@/components/game/FloatingTexts';
+import { GreatRefactorButton } from '@/components/game/GreatRefactorButton';
 import { LOCDisplay } from '@/components/game/LOCDisplay';
 import { NewsTicker } from '@/components/game/NewsTicker';
 import { PivotButton } from '@/components/game/PivotButton';
@@ -163,7 +165,9 @@ export default function App() {
 
             <LOCDisplay />
             <EnterKey />
+            <DuckNestPanel />
             <RefactorButton />
+            <GreatRefactorButton />
             <PivotButton />
             <TechDebtMeter />
 

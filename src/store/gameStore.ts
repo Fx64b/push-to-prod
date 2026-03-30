@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ACHIEVEMENTS } from '@/data/achievements';
+import { ARCHITECTURE_UPGRADES } from '@/data/architectureUpgrades';
 import { EVENTS, type GameEvent } from '@/data/events';
 import { LEGACY_UPGRADES } from '@/data/legacyUpgrades';
 import { PRODUCERS } from '@/data/producers';
@@ -8,7 +9,7 @@ import { generateProductName } from '@/data/socialPosts';
 import { UPGRADES } from '@/data/upgrades';
 import { producerBulkCost, producerCost } from '@/utils/costs';
 import { formatLOC } from '@/utils/format';
-import { calculateClickValue, calculateLOCps } from '@/utils/production';
+import { calculateClickValue, calculateLOCps, calculateSingleProducerLOCps } from '@/utils/production';
 
 export interface FloatingText {
   id: number;
@@ -23,6 +24,12 @@ export interface ToastNotification {
   name: string;
   description: string;
   icon: string;
+}
+
+export interface NestedDuck {
+  id: string;
+  producerId: string;
+  storedLoc: number;
 }
 
 export type TechStack = 'typescript' | 'rust' | 'php' | 'blockchain';
@@ -59,9 +66,25 @@ interface GameState {
   techStack: TechStack | null;
   pivotCount: number;
 
+  // Great Refactor system
+  greatRefactorCount: number;
+  architecturePoints: number;
+  architectureUpgrades: string[];
+  totalLegacyTokensEverSpent: number;
+
+  // Recursive Memory: peak LOC of the just-completed run (set before reset)
+  lastRunPeakLoc: number;
+
+  // Event-Driven: accumulated permanent production bonus (fraction, e.g. 0.05 = +5%)
+  eventSurvivalProductionBonus: number;
+
+  // Duck nesting (unlocked by Nest Protocol architecture upgrade)
+  nestedDucks: NestedDuck[];
+
   // Meta
   lastSaveTime: number;
   prestigeCount: number;
+  clicksThisRun: number; // resets on prestige; gates re-prestige spamming
   totalClicks: number;
   productName: string;
 
@@ -73,8 +96,8 @@ interface GameState {
   // UI state (not persisted)
   floatingTexts: FloatingText[];
   toastQueue: ToastNotification[];
-  pendingClickLoc: number; // click LOC accumulated since last tick
-  displayedLOCps: number; // EMA-smoothed actual rate (passive + clicks)
+  pendingClickLoc: number;
+  displayedLOCps: number;
 
   // Actions
   click: (x?: number, y?: number) => void;
@@ -83,11 +106,14 @@ interface GameState {
   buyProducerBulk: (id: string, count: number) => void;
   buyUpgrade: (id: string) => void;
   buyLegacyUpgrade: (id: string) => void;
+  buyArchitectureUpgrade: (id: string) => void;
   prestige: () => void;
+  greatRefactor: () => void;
   pivot: (stack: TechStack) => void;
   dismissEvent: () => void;
   addOfflineProgress: (loc: number) => void;
   dismissToast: (id: string) => void;
+  popNestedDuck: (id: string) => void;
   newGame: () => void;
   setLoc: (loc: number) => void;
 }
@@ -100,23 +126,51 @@ interface CacheInput {
   locPerClick: number;
   legacyUpgrades: string[];
   legacyTokens: number;
+  architectureUpgrades?: string[];
+  prestigeCount?: number;
+  eventSurvivalProductionBonus?: number;
 }
 
-function computeLegacyMult(legacyUpgrades: string[], legacyTokens: number): number {
-  const upgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
+function computeLegacyMult(
+  legacyUpgrades: string[],
+  legacyTokens: number,
+  architectureUpgrades: string[],
+  prestigeCount: number,
+  eventSurvivalProductionBonus: number,
+): number {
+  const legacyUpgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
     if (u.effect.type === 'production_bonus' && legacyUpgrades.includes(u.id)) {
       return acc * u.effect.multiplier;
     }
     return acc;
   }, 1);
-  return (1 + legacyTokens * 0.05) * upgradeMult;
+
+  const archUpgradeMult = ARCHITECTURE_UPGRADES.reduce((acc, u) => {
+    if (u.effect.type === 'production_bonus' && architectureUpgrades.includes(u.id)) {
+      return acc * u.effect.multiplier;
+    }
+    return acc;
+  }, 1);
+
+  // Compounding Interest: +2% per regular prestige
+  const compoundingMult = architectureUpgrades.includes('compounding-interest')
+    ? 1 + prestigeCount * 0.02
+    : 1;
+
+  // Event-Driven: permanent accumulated bonus
+  const eventDrivenMult = 1 + eventSurvivalProductionBonus;
+
+  return (1 + legacyTokens * 0.05) * legacyUpgradeMult * archUpgradeMult * compoundingMult * eventDrivenMult;
 }
 
 function computeCaches(s: CacheInput) {
+  const archUpgrades = s.architectureUpgrades ?? [];
+  const prestige = s.prestigeCount ?? 0;
+  const eventBonus = s.eventSurvivalProductionBonus ?? 0;
   return {
     cachedLOCps: calculateLOCps(s),
     cachedClickValue: calculateClickValue(s),
-    cachedLegacyMult: computeLegacyMult(s.legacyUpgrades, s.legacyTokens),
+    cachedLegacyMult: computeLegacyMult(s.legacyUpgrades, s.legacyTokens, archUpgrades, prestige, eventBonus),
   };
 }
 
@@ -140,7 +194,9 @@ export function getStackMult(techStack: TechStack | null): { production: number;
 // ── Technical Debt helpers ────────────────────────────────────────────────────
 
 function allLegacyBought(legacyUpgrades: string[]): boolean {
-  return LEGACY_UPGRADES.every((u) => legacyUpgrades.includes(u.id));
+  return LEGACY_UPGRADES.filter((u) => !u.requiresSecondSystem).every((u) =>
+    legacyUpgrades.includes(u.id),
+  );
 }
 
 function calcDebtRate(producers: Record<string, number>): number {
@@ -158,11 +214,11 @@ function calcDebtRate(producers: Record<string, number>): number {
 }
 
 export function getDebtPenalty(debt: number): number {
-  if (debt >= 100) return 0.15; // critical — near-total production loss
-  if (debt >= 75) return 0.4; // severe
-  if (debt >= 50) return 0.7; // significant
-  if (debt >= 25) return 0.9; // mild
-  return 1.0; // no penalty
+  if (debt >= 100) return 0.15;
+  if (debt >= 75) return 0.4;
+  if (debt >= 50) return 0.7;
+  if (debt >= 25) return 0.9;
+  return 1.0;
 }
 
 // ── Weighted event selection ──────────────────────────────────────────────────
@@ -181,12 +237,10 @@ function pickWeightedEvent(events: GameEvent[]): GameEvent {
 
 let floatingTextId = 0;
 let lastFloatingTextTime = 0;
-const FLOAT_THROTTLE_MS = 150; // max ~6 floating texts/sec during spam
+const FLOAT_THROTTLE_MS = 150;
 
-// Event probability per tick (100ms interval)
-// Average 1 event every 60s = 1/600 per tick
 const EVENT_CHANCE_PER_TICK = 1 / 600;
-const MIN_EVENT_INTERVAL = 30; // seconds
+const MIN_EVENT_INTERVAL = 30;
 let lastEventTime = 0;
 
 // ── Event multiplier ────────────────────────────────────────────────────────
@@ -208,10 +262,66 @@ function getEventMultiplier(event: GameEvent | null): {
     case 'click_disabled':
       return { locps: 1, click: 0, clickDisabled: true };
     case 'loc_burst':
+    case 'ap_burst':
       return { locps: 1, click: 1, clickDisabled: false };
     default:
       return { locps: 1, click: 1, clickDisabled: false };
   }
+}
+
+// ── Prestige helpers ──────────────────────────────────────────────────────────
+
+export const MIN_CLICKS_TO_PRESTIGE = import.meta.env.DEV ? 0 : 1000;
+
+function calcPrestigeTokens(totalLoc: number, prestigeCount: number): number {
+  return Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
+}
+
+function buildStartState(
+  legacyUpgrades: string[],
+  upgrades: string[],
+  architectureUpgrades: string[],
+  lastRunPeakLoc: number,
+) {
+  const startProducers: Record<string, number> = {};
+  const keptUpgrades: string[] = [];
+  let startLoc = 0;
+
+  for (const legacyId of legacyUpgrades) {
+    const lu = LEGACY_UPGRADES.find((u) => u.id === legacyId);
+    if (!lu) continue;
+
+    if (lu.effect.type === 'start_producer') {
+      for (const { id, count } of lu.effect.producers) {
+        startProducers[id] = (startProducers[id] ?? 0) + count;
+      }
+    } else if (lu.effect.type === 'start_loc') {
+      startLoc += lu.effect.amount;
+    } else if (lu.effect.type === 'keep_upgrade') {
+      if (lu.effect.upgradeId === 'all-click') {
+        for (const u of UPGRADES) {
+          if (u.target === 'click' && upgrades.includes(u.id)) {
+            keptUpgrades.push(u.id);
+          }
+        }
+      } else if (lu.effect.upgradeId === 'all-producer') {
+        for (const u of UPGRADES) {
+          if (u.target !== 'click' && u.target !== 'all' && upgrades.includes(u.id)) {
+            keptUpgrades.push(u.id);
+          }
+        }
+      } else if (upgrades.includes(lu.effect.upgradeId)) {
+        keptUpgrades.push(lu.effect.upgradeId);
+      }
+    }
+  }
+
+  // Recursive Memory: start with 10% of previous run's peak LOC
+  if (architectureUpgrades.includes('recursive-memory') && lastRunPeakLoc > 0) {
+    startLoc += Math.floor(lastRunPeakLoc * 0.1);
+  }
+
+  return { startProducers, keptUpgrades, startLoc };
 }
 
 // ── Default state ─────────────────────────────────────────────────────────────
@@ -232,15 +342,23 @@ const DEFAULT_STATE = {
   technicalDebt: 0,
   techStack: null as TechStack | null,
   pivotCount: 0,
+  greatRefactorCount: 0,
+  architecturePoints: 0,
+  architectureUpgrades: [] as string[],
+  totalLegacyTokensEverSpent: 0,
+  lastRunPeakLoc: 0,
+  eventSurvivalProductionBonus: 0,
+  nestedDucks: [] as NestedDuck[],
   lastSaveTime: Date.now(),
   prestigeCount: 0,
+  clicksThisRun: 0,
   totalClicks: 0,
   productName: generateProductName(),
   cachedLOCps: 0,
   cachedClickValue: 1,
   cachedLegacyMult: 1,
-  floatingTexts: [],
-  toastQueue: [],
+  floatingTexts: [] as FloatingText[],
+  toastQueue: [] as ToastNotification[],
   pendingClickLoc: 0,
   displayedLOCps: 0,
 };
@@ -262,7 +380,6 @@ export const useGameStore = create<GameState>()(
         const newLoc = state.loc + clickVal;
         const newTotalLoc = state.totalLoc + clickVal;
 
-        // Throttle visible floating texts — still count every click for LOC
         const now = Date.now();
         let floatingTexts = state.floatingTexts;
         if (now - lastFloatingTextTime >= FLOAT_THROTTLE_MS) {
@@ -283,6 +400,7 @@ export const useGameStore = create<GameState>()(
           loc: newLoc,
           totalLoc: newTotalLoc,
           totalClicks: state.totalClicks + 1,
+          clicksThisRun: state.clicksThisRun + 1,
           floatingTexts,
           pendingClickLoc: state.pendingClickLoc + clickVal,
         });
@@ -292,45 +410,106 @@ export const useGameStore = create<GameState>()(
         const state = get();
         const now = Date.now();
 
-        // Check event expiry
+        // ── Event expiry ────────────────────────────────────────────────────────
         let activeEvent = state.activeEvent;
         let eventEndTime = state.eventEndTime;
         let negativeEventssurvived = state.negativeEventssurvived;
+        let eventSurvivalProductionBonus = state.eventSurvivalProductionBonus;
 
         if (activeEvent && eventEndTime && now >= eventEndTime) {
           if (activeEvent.isNegative) {
             negativeEventssurvived += 1;
+            // Event-Driven: accumulate +0.5% per survived negative event (cap at +200%)
+            if (state.architectureUpgrades.includes('event-driven')) {
+              eventSurvivalProductionBonus = Math.min(
+                eventSurvivalProductionBonus + 0.005,
+                2.0,
+              );
+            }
           }
           activeEvent = null;
           eventEndTime = null;
         }
 
-        // Calculate LOC production using cached values
+        // ── LOC production ──────────────────────────────────────────────────────
         const { locps: locpsMult } = getEventMultiplier(activeEvent);
         const { production: stackProductionMult } = getStackMult(state.techStack);
         const debtActive = allLegacyBought(state.legacyUpgrades);
         const debtPenalty = debtActive ? getDebtPenalty(state.technicalDebt) : 1.0;
+
+        // Recompute legacy mult if eventSurvivalProductionBonus changed this tick
+        const legacyMult =
+          eventSurvivalProductionBonus !== state.eventSurvivalProductionBonus
+            ? computeLegacyMult(
+                state.legacyUpgrades,
+                state.legacyTokens,
+                state.architectureUpgrades,
+                state.prestigeCount,
+                eventSurvivalProductionBonus,
+              )
+            : state.cachedLegacyMult;
+
         const locGained =
-          state.cachedLOCps *
-          locpsMult *
-          state.cachedLegacyMult *
-          stackProductionMult *
-          debtPenalty *
-          dt;
+          state.cachedLOCps * locpsMult * legacyMult * stackProductionMult * debtPenalty * dt;
+
         let newLoc = state.loc + locGained;
         let newTotalLoc = state.totalLoc + locGained;
+        const newLastRunPeakLoc = Math.max(state.lastRunPeakLoc, newTotalLoc);
 
-        // Update technical debt (only when all legacy items bought)
+        // ── Technical debt ──────────────────────────────────────────────────────
         let newTechnicalDebt = state.technicalDebt;
         if (debtActive) {
-          const debtRate = calcDebtRate(state.producers);
+          let debtRate = calcDebtRate(state.producers);
+          // Debt Forgiveness: positive debt accumulates 25% slower
+          if (state.architectureUpgrades.includes('debt-forgiveness') && debtRate > 0) {
+            debtRate *= 0.75;
+          }
           newTechnicalDebt = Math.max(0, Math.min(100, state.technicalDebt + debtRate * dt));
         }
 
-        // Roll for new event
+        // ── Duck nesting ────────────────────────────────────────────────────────
+        let nestedDucks = state.nestedDucks;
+        let nestedStolenTotal = 0;
+
+        if (state.architectureUpgrades.includes('nest-protocol')) {
+          const duckCount = state.producers['rubber-duck'] ?? 0;
+          const maxNests = Math.min(5, Math.floor(duckCount / 50));
+
+          // Spawn a new nested duck randomly (~1 per 8 minutes on average)
+          if (nestedDucks.length < maxNests && duckCount >= 50 && Math.random() < 0.002) {
+            const ownedIds = Object.entries(state.producers)
+              .filter(([, count]) => count > 0)
+              .map(([id]) => id);
+            if (ownedIds.length > 0) {
+              const targetId = ownedIds[Math.floor(Math.random() * ownedIds.length)];
+              nestedDucks = [
+                ...nestedDucks,
+                { id: `nd-${now}-${Math.random().toString(36).slice(2)}`, producerId: targetId, storedLoc: 0 },
+              ];
+            }
+          }
+
+          // Accumulate stolen LOC per nested duck
+          if (nestedDucks.length > 0) {
+            nestedDucks = nestedDucks.map((duck) => {
+              const singleLOCps = calculateSingleProducerLOCps(duck.producerId, state);
+              const stolen = singleLOCps * 0.08 * locpsMult * legacyMult * stackProductionMult * debtPenalty * dt;
+              nestedStolenTotal += stolen;
+              return { ...duck, storedLoc: duck.storedLoc + stolen };
+            });
+            // Stolen LOC is removed from the player's gain
+            newLoc -= nestedStolenTotal;
+            newTotalLoc -= nestedStolenTotal;
+            if (newLoc < state.loc) newLoc = state.loc;
+            if (newTotalLoc < state.totalLoc) newTotalLoc = state.totalLoc;
+          }
+        }
+
+        // ── Roll for new event ──────────────────────────────────────────────────
         let newActiveEvent = activeEvent;
         let newEventEndTime = eventEndTime;
         let activeEventTriggered = state.activeEventTriggered;
+        let newArchitecturePoints = state.architecturePoints;
 
         const timeSinceLastEvent = (now - lastEventTime) / 1000;
         if (
@@ -339,20 +518,31 @@ export const useGameStore = create<GameState>()(
           timeSinceLastEvent >= MIN_EVENT_INTERVAL &&
           Math.random() < EVENT_CHANCE_PER_TICK
         ) {
-          const eligibleEvents = EVENTS.filter((e) => !e.minLoc || newTotalLoc >= e.minLoc);
+          const hasProtocolBreach = state.architectureUpgrades.includes('protocol-breach');
+          const eligibleEvents = EVENTS.filter((e) => {
+            if (e.minLoc && newTotalLoc < e.minLoc) return false;
+            if (e.requiresProtocolBreach && !hasProtocolBreach) return false;
+            return true;
+          });
           newActiveEvent = pickWeightedEvent(eligibleEvents);
-          newEventEndTime = now + newActiveEvent.duration * 1000;
           lastEventTime = now;
           activeEventTriggered = true;
 
-          // Apply loc_burst immediately when the event fires
+          // Event Horizon: positive events last 2× longer
+          const durationMult =
+            !newActiveEvent.isNegative && state.architectureUpgrades.includes('event-horizon') ? 2 : 1;
+          newEventEndTime = now + newActiveEvent.duration * 1000 * durationMult;
+
+          // Instant effects on fire
           if (newActiveEvent.effectType === 'loc_burst') {
             newLoc += newActiveEvent.effectValue;
             newTotalLoc += newActiveEvent.effectValue;
+          } else if (newActiveEvent.effectType === 'ap_burst') {
+            newArchitecturePoints += newActiveEvent.effectValue;
           }
         }
 
-        // Check achievements
+        // ── Achievements ────────────────────────────────────────────────────────
         const checkState = {
           totalLoc: newTotalLoc,
           loc: newLoc,
@@ -382,20 +572,26 @@ export const useGameStore = create<GameState>()(
           }
         }
 
-        // EMA of actual LOC/s (passive + clicks this tick)
-        const actualRate = (locGained + state.pendingClickLoc) / dt;
+        // ── EMA display rate ────────────────────────────────────────────────────
+        const actualRate = (locGained - nestedStolenTotal + state.pendingClickLoc) / dt;
         const alpha = 0.85;
         const displayedLOCps = state.displayedLOCps * alpha + actualRate * (1 - alpha);
 
-        // Clean up expired floating texts (avoids individual setTimeout per text)
         const floatingTexts =
           state.floatingTexts.length > 0
             ? state.floatingTexts.filter((f) => now - f.createdAt < 1000)
             : state.floatingTexts;
 
+        // ── Recache if event survival bonus changed ─────────────────────────────
+        const cachedLegacyMult =
+          eventSurvivalProductionBonus !== state.eventSurvivalProductionBonus
+            ? legacyMult
+            : state.cachedLegacyMult;
+
         set({
           loc: newLoc,
           totalLoc: newTotalLoc,
+          lastRunPeakLoc: newLastRunPeakLoc,
           activeEvent: newActiveEvent,
           eventEndTime: newEventEndTime,
           negativeEventssurvived,
@@ -407,6 +603,10 @@ export const useGameStore = create<GameState>()(
           pendingClickLoc: 0,
           displayedLOCps,
           floatingTexts,
+          nestedDucks,
+          eventSurvivalProductionBonus,
+          architecturePoints: newArchitecturePoints,
+          cachedLegacyMult,
         });
       },
 
@@ -466,55 +666,76 @@ export const useGameStore = create<GameState>()(
         const upgrade = LEGACY_UPGRADES.find((u) => u.id === id);
         if (!upgrade) return;
         if (state.legacyUpgrades.includes(id)) return;
-        if (state.legacyTokens < upgrade.cost) return;
 
-        const newLegacyTokens = state.legacyTokens - upgrade.cost;
+        // Fast Learner: 20% token discount (minimum 1)
+        const discount = state.architectureUpgrades.includes('fast-learner') ? 0.8 : 1.0;
+        const effectiveCost = Math.max(1, Math.floor(upgrade.cost * discount));
+        if (state.legacyTokens < effectiveCost) return;
+
+        const newLegacyTokens = state.legacyTokens - effectiveCost;
         const newLegacyUpgrades = [...state.legacyUpgrades, id];
-        const cachedLegacyMult = computeLegacyMult(newLegacyUpgrades, newLegacyTokens);
+        const newTotalSpent = state.totalLegacyTokensEverSpent + effectiveCost;
+        const cachedLegacyMult = computeLegacyMult(
+          newLegacyUpgrades,
+          newLegacyTokens,
+          state.architectureUpgrades,
+          state.prestigeCount,
+          state.eventSurvivalProductionBonus,
+        );
 
-        set({ legacyTokens: newLegacyTokens, legacyUpgrades: newLegacyUpgrades, cachedLegacyMult });
+        set({
+          legacyTokens: newLegacyTokens,
+          legacyUpgrades: newLegacyUpgrades,
+          totalLegacyTokensEverSpent: newTotalSpent,
+          cachedLegacyMult,
+        });
+      },
+
+      buyArchitectureUpgrade: (id: string) => {
+        const state = get();
+        const upgrade = ARCHITECTURE_UPGRADES.find((u) => u.id === id);
+        if (!upgrade) return;
+        if (state.architectureUpgrades.includes(id)) return;
+        if (state.architecturePoints < upgrade.cost) return;
+
+        const newArchUpgrades = [...state.architectureUpgrades, id];
+        const newArchPoints = state.architecturePoints - upgrade.cost;
+        const caches = computeCaches({
+          ...state,
+          architectureUpgrades: newArchUpgrades,
+        });
+
+        set({
+          architecturePoints: newArchPoints,
+          architectureUpgrades: newArchUpgrades,
+          ...caches,
+        });
       },
 
       prestige: () => {
         const state = get();
         if (state.totalLoc < 10000000) return;
+        if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
 
-        const tokensEarned = Math.max(0, Math.floor(Math.log10(state.totalLoc)) - 5);
-
-        const startProducers: Record<string, number> = {};
-        const keptUpgrades: string[] = [];
-        let startLoc = 0;
-
-        for (const legacyId of state.legacyUpgrades) {
-          const lu = LEGACY_UPGRADES.find((u) => u.id === legacyId);
-          if (!lu) continue;
-
-          if (lu.effect.type === 'start_producer') {
-            for (const { id, count } of lu.effect.producers) {
-              startProducers[id] = (startProducers[id] ?? 0) + count;
-            }
-          } else if (lu.effect.type === 'start_loc') {
-            startLoc += lu.effect.amount;
-          } else if (lu.effect.type === 'keep_upgrade') {
-            if (lu.effect.upgradeId === 'all-click') {
-              for (const u of UPGRADES) {
-                if (u.target === 'click' && state.upgrades.includes(u.id)) {
-                  keptUpgrades.push(u.id);
-                }
-              }
-            } else if (state.upgrades.includes(lu.effect.upgradeId)) {
-              keptUpgrades.push(lu.effect.upgradeId);
-            }
-          }
-        }
+        const tokensEarned = calcPrestigeTokens(state.totalLoc, state.prestigeCount);
+        const { startProducers, keptUpgrades, startLoc } = buildStartState(
+          state.legacyUpgrades,
+          state.upgrades,
+          state.architectureUpgrades,
+          state.lastRunPeakLoc,
+        );
 
         const newLegacyTokens = state.legacyTokens + tokensEarned;
+        const newPrestigeCount = state.prestigeCount + 1;
         const cacheInput: CacheInput = {
           producers: startProducers,
           upgrades: keptUpgrades,
           locPerClick: 1,
           legacyUpgrades: state.legacyUpgrades,
           legacyTokens: newLegacyTokens,
+          architectureUpgrades: state.architectureUpgrades,
+          prestigeCount: newPrestigeCount,
+          eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
         };
 
         set({
@@ -524,13 +745,67 @@ export const useGameStore = create<GameState>()(
           upgrades: keptUpgrades,
           legacyTokens: newLegacyTokens,
           legacyUpgrades: state.legacyUpgrades,
-          prestigeCount: state.prestigeCount + 1,
+          prestigeCount: newPrestigeCount,
+          clicksThisRun: 0,
           productName: state.productName,
           achievements: state.achievements,
           activeEventTriggered: state.activeEventTriggered,
           negativeEventssurvived: state.negativeEventssurvived,
-          techStack: state.techStack, // stack survives prestige
+          techStack: state.techStack,
           pivotCount: state.pivotCount,
+          greatRefactorCount: state.greatRefactorCount,
+          architecturePoints: state.architecturePoints,
+          architectureUpgrades: state.architectureUpgrades,
+          totalLegacyTokensEverSpent: state.totalLegacyTokensEverSpent,
+          lastRunPeakLoc: state.lastRunPeakLoc,
+          eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+          nestedDucks: [],
+          lastSaveTime: Date.now(),
+          floatingTexts: [],
+          toastQueue: [],
+          ...computeCaches(cacheInput),
+        });
+      },
+
+      greatRefactor: () => {
+        const state = get();
+        if (!allLegacyBought(state.legacyUpgrades)) return;
+        if (state.prestigeCount < 3) return;
+        if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
+
+        const apGainMult = state.architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
+        const apEarned = Math.max(2, 3 + state.greatRefactorCount * 2) * apGainMult;
+        const newGreatRefactorCount = state.greatRefactorCount + 1;
+        const newArchitecturePoints = state.architecturePoints + apEarned;
+
+        const cacheInput: CacheInput = {
+          producers: {},
+          upgrades: [],
+          locPerClick: 1,
+          legacyUpgrades: [],
+          legacyTokens: 0,
+          architectureUpgrades: state.architectureUpgrades,
+          prestigeCount: 0,
+          eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+        };
+
+        set({
+          ...DEFAULT_STATE,
+          greatRefactorCount: newGreatRefactorCount,
+          architecturePoints: newArchitecturePoints,
+          architectureUpgrades: state.architectureUpgrades,
+          totalLegacyTokensEverSpent: state.totalLegacyTokensEverSpent,
+          achievements: state.achievements,
+          totalClicks: state.totalClicks,
+          clicksThisRun: 0,
+          negativeEventssurvived: state.negativeEventssurvived,
+          activeEventTriggered: state.activeEventTriggered,
+          eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+          techStack: state.techStack,
+          pivotCount: state.pivotCount,
+          productName: state.productName,
+          lastRunPeakLoc: 0,
+          nestedDucks: [],
           lastSaveTime: Date.now(),
           floatingTexts: [],
           toastQueue: [],
@@ -541,45 +816,31 @@ export const useGameStore = create<GameState>()(
       pivot: (stack: TechStack) => {
         const state = get();
         if (state.prestigeCount < 5) return;
+        if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
 
         const tokensEarned = Math.max(
           0,
           Math.floor(Math.log10(Math.max(state.totalLoc, 1000000))) - 5,
         );
 
-        const startProducers: Record<string, number> = {};
-        const keptUpgrades: string[] = [];
-        let startLoc = 0;
-
-        for (const legacyId of state.legacyUpgrades) {
-          const lu = LEGACY_UPGRADES.find((u) => u.id === legacyId);
-          if (!lu) continue;
-          if (lu.effect.type === 'start_producer') {
-            for (const { id, count } of lu.effect.producers) {
-              startProducers[id] = (startProducers[id] ?? 0) + count;
-            }
-          } else if (lu.effect.type === 'start_loc') {
-            startLoc += lu.effect.amount;
-          } else if (lu.effect.type === 'keep_upgrade') {
-            if (lu.effect.upgradeId === 'all-click') {
-              for (const u of UPGRADES) {
-                if (u.target === 'click' && state.upgrades.includes(u.id)) {
-                  keptUpgrades.push(u.id);
-                }
-              }
-            } else if (state.upgrades.includes(lu.effect.upgradeId)) {
-              keptUpgrades.push(lu.effect.upgradeId);
-            }
-          }
-        }
+        const { startProducers, keptUpgrades, startLoc } = buildStartState(
+          state.legacyUpgrades,
+          state.upgrades,
+          state.architectureUpgrades,
+          state.lastRunPeakLoc,
+        );
 
         const newLegacyTokens = state.legacyTokens + tokensEarned;
+        const newPrestigeCount = state.prestigeCount + 1;
         const cacheInput: CacheInput = {
           producers: startProducers,
           upgrades: keptUpgrades,
           locPerClick: 1,
           legacyUpgrades: state.legacyUpgrades,
           legacyTokens: newLegacyTokens,
+          architectureUpgrades: state.architectureUpgrades,
+          prestigeCount: newPrestigeCount,
+          eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
         };
 
         set({
@@ -589,13 +850,21 @@ export const useGameStore = create<GameState>()(
           upgrades: keptUpgrades,
           legacyTokens: newLegacyTokens,
           legacyUpgrades: state.legacyUpgrades,
-          prestigeCount: state.prestigeCount + 1,
+          prestigeCount: newPrestigeCount,
+          clicksThisRun: 0,
           productName: state.productName,
           achievements: state.achievements,
           activeEventTriggered: state.activeEventTriggered,
           negativeEventssurvived: state.negativeEventssurvived,
           techStack: stack,
           pivotCount: state.pivotCount + 1,
+          greatRefactorCount: state.greatRefactorCount,
+          architecturePoints: state.architecturePoints,
+          architectureUpgrades: state.architectureUpgrades,
+          totalLegacyTokensEverSpent: state.totalLegacyTokensEverSpent,
+          lastRunPeakLoc: state.lastRunPeakLoc,
+          eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+          nestedDucks: [],
           lastSaveTime: Date.now(),
           floatingTexts: [],
           toastQueue: [],
@@ -635,6 +904,18 @@ export const useGameStore = create<GameState>()(
         }));
       },
 
+      popNestedDuck: (id: string) => {
+        const state = get();
+        const duck = state.nestedDucks.find((d) => d.id === id);
+        if (!duck) return;
+        const locGained = duck.storedLoc * 1.4;
+        set({
+          loc: state.loc + locGained,
+          totalLoc: state.totalLoc + locGained,
+          nestedDucks: state.nestedDucks.filter((d) => d.id !== id),
+        });
+      },
+
       newGame: () => {
         set({
           ...DEFAULT_STATE,
@@ -659,13 +940,30 @@ export const useGameStore = create<GameState>()(
         } = state;
         return rest;
       },
-      // Recompute derived caches after loading from storage
       onRehydrateStorage: () => (state) => {
         if (state) {
-          const caches = computeCaches(state);
+          const caches = computeCaches({
+            producers: state.producers ?? {},
+            upgrades: state.upgrades ?? [],
+            locPerClick: state.locPerClick ?? 1,
+            legacyUpgrades: state.legacyUpgrades ?? [],
+            legacyTokens: state.legacyTokens ?? 0,
+            architectureUpgrades: state.architectureUpgrades ?? [],
+            prestigeCount: state.prestigeCount ?? 0,
+            eventSurvivalProductionBonus: state.eventSurvivalProductionBonus ?? 0,
+          });
           state.cachedLOCps = caches.cachedLOCps;
           state.cachedClickValue = caches.cachedClickValue;
           state.cachedLegacyMult = caches.cachedLegacyMult;
+          // Ensure new fields default properly on old saves
+          state.greatRefactorCount = state.greatRefactorCount ?? 0;
+          state.architecturePoints = state.architecturePoints ?? 0;
+          state.architectureUpgrades = state.architectureUpgrades ?? [];
+          state.totalLegacyTokensEverSpent = state.totalLegacyTokensEverSpent ?? 0;
+          state.lastRunPeakLoc = state.lastRunPeakLoc ?? 0;
+          state.eventSurvivalProductionBonus = state.eventSurvivalProductionBonus ?? 0;
+          state.nestedDucks = state.nestedDucks ?? [];
+          state.clicksThisRun = state.clicksThisRun ?? 0;
         }
       },
     },

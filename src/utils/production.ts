@@ -39,6 +39,22 @@ export function calculateLOCps(state: ProductionState): number {
   return total;
 }
 
+/** Returns the raw LOC/s for a single producer type (base × count × per-producer upgrades). */
+export function calculateSingleProducerLOCps(producerId: string, state: ProductionState): number {
+  const producer = PRODUCERS.find((p) => p.id === producerId);
+  if (!producer) return 0;
+  const count = state.producers[producerId] ?? 0;
+  if (count === 0) return 0;
+
+  let locps = producer.baseLOCps * count;
+  for (const upgrade of UPGRADES) {
+    if (upgrade.target === producerId && state.upgrades.includes(upgrade.id)) {
+      locps *= upgrade.multiplier;
+    }
+  }
+  return locps;
+}
+
 export function calculateClickValue(state: ProductionState): number {
   let value = state.locPerClick;
 

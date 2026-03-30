@@ -11,6 +11,8 @@ export interface LegacyUpgrade {
   flavor: string;
   cost: number;
   effect: LegacyEffect;
+  /** If true, only visible after the 'second-system' Architecture upgrade is purchased */
+  requiresSecondSystem?: boolean;
 }
 
 export const LEGACY_UPGRADES: LegacyUpgrade[] = [
@@ -294,5 +296,59 @@ export const LEGACY_UPGRADES: LegacyUpgrade[] = [
     flavor: 'There is no longer a distinction between duck and developer.',
     cost: 30,
     effect: { type: 'start_producer', producers: [{ id: 'rubber-duck', count: 200 }] },
+  },
+
+  // ── Second System unlocks (requires Architecture upgrade: Second System) ──────
+  {
+    id: 'distributed-architecture',
+    name: 'Distributed Architecture',
+    description: '×3 global production',
+    flavor: 'The system is everywhere now. Latency: zero. Reason: unclear.',
+    cost: 35,
+    effect: { type: 'production_bonus', multiplier: 3.0 },
+    requiresSecondSystem: true,
+  },
+  {
+    id: 'hot-module-replacement',
+    name: 'Hot Module Replacement',
+    description: 'Start each run with 1 each of Cloud Cluster, AGI, and Quantum Computer',
+    flavor: 'No restart required. The AI was already running.',
+    cost: 25,
+    effect: {
+      type: 'start_producer',
+      producers: [
+        { id: 'cloud-cluster', count: 1 },
+        { id: 'agi', count: 1 },
+        { id: 'quantum-computer', count: 1 },
+      ],
+    },
+    requiresSecondSystem: true,
+  },
+  {
+    id: 'zero-downtime-reset',
+    name: 'Zero Downtime Reset',
+    description: 'Keep all producer upgrades on reset',
+    flavor: 'Blue-green deployment. The old you stayed online while the new you deployed.',
+    cost: 30,
+    effect: { type: 'keep_upgrade', upgradeId: 'all-producer' },
+    requiresSecondSystem: true,
+  },
+  {
+    id: 'infinite-monkey-legacy',
+    name: 'Infinite Monkey Legacy',
+    description: 'Start each run with 5 Infinite Monkey Farms',
+    flavor: 'They were already here. The typewriters were warm.',
+    cost: 40,
+    effect: { type: 'start_producer', producers: [{ id: 'infinite-monkey-farm', count: 5 }] },
+    requiresSecondSystem: true,
+  },
+  {
+    id: 'the-final-commit',
+    name: 'The Final Commit',
+    description: '×20 global production',
+    flavor: '`feat: everything`. Author: you (the system). Merged without review.',
+    cost: 50,
+    effect: { type: 'production_bonus', multiplier: 20.0 },
+    requiresSecondSystem: true,
   },
 ];
