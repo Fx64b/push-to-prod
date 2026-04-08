@@ -15,6 +15,8 @@ export interface Achievement {
     technicalDebt: number;
     techStack: string | null;
     pivotCount: number;
+    greatRefactorCount: number;
+    architectureUpgrades: string[];
   }) => boolean;
 }
 
@@ -522,5 +524,89 @@ export const ACHIEVEMENTS: Achievement[] = [
       const total = Object.values(producers).reduce((a, b) => a + b, 0);
       return prestigeCount >= 1 && total === 0;
     },
+  },
+
+  // ── Great Refactor / Architecture achievements ────────────────────────────────
+  {
+    id: 'the-great-architect',
+    name: 'The Great Architect',
+    description: 'Performed your first Great Refactor. The legacy is gone. The points remain.',
+    icon: '🏗️',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 1,
+  },
+  {
+    id: 'loops-all-the-way-down',
+    name: 'Loops All the Way Down',
+    description: 'Performed 5 Great Refactors. You are the loop.',
+    icon: '🔁',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 5,
+  },
+  {
+    id: 'eternal-looper',
+    name: 'Eternal Looper',
+    description: 'Performed 10 Great Refactors. The codebase knows your face now.',
+    icon: '♾️',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 10,
+  },
+  {
+    id: 'protocol-breach-ach',
+    name: 'Protocol Breach',
+    description: 'Unlocked The Loop. The events file has a note about you.',
+    icon: '🔓',
+    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('protocol-breach'),
+  },
+  {
+    id: 'eternal-loop-ach',
+    name: 'Eternal Loop Engaged',
+    description: 'Purchased Eternal Loop. Each refactor now echoes forward.',
+    icon: '🌀',
+    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('eternal-loop'),
+  },
+  {
+    id: 'all-architecture',
+    name: 'Peak Architecture',
+    description: 'Purchased all base Architecture upgrades. The diagram is complete.',
+    icon: '🧱',
+    condition: ({ architectureUpgrades }) =>
+      ['event-horizon', 'debt-forgiveness', 'fast-learner', 'recursive-memory',
+       'nest-protocol', 'compounding-interest', 'event-driven', 'loop-accelerant',
+       'second-system', 'protocol-breach', 'ap-multiplier'].every(
+        (id) => architectureUpgrades.includes(id),
+      ),
+  },
+  {
+    id: 'chaos-veteran',
+    name: 'Chaos Veteran',
+    description: 'Survived 500 negative events. You have become the incident.',
+    icon: '🔥',
+    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 500,
+  },
+  {
+    id: 'the-loop-producer',
+    name: 'Entered The Loop',
+    description: 'Hired The Process Itself. It was already running.',
+    icon: '⚙️',
+    condition: ({ producers }) => (producers['the-process'] ?? 0) >= 1,
+  },
+  {
+    id: 'sentient-code',
+    name: 'Sentient Codebase Online',
+    description: 'Hired a Sentient Codebase. It approved this achievement before you earned it.',
+    icon: '🌐',
+    condition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 1,
+  },
+  {
+    id: 'duck-collective-llc-ach',
+    name: 'Incorporated in Delaware',
+    description: 'Hired Duck Collective LLC. Zero documentation. One mission.',
+    icon: '🦆⚖️',
+    condition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 1,
+  },
+  {
+    id: 'recursive-self-ach',
+    name: 'You, But Better',
+    description: 'Hired Recursive Self. It leaves comments you recognize from dreams.',
+    icon: '🪞',
+    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 1,
   },
 ];

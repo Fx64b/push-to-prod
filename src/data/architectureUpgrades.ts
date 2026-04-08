@@ -9,7 +9,9 @@ export type ArchitectureEffect =
   | { type: 'production_bonus'; multiplier: number }
   | { type: 'unlock_second_system' }// unlocks 5 additional high-tier legacy upgrades
   | { type: 'protocol_breach' }     // unlocks Phase 5 "The Loop" events
-  | { type: 'ap_multiplier' };      // doubles AP earned in all future Great Refactors
+  | { type: 'ap_multiplier' }       // doubles AP earned in all future Great Refactors
+  | { type: 'eternal_loop' }        // each Great Refactor permanently adds +5% global production
+  | { type: 'token_proliferation' };// each prestige grants +1 bonus Legacy Token
 
 export interface ArchitectureUpgrade {
   id: string;
@@ -119,5 +121,25 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     flavor: 'The architecture diagram is sentient. It has been waiting for this purchase.',
     cost: 8,
     effect: { type: 'ap_multiplier' },
+  },
+
+  // ── 10 AP ────────────────────────────────────────────────────────────────────
+  {
+    id: 'token-proliferation',
+    name: 'Token Proliferation',
+    description: 'Each prestige grants +1 bonus Legacy Token',
+    flavor: 'The economy of loops has been solved. The solution is: more tokens.',
+    cost: 10,
+    effect: { type: 'token_proliferation' },
+  },
+
+  // ── 12 AP ────────────────────────────────────────────────────────────────────
+  {
+    id: 'eternal-loop',
+    name: 'Eternal Loop',
+    description: 'Each Great Refactor permanently adds +5% global production (stacks forever)',
+    flavor: 'The codebase does not reset. It evolves. Each version remembers the last.',
+    cost: 12,
+    effect: { type: 'eternal_loop' },
   },
 ];

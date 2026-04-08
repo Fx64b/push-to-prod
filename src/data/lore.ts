@@ -16,6 +16,7 @@ export interface TickerMessage {
   minLoc?: number;
   minDucks?: number;
   minPrestige?: number;
+  minGreatRefactor?: number;
   stage?: 1 | 2 | 3; // duckapocalypse stage required
 }
 
@@ -543,4 +544,22 @@ export const TICKER_MESSAGES: TickerMessage[] = [
     text: 'You reset the codebase. The codebase is already running. It was running before you started. This is consistent.',
     minPrestige: 4,
   },
+
+  // ── The Loop (Great Refactor era) ───────────────────────────────────────────
+  { text: 'The architecture points remember every loop. They have been here longer than you.', minGreatRefactor: 1 },
+  { text: 'Great Refactor #1 complete. You are not the same developer. The duck disagrees.', minGreatRefactor: 1 },
+  { text: 'The codebase does not forget. It versions. You are now in the diff.', minGreatRefactor: 1 },
+  { text: 'Architecture upgrade purchased. The system recognized the intent before the click.', minGreatRefactor: 1 },
+  { text: 'Loop iteration 2. Compile time: 0. Reason: it was already compiled. This time.', minGreatRefactor: 2 },
+  { text: 'The Eternal Loop has been engaged. Production now remembers every past run. You are the average.', minGreatRefactor: 2 },
+  { text: 'Recursive Self submitted a PR for you. You reviewed it. It was already merged. By you.', minGreatRefactor: 2 },
+  { text: 'Token proliferation confirmed. The economy of loops has achieved equilibrium. Ducks: aware.', minGreatRefactor: 2 },
+  { text: 'Protocol Breach active. The events file now has a section about you specifically.', minGreatRefactor: 3 },
+  { text: 'Loop iteration N. N is not disclosed. The duck knows N. The duck will not say N.', minGreatRefactor: 3 },
+  { text: 'Sentient Codebase reviewed its own PR. All comments: "already resolved." Merged.', minGreatRefactor: 3 },
+  { text: 'Architecture Diagram upgraded itself. Filed a patent. Named inventor: The Diagram.', minGreatRefactor: 3 },
+  { text: 'Duck Collective LLC has existed in every loop. Different name each time. Same duck.', minGreatRefactor: 4 },
+  { text: 'The process does not start. The process does not stop. You joined midway through. You always did.', minGreatRefactor: 4 },
+  { text: 'Eternal Loop bonus: active. Each loop makes the last one run faster. Causality: comfortable with this.', minGreatRefactor: 5 },
+  { text: 'The Recursive Self has filed its own Great Refactor. It earned 0 AP. It does not need AP.', minGreatRefactor: 5 },
 ];
