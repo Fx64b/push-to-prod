@@ -155,4 +155,22 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     cost: 50,
     effect: { type: 'production_bonus', multiplier: 100 },
   },
+
+  // ── Deep Late-Game: For 20+ Great Refactors ───────────────────────────────────
+  {
+    id: 'quantum-architecture',
+    name: 'Quantum Architecture',
+    description: '×10 global production. Your architecture exists in every possible future simultaneously.',
+    flavor: 'The codebase exists in a superposition of shipping and not-shipping. Observation collapses it to shipped.',
+    cost: 75,
+    effect: { type: 'production_bonus', multiplier: 10 },
+  },
+  {
+    id: 'infinite-compile-time',
+    name: 'Infinite Compile Time',
+    description: '×25 global production. The build takes forever. The output is everything.',
+    flavor: 'The compiler has been running since before the universe. It just finished. Build succeeded.',
+    cost: 125,
+    effect: { type: 'production_bonus', multiplier: 25 },
+  },
 ];

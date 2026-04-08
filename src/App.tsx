@@ -210,7 +210,9 @@ export default function App() {
 
                 <LOCDisplay />
                 <EnterKey />
+                <DuckNestPanel />
                 <RefactorButton />
+                <GreatRefactorButton />
                 <PivotButton />
                 <TechDebtMeter />
 

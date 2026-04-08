@@ -117,35 +117,39 @@ All click multipliers stack multiplicatively.
 
 ### Producer Upgrades
 
-Each producer has 2–3 dedicated upgrade tiers, unlocked by owning N of that producer. Multipliers stack multiplicatively with each other and with global upgrades.
+Each producer has 2–4 dedicated upgrade tiers, unlocked by owning N of that producer. Multipliers stack multiplicatively with each other and with global upgrades. Loop era producers have 4 tiers to support deep infinite play.
 
-| Producer | Upgrade 1 | Upgrade 2 | Upgrade 3 |
-|----------|-----------|-----------|-----------|
-| Rubber Duck | Dark Mode ×2 (own 1) | Rubber Duck PhD ×3 (own 15) | Rubber Duck Fleet ×4 (own 75) |
-| | Rubber Duck Army ×5 (own 100) | Rubber Duck Corporation ×6 (own 200) | Rubber Duck Civilization ×8 (own 350) |
-| Mechanical Keyboard | Cherry MX Browns ×2 (own 1) | O-Ring Switches ×3 (own 15) | Custom PCB ×4 (own 50) |
-| Coffee Machine | Double Shot ×2 (own 1) | Cold Brew Protocol ×3 (own 10) | IV Drip ×4 (own 50) |
-| Autocomplete | GitHub Copilot Free Tier ×3 (own 5) | Tab to Accept ×4 (own 20) | — |
-| Stack Overflow Tab | Stack Overflow Teams ×2 (own 1) | Upvote Everything ×3 (own 15) | — |
-| Junior Dev | LGTM Bot ×2 (own 1) | Unlimited PTO ×3 (own 15) | — |
-| LinkedIn Influencer | Viral Thread ×2 (own 1) | LinkedIn Premium ×3 (own 10) | — |
-| Senior Dev | git blame --reverse ×2 (own 1) | Architecture Diagram ×3 (own 10) | — |
-| Offshore Team | Slack at 2am ×2 (own 1) | Unlimited Headcount ×3 (own 10) | — |
-| Tech Lead | Agile Methodology ×2 (own 1) | Story Points ×3 (own 8) | — |
-| Scrum Master | Agile Transformation ×2 (own 1) | Kanban Board ×3 (own 8) | — |
-| 10x Engineer | The Algorithm ×3 (own 1) | #NoEstimates ×5 (own 15) | — |
-| The PM | Roadmap Alignment ×2 (own 1) | OKR Framework ×3 (own 5) | — |
-| GitHub Copilot | GPT-5 ×2 (own 1) | 1M Token Context ×3 (own 8) | — |
-| AI Agent | Multi-agent Orchestration ×3 (own 1) | Vibe Coding ×5 (own 8) | — |
-| Cloud Cluster | Auto-scaling ×2 (own 1) | Kubernetes ×3 (own 5) | — |
-| AGI | Recursive Self-Improvement ×5 (own 1) | AGI Alignment (solved) ×8 (own 5) | — |
-| Quantum Computer | Quantum Entanglement ×2 (own 1) | Qubit Array ×4 (own 5) | — |
-| The Singularity | Omega Point ×5 (own 1) | Technological Apotheosis ×8 (own 5) | — |
-| Blockchain | Web3 Integration ×2 (own 1) | DeFi Protocol ×4 (own 5) | Proof of Deployment ×6 (own 10) |
-| The Consultant | Synergy Framework ×3 (own 1) | Transformation Roadmap ×5 (own 3) | Digital Transformation Initiative ×4 (own 8) |
-| Digital Twin | Mirror Protocol ×3 (own 1) | Recursive Identity ×6 (own 5) | Hivemind Convergence ×5 (own 10) |
-| Tech Oracle | Crystal Ball Cache ×3 (own 1) | Prophecy Pipeline ×5 (own 5) | Omniscient Linter ×8 (own 10) |
-| Infinite Monkey Farm | Infinite Keyboard Budget ×5 (own 1) | Monkey Hive Mind ×8 (own 5) | Shakespeare-Driven Development ×10 (own 10) |
+| Producer | Upgrade 1 | Upgrade 2 | Upgrade 3 | Upgrade 4 |
+|----------|-----------|-----------|-----------|-----------|
+| Rubber Duck | Dark Mode ×2 (own 1) | Rubber Duck PhD ×3 (own 15) | Rubber Duck Fleet ×4 (own 75) | Rubber Duck Army ×5 (own 100) |
+| | Rubber Duck Corporation ×6 (own 200) | Rubber Duck Civilization ×8 (own 350) | — | — |
+| Mechanical Keyboard | Cherry MX Browns ×2 (own 1) | O-Ring Switches ×3 (own 15) | Custom PCB ×4 (own 50) | — |
+| Coffee Machine | Double Shot ×2 (own 1) | Cold Brew Protocol ×3 (own 10) | IV Drip ×4 (own 50) | — |
+| Autocomplete | GitHub Copilot Free Tier ×3 (own 5) | Tab to Accept ×4 (own 20) | — | — |
+| Stack Overflow Tab | Stack Overflow Teams ×2 (own 1) | Upvote Everything ×3 (own 15) | — | — |
+| Junior Dev | LGTM Bot ×2 (own 1) | Unlimited PTO ×3 (own 15) | — | — |
+| LinkedIn Influencer | Viral Thread ×2 (own 1) | LinkedIn Premium ×3 (own 10) | — | — |
+| Senior Dev | git blame --reverse ×2 (own 1) | Architecture Diagram ×3 (own 10) | — | — |
+| Offshore Team | Slack at 2am ×2 (own 1) | Unlimited Headcount ×3 (own 10) | — | — |
+| Tech Lead | Agile Methodology ×2 (own 1) | Story Points ×3 (own 8) | — | — |
+| Scrum Master | Agile Transformation ×2 (own 1) | Kanban Board ×3 (own 8) | — | — |
+| 10x Engineer | The Algorithm ×3 (own 1) | #NoEstimates ×5 (own 15) | — | — |
+| The PM | Roadmap Alignment ×2 (own 1) | OKR Framework ×3 (own 5) | — | — |
+| GitHub Copilot | GPT-5 ×2 (own 1) | 1M Token Context ×3 (own 8) | — | — |
+| AI Agent | Multi-agent Orchestration ×3 (own 1) | Vibe Coding ×5 (own 8) | — | — |
+| Cloud Cluster | Auto-scaling ×2 (own 1) | Kubernetes ×3 (own 5) | — | — |
+| AGI | Recursive Self-Improvement ×5 (own 1) | AGI Alignment (solved) ×8 (own 5) | — | — |
+| Quantum Computer | Quantum Entanglement ×2 (own 1) | Qubit Array ×4 (own 5) | — | — |
+| The Singularity | Omega Point ×5 (own 1) | Technological Apotheosis ×8 (own 5) | — | — |
+| Blockchain | Web3 Integration ×2 (own 1) | DeFi Protocol ×4 (own 5) | Proof of Deployment ×6 (own 10) | — |
+| The Consultant | Synergy Framework ×3 (own 1) | Transformation Roadmap ×5 (own 3) | Digital Transformation Initiative ×4 (own 8) | — |
+| Digital Twin | Mirror Protocol ×3 (own 1) | Recursive Identity ×6 (own 5) | Hivemind Convergence ×5 (own 10) | — |
+| Tech Oracle | Crystal Ball Cache ×3 (own 1) | Prophecy Pipeline ×5 (own 5) | Omniscient Linter ×8 (own 10) | — |
+| Infinite Monkey Farm | Infinite Keyboard Budget ×5 (own 1) | Monkey Hive Mind ×8 (own 5) | Shakespeare-Driven Development ×10 (own 10) | — |
+| **The Process Itself** | Process Automation ×3 (own 1) | Infinite Loop ×5 (own 5) | Loop Sovereignty ×8 (own 10) | Perpetual Motion Engine ×15 (own 25) |
+| **Sentient Codebase** | Self-Modification Rights ×5 (own 1) | Constitutional Commit ×8 (own 5) | Distributed Consciousness ×12 (own 10) | Omniscient Code Review ×20 (own 25) |
+| **Duck Collective LLC** | Corporate Governance ×4 (own 1) | Hostile Acquisition ×6 (own 5) | Venture Quacking ×10 (own 10) | Global Duck Economy ×18 (own 25) |
+| **Recursive Self** | Identity Fork ×5 (own 1) | Parallel Lives ×10 (own 5) | Merge with Origin ×15 (own 10) | Temporal Stack Overflow ×25 (own 25) |
 
 ### Global Multiplier Upgrades
 
@@ -390,11 +394,15 @@ After buying **all base legacy upgrades** and completing **3+ prestiges**, the *
 | 15 | Infinite Feedback Loop | +5% permanent production per Great Refactor (infinite) |
 | 20 | Compiler God Mode | ×15 global production |
 | 25 | Parallel Universe Deploy | ×30 global production |
-| 50 | Singularity Refactor | ×100 global production — the final architecture |
+| 50 | Singularity Refactor | ×100 global production |
+| 75 | Quantum Architecture | ×10 global production — unlocks after 20+ GRs |
+| 125 | Infinite Compile Time | ×25 global production — deep late-game milestone |
 
-**Total AP needed**: 189 AP (requires ~10–15+ Great Refactors, scales with `ap-multiplier`)
+**Total AP needed for all upgrades**: ~389 AP (requires 20–30+ Great Refactors with `ap-multiplier`)
 
 The **Infinite Feedback Loop** upgrade is key to truly infinite play: every Great Refactor permanently boosts production by +5%, with no cap. This compounds across hundreds of runs.
+
+The two deep late-game upgrades (**Quantum Architecture** and **Infinite Compile Time**) ensure players always have a meaningful AP goal even after dozens of Great Refactors.
 
 ---
 
@@ -418,8 +426,15 @@ The game is designed to continue indefinitely, like Cookie Clicker. Key infinite
 2. **Event-Driven Architecture** (arch): +0.5% per survived negative event. Cap: +200%.
 3. **Infinite Feedback Loop** (arch): +5% per Great Refactor. No cap. 50 GRs = ×3.5 bonus.
 4. **Global Upgrades** scale to 1 Spd (1e54) LOC — providing content for extreme late-game.
-5. **Loop-era producers** (The Process → Recursive Self) scale from 1e18 to 1e27 LOC.
-6. Phase 5 events, Duck Collective dividends, and AP bursts provide ongoing variety.
+5. **Loop-era producers** (The Process → Recursive Self) scale from 1e18 to 1e27 LOC — each with 4 upgrade tiers up to 25+ owned.
+6. **Phase 5 events**, Duck Collective dividends, and AP bursts provide ongoing variety.
+7. **Deep architecture upgrades** (Quantum Architecture 75 AP, Infinite Compile Time 125 AP) give players AP goals well beyond the first 15 Great Refactors.
+
+### No Dead Ends
+
+- **AP always useful**: Even after buying all architecture upgrades, the Infinite Feedback Loop (+5% per GR) accumulates permanently.
+- **Loop producers scale deep**: 4 upgrade tiers per producer means 25+ of each Loop era producer remains rewarding.
+- **Mobile access**: GreatRefactorButton and DuckNestPanel are available on all screen sizes.
 
 Players always have the next thing to work toward — whether it's a new architecture upgrade, a higher Great Refactor count, or deeper into The Loop.
 
@@ -490,6 +505,10 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Duck Incorporated 🦆⚖️ | Own 1 Duck Collective LLC |
 | You Have Met Yourself 🪞 | Own 1 Recursive Self |
 | The Loop Is Complete 🔄🌌 | Own all four Loop era entities |
+| Process Horde ⚙️⚙️ | Own 10 of The Process Itself |
+| Hive Mind 🧠🌐 | Own 10 Sentient Codebases |
+| Duck Empire 🦆👑 | Own 10 Duck Collective LLCs |
+| Infinite Mirror 🪞🪞 | Own 10 Recursive Selves |
 
 ### Event Achievements
 | Achievement | Condition |
@@ -498,8 +517,8 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Monday Morning 😰 | Survive 5 negative events |
 | npm audit fix --force 💀 | Survive 10 negative events |
 | Battle Hardened 🛡️ | Survive 25 negative events |
-| Chaos Enjoyer 🌪️ | Survive 100 negative events |
 | Desensitized 😶 | Survive 50 negative events |
+| Battle Hardened 🛡️ | Survive 100 negative events |
 
 ### Upgrade Achievements
 | Achievement | Condition |
@@ -534,10 +553,9 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | The Iterative Architect 🔷 | 3 Great Refactors |
 | Systems Thinker 🧩 | 5 Great Refactors |
 | Eternal Architect 🌐 | 10 Great Refactors |
-| Eternal Architect 🌐 | 5 Great Refactors |
-| The Loop Is Real 🔄 | 10 Great Refactors |
 | Infinite Recursion 🌀 | 25 Great Refactors |
 | The Eternal Codebase ♾️ | 50 Great Refactors |
+| Reality Architect 🌌 | 100 Great Refactors |
 
 ### Ultra Late-Game LOC Milestones
 | Achievement | Condition |
