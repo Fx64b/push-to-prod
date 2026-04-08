@@ -10,6 +10,7 @@ export function GreatRefactorButton() {
   const clicksThisRun = useGameStore((s) => s.clicksThisRun);
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
   const architectureUpgrades = useGameStore((s) => s.architectureUpgrades);
+  const greatRefactorProductionBonus = useGameStore((s) => s.greatRefactorProductionBonus);
   const greatRefactor = useGameStore((s) => s.greatRefactor);
   const [confirming, setConfirming] = useState(false);
 
@@ -22,6 +23,8 @@ export function GreatRefactorButton() {
   const apGainMult = architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
   const apToEarn = Math.max(2, 3 + greatRefactorCount * 2) * apGainMult;
   const clicksReady = clicksThisRun >= MIN_CLICKS_TO_PRESTIGE;
+  const hasInfiniteFeedback = architectureUpgrades.includes('infinite-feedback-loop');
+  const feedbackAfter = greatRefactorProductionBonus + (hasInfiniteFeedback ? 0.05 : 0);
 
   const handleClick = () => {
     if (!clicksReady) return;
@@ -46,6 +49,15 @@ export function GreatRefactorButton() {
         <span className="text-gh-yellow font-bold">+{apToEarn} Architecture Point{apToEarn !== 1 ? 's' : ''}</span>
         {apGainMult > 1 && (
           <span className="text-gh-green"> (×{apGainMult} from God Mode)</span>
+        )}
+        {hasInfiniteFeedback && (
+          <>
+            <br />
+            <span className="text-gh-muted">Feedback Loop: </span>
+            <span className="text-gh-green font-bold">
+              +5% → {(feedbackAfter * 100).toFixed(0)}% total bonus
+            </span>
+          </>
         )}
       </div>
 

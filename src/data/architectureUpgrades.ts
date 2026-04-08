@@ -9,7 +9,8 @@ export type ArchitectureEffect =
   | { type: 'production_bonus'; multiplier: number }
   | { type: 'unlock_second_system' }// unlocks 5 additional high-tier legacy upgrades
   | { type: 'protocol_breach' }     // unlocks Phase 5 "The Loop" events
-  | { type: 'ap_multiplier' };      // doubles AP earned in all future Great Refactors
+  | { type: 'ap_multiplier' }       // doubles AP earned in all future Great Refactors
+  | { type: 'infinite_feedback_loop' }; // +5% permanent production per Great Refactor
 
 export interface ArchitectureUpgrade {
   id: string;
@@ -119,5 +120,39 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     flavor: 'The architecture diagram is sentient. It has been waiting for this purchase.',
     cost: 8,
     effect: { type: 'ap_multiplier' },
+  },
+
+  // ── Late-Game: Infinite Scaling ──────────────────────────────────────────────
+  {
+    id: 'infinite-feedback-loop',
+    name: 'Infinite Feedback Loop',
+    description: 'Each Great Refactor permanently adds +5% global production (stacks forever)',
+    flavor: 'Every reset compounds the next. The codebase is learning from its own history.',
+    cost: 15,
+    effect: { type: 'infinite_feedback_loop' },
+  },
+  {
+    id: 'compiler-god-mode',
+    name: 'Compiler God Mode',
+    description: '×15 global production',
+    flavor: 'The compiler no longer rejects your code. It has given up questioning you.',
+    cost: 20,
+    effect: { type: 'production_bonus', multiplier: 15 },
+  },
+  {
+    id: 'parallel-universe-deploy',
+    name: 'Parallel Universe Deploy',
+    description: '×30 global production',
+    flavor: 'Deployed to every branch. Every timeline. The diff is infinite and approved.',
+    cost: 25,
+    effect: { type: 'production_bonus', multiplier: 30 },
+  },
+  {
+    id: 'singularity-refactor',
+    name: 'Singularity Refactor',
+    description: '×100 global production. The final architecture.',
+    flavor: 'The codebase has transcended language. It now compiles reality itself.',
+    cost: 50,
+    effect: { type: 'production_bonus', multiplier: 100 },
   },
 ];

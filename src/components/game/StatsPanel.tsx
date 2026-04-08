@@ -26,6 +26,7 @@ export function StatsPanel() {
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
   const architecturePoints = useGameStore((s) => s.architecturePoints);
   const clicksThisRun = useGameStore((s) => s.clicksThisRun);
+  const greatRefactorProductionBonus = useGameStore((s) => s.greatRefactorProductionBonus);
 
   const clickValue = useMemo(
     () => calculateClickValue({ producers, upgrades, locPerClick }),
@@ -89,6 +90,13 @@ export function StatsPanel() {
             value={clicksThisRun.toLocaleString()}
             color={clicksThisRun >= 1000 ? 'text-gh-green' : 'text-gh-muted'}
           />
+          {greatRefactorProductionBonus > 0 && (
+            <StatRow
+              label="Loop Feedback"
+              value={`+${(greatRefactorProductionBonus * 100).toFixed(0)}%`}
+              color="text-gh-yellow"
+            />
+          )}
           {techStack && (
             <StatRow
               label="Tech Stack"

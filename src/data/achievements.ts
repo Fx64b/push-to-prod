@@ -646,4 +646,57 @@ export const ACHIEVEMENTS: Achievement[] = [
       return prestigeCount >= 1 && total === 0;
     },
   },
+
+  // ── Great Refactor / Architecture achievements ────────────────────────────────
+  {
+    id: 'great-refactor-5',
+    name: 'Eternal Architect 🌐',
+    description: '5 Great Refactors. The architecture has memory.',
+    icon: '🌐',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 5,
+  },
+  {
+    id: 'great-refactor-10',
+    name: 'The Loop Is Real 🔄',
+    description: '10 Great Refactors. You are the loop now.',
+    icon: '🔄',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 10,
+  },
+  {
+    id: 'great-refactor-25',
+    name: 'Infinite Recursion 🌀',
+    description: '25 Great Refactors. Stack overflow: personal achievement.',
+    icon: '🌀',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 25,
+  },
+  {
+    id: 'great-refactor-50',
+    name: 'The Eternal Codebase ♾️',
+    description: '50 Great Refactors. The codebase is eternal. So are you.',
+    icon: '♾️',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 50,
+  },
+
+  // ── Ultra late-game LOC milestones ────────────────────────────────────────────
+  {
+    id: 'loc-1e42',
+    name: 'Unified Field Coder 🔬',
+    description: 'Reached 1 Td LOC. Physics and code: same thing now.',
+    icon: '🔬',
+    condition: ({ totalLoc }) => totalLoc >= 1e42,
+  },
+  {
+    id: 'loc-1e51',
+    name: 'Hyperdimensional Dev 🌌',
+    description: 'Reached 1 Sxd LOC. The IDE has dimensions you cannot see.',
+    icon: '🌌',
+    condition: ({ totalLoc }) => totalLoc >= 1e51,
+  },
+  {
+    id: 'loc-1e54',
+    name: 'The Infinite Monkey 🐒',
+    description: 'Reached 1 Spd LOC. They proved the theorem. Empirically.',
+    icon: '🐒',
+    condition: ({ totalLoc }) => totalLoc >= 1e54,
+  },
 ];
