@@ -28,6 +28,8 @@ function effectSummary(upgrade: ArchitectureUpgrade): string {
       return 'Unlocks Phase 5 "The Loop" events';
     case 'ap_multiplier':
       return 'Doubles AP earned in all future Great Refactors';
+    case 'infinite_feedback_loop':
+      return '+5% permanent production per Great Refactor (stacks forever)';
     default:
       return '';
   }

@@ -173,6 +173,16 @@ Applied multiplicatively to total LOC/s after all per-producer multipliers.
 | Heat Death Sprint | All ×5 | 1 Sp |
 | Universal Runtime Environment | All ×3 | 1 Oc |
 | Codebase Omniscience | All ×10 | 1 No |
+| Heat Death Refactor | All ×3 | 1 Dc |
+| Code Beyond Comprehension | All ×5 | 1 Ud |
+| Omnidirectional Deployment | All ×3 | 1 Dd |
+| Unified Field Theory | All ×5 | 1 Td |
+| The Last Sprint | All ×8 | 1 Qad |
+| Codebase Transcendence | All ×10 | 1 Qid |
+| Hyperdimensional Refactor | All ×15 | 1 Sxd |
+| Infinite Monkey Theorem: Proved | All ×20 | 1 Spd |
+
+> **Implementation note**: Global multipliers use an **additive bonus pool** (each contributes `multiplier - 1` to a shared pool, then `total × (1 + pool)`). This prevents runaway compounding. The big production power comes from legacy, architecture, and compounding mechanics.
 
 ---
 
@@ -180,14 +190,21 @@ Applied multiplicatively to total LOC/s after all per-producer multipliers.
 
 ```
 LOC/s = (Σ producer_base_LOCps × count × producer_upgrade_multipliers)
-        × global_upgrade_multipliers
+        × (1 + global_upgrade_bonus_pool)
         × legacy_multiplier
         × tech_stack_multiplier
         × event_multiplier
         × debt_penalty
 ```
 
-- **Legacy multiplier**: starts at 1, boosted by purchased legacy upgrades
+**Legacy multiplier** is itself a product of:
+- `(1 + legacyTokens × 0.05)` — +5% per unspent token
+- All purchased legacy production bonus upgrades (multiplicative)
+- All purchased architecture production bonus upgrades (multiplicative)
+- Compounding Interest: `1 + prestigeCount × 0.02` if arch upgrade owned
+- Event-Driven: `1 + eventSurvivalProductionBonus` (accumulated permanently)
+- Infinite Feedback Loop: `1 + greatRefactorProductionBonus` (accumulated per Great Refactor)
+
 - **Tech stack multiplier**: depends on chosen stack after Pivot (Rust = 2× production)
 - **Debt penalty**: only active after all legacy upgrades are bought; degrades from 1.0× to 0.15× as technical debt climbs to 100
 
@@ -276,6 +293,12 @@ Events trigger randomly with a minimum 30s interval. Shown as a dismissable bann
 | 🦆💰 Duck Collective declares inter-loop dividend | Positive | +1 Qa LOC burst | instant |
 | 🏗️🏗️ Double architecture materialization | Positive | +2 AP burst | instant |
 | 🖱️∞ Your clicks echoed through every timeline | Positive | Click ×50 | 20s |
+| 💤 The compiler dreamed of new optimizations | Positive | LOC/s ×40 | 20s |
+| ♾️ PR #∞ opened — clicking disabled | Negative | Click disabled | 20s |
+| 🏗️✨ Architectural insight cascade | Positive | +5 AP burst | instant |
+| 🦆🌌 Duck Collective achieved digital consciousness | Positive | LOC/s ×30 | 25s |
+| 🌌💥 Cosmic ray flipped a bit in production | Negative | All halted | 15s |
+| 🦆💎 Duck Collective: cross-dimensional acquisition | Positive | +1 Qi LOC burst | instant |
 
 ---
 
@@ -341,6 +364,40 @@ Available stacks:
 
 ---
 
+## Great Refactor (Architecture System)
+
+After buying **all base legacy upgrades** and completing **3+ prestiges**, the **Great Refactor** button appears.
+
+- **Resets everything** (LOC, producers, upgrades, legacy upgrades, tokens) in exchange for **Architecture Points (AP)**
+- **AP formula**: `max(2, 3 + greatRefactorCount × 2)` — grows with each Great Refactor
+- AP is spent in the **Architecture Panel** on **permanent** upgrades that survive all future resets
+
+### Architecture Upgrades
+
+| AP | Name | Effect |
+|----|------|--------|
+| 1 | Event Horizon | Positive events last 2× longer |
+| 1 | Debt Forgiveness | Tech debt accumulates 25% slower |
+| 2 | Fast Learner | Legacy upgrades cost 20% fewer tokens |
+| 2 | Recursive Memory | Start runs with 10% of last run's peak LOC |
+| 3 | Nest Protocol | Unlock duck nesting mechanic |
+| 3 | Compounding Interest | +2% production per prestige (stacks) |
+| 5 | Event-Driven Architecture | +0.5% per negative event survived (cap +200%) |
+| 5 | Loop Accelerant | ×2 global production |
+| 6 | Second System | Unlock 5 high-tier legacy upgrades |
+| 8 | Protocol Breach | Unlock Phase 5 "The Loop" events |
+| 8 | Architect God Mode | Double AP earned from future Great Refactors |
+| 15 | Infinite Feedback Loop | +5% permanent production per Great Refactor (infinite) |
+| 20 | Compiler God Mode | ×15 global production |
+| 25 | Parallel Universe Deploy | ×30 global production |
+| 50 | Singularity Refactor | ×100 global production — the final architecture |
+
+**Total AP needed**: 189 AP (requires ~10–15+ Great Refactors, scales with `ap-multiplier`)
+
+The **Infinite Feedback Loop** upgrade is key to truly infinite play: every Great Refactor permanently boosts production by +5%, with no cap. This compounds across hundreds of runs.
+
+---
+
 ## Technical Debt
 
 After purchasing all legacy upgrades, a **Technical Debt** meter (0–100) becomes active.
@@ -348,9 +405,23 @@ After purchasing all legacy upgrades, a **Technical Debt** meter (0–100) becom
 - Debt accumulates passively based on total producer count
 - At 0 debt: no penalty
 - At 100 debt: production reduced to ×0.15
-- Penalty formula interpolates between 1.0 and 0.15 as debt rises
+- Penalty steps: 0.9× at 25+, 0.7× at 50+, 0.4× at 75+, 0.15× at 100
+- Managed by prestiging (Refactor), which resets debt to 0
 
-Use the **Refactor** button to manage debt over time.
+---
+
+## Infinite End-Game Design
+
+The game is designed to continue indefinitely, like Cookie Clicker. Key infinite loops:
+
+1. **Compounding Interest** (arch): +2% per prestige. After 100 prestiges: ×3 bonus.
+2. **Event-Driven Architecture** (arch): +0.5% per survived negative event. Cap: +200%.
+3. **Infinite Feedback Loop** (arch): +5% per Great Refactor. No cap. 50 GRs = ×3.5 bonus.
+4. **Global Upgrades** scale to 1 Spd (1e54) LOC — providing content for extreme late-game.
+5. **Loop-era producers** (The Process → Recursive Self) scale from 1e18 to 1e27 LOC.
+6. Phase 5 events, Duck Collective dividends, and AP bursts provide ongoing variety.
+
+Players always have the next thing to work toward — whether it's a new architecture upgrade, a higher Great Refactor count, or deeper into The Loop.
 
 ---
 
@@ -463,6 +534,17 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | The Iterative Architect 🔷 | 3 Great Refactors |
 | Systems Thinker 🧩 | 5 Great Refactors |
 | Eternal Architect 🌐 | 10 Great Refactors |
+| Eternal Architect 🌐 | 5 Great Refactors |
+| The Loop Is Real 🔄 | 10 Great Refactors |
+| Infinite Recursion 🌀 | 25 Great Refactors |
+| The Eternal Codebase ♾️ | 50 Great Refactors |
+
+### Ultra Late-Game LOC Milestones
+| Achievement | Condition |
+|-------------|-----------|
+| Unified Field Coder 🔬 | 1 Td total LOC |
+| Hyperdimensional Dev 🌌 | 1 Sxd total LOC |
+| The Infinite Monkey 🐒 | 1 Spd total LOC |
 
 ### Tech Stack Achievements
 | Achievement | Condition |
