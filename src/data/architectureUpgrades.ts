@@ -9,7 +9,10 @@ export type ArchitectureEffect =
   | { type: 'production_bonus'; multiplier: number }
   | { type: 'unlock_second_system' }// unlocks 5 additional high-tier legacy upgrades
   | { type: 'protocol_breach' }     // unlocks Phase 5 "The Loop" events
-  | { type: 'ap_multiplier' };      // doubles AP earned in all future Great Refactors
+  | { type: 'ap_multiplier' }       // doubles AP earned in all future Great Refactors
+  | { type: 'token_to_ap' }         // Great Refactor converts unspent legacy tokens → AP (20:1)
+  | { type: 'gr_production_bonus' } // +3% global production per Great Refactor completed (stacks)
+  | { type: 'perpetual_loop' };     // +0.5 bonus legacy tokens per prestige per Great Refactor done
 
 export interface ArchitectureUpgrade {
   id: string;
@@ -75,6 +78,16 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     effect: { type: 'compounding_interest' },
   },
 
+  // ── 4 AP ─────────────────────────────────────────────────────────────────────
+  {
+    id: 'token-archive',
+    name: 'Token Archive',
+    description: 'On Great Refactor, unspent Legacy Tokens convert to AP (20:1)',
+    flavor: 'Nothing is truly lost. The tokens persist in architectural memory.',
+    cost: 4,
+    effect: { type: 'token_to_ap' },
+  },
+
   // ── 5 AP ─────────────────────────────────────────────────────────────────────
   {
     id: 'event-driven',
@@ -119,5 +132,23 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     flavor: 'The architecture diagram is sentient. It has been waiting for this purchase.',
     cost: 8,
     effect: { type: 'ap_multiplier' },
+  },
+
+  // ── Infinite scaling tier ──────────────────────────────────────────────────
+  {
+    id: 'gr-amplifier',
+    name: 'Great Refactor Amplifier',
+    description: '+3% global production per Great Refactor completed (stacks, no cap)',
+    flavor: 'Every loop sharpens the edge. The codebase remembers every iteration.',
+    cost: 10,
+    effect: { type: 'gr_production_bonus' },
+  },
+  {
+    id: 'perpetual-loop',
+    name: 'Perpetual Loop',
+    description: 'Each prestige grants +0.5 bonus Legacy Tokens per Great Refactor done',
+    flavor: 'The loop has memory. The tokens know how many times you have been here.',
+    cost: 14,
+    effect: { type: 'perpetual_loop' },
   },
 ];

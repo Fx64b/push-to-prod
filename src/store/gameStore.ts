@@ -129,6 +129,7 @@ interface CacheInput {
   architectureUpgrades?: string[];
   prestigeCount?: number;
   eventSurvivalProductionBonus?: number;
+  greatRefactorCount?: number;
 }
 
 function computeLegacyMult(
@@ -137,6 +138,7 @@ function computeLegacyMult(
   architectureUpgrades: string[],
   prestigeCount: number,
   eventSurvivalProductionBonus: number,
+  greatRefactorCount: number = 0,
 ): number {
   const legacyUpgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
     if (u.effect.type === 'production_bonus' && legacyUpgrades.includes(u.id)) {
@@ -160,17 +162,23 @@ function computeLegacyMult(
   // Event-Driven: permanent accumulated bonus
   const eventDrivenMult = 1 + eventSurvivalProductionBonus;
 
-  return (1 + legacyTokens * 0.05) * legacyUpgradeMult * archUpgradeMult * compoundingMult * eventDrivenMult;
+  // GR Amplifier: +3% per Great Refactor completed
+  const grAmpMult = architectureUpgrades.includes('gr-amplifier')
+    ? 1 + greatRefactorCount * 0.03
+    : 1;
+
+  return (1 + legacyTokens * 0.05) * legacyUpgradeMult * archUpgradeMult * compoundingMult * eventDrivenMult * grAmpMult;
 }
 
 function computeCaches(s: CacheInput) {
   const archUpgrades = s.architectureUpgrades ?? [];
   const prestige = s.prestigeCount ?? 0;
   const eventBonus = s.eventSurvivalProductionBonus ?? 0;
+  const grCount = s.greatRefactorCount ?? 0;
   return {
     cachedLOCps: calculateLOCps(s),
     cachedClickValue: calculateClickValue(s),
-    cachedLegacyMult: computeLegacyMult(s.legacyUpgrades, s.legacyTokens, archUpgrades, prestige, eventBonus),
+    cachedLegacyMult: computeLegacyMult(s.legacyUpgrades, s.legacyTokens, archUpgrades, prestige, eventBonus, grCount),
   };
 }
 
@@ -274,7 +282,15 @@ function getEventMultiplier(event: GameEvent | null): {
 export const MIN_CLICKS_TO_PRESTIGE = import.meta.env.DEV ? 0 : 1000;
 
 function calcPrestigeTokens(totalLoc: number, prestigeCount: number): number {
-  return Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
+  const log = Math.log10(Math.max(totalLoc, 1));
+  // Base: 1 per order of magnitude above 10M (log > 7), giving 2 tokens at minimum
+  const base = Math.max(0, Math.floor(log) - 5);
+  // High-LOC bonus: quadratic reward for pushing well past the prestige threshold
+  // Kicks in above 100M LOC (log > 8), grows as (log-8)^2 / 3
+  const highLocBonus = log > 8 ? Math.floor(((log - 8) ** 2) / 3) : 0;
+  // Prestige scaling: +1 per 2 prestiges
+  const prestigeBonus = Math.floor(prestigeCount / 2);
+  return base + highLocBonus + prestigeBonus;
 }
 
 function buildStartState(
@@ -446,6 +462,7 @@ export const useGameStore = create<GameState>()(
                 state.architectureUpgrades,
                 state.prestigeCount,
                 eventSurvivalProductionBonus,
+                state.greatRefactorCount,
               )
             : state.cachedLegacyMult;
 
@@ -681,6 +698,7 @@ export const useGameStore = create<GameState>()(
           state.architectureUpgrades,
           state.prestigeCount,
           state.eventSurvivalProductionBonus,
+          state.greatRefactorCount,
         );
 
         set({
@@ -717,7 +735,12 @@ export const useGameStore = create<GameState>()(
         if (state.totalLoc < 10000000) return;
         if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
 
-        const tokensEarned = calcPrestigeTokens(state.totalLoc, state.prestigeCount);
+        let tokensEarned = calcPrestigeTokens(state.totalLoc, state.prestigeCount);
+        // Perpetual Loop: +0.5 bonus tokens per Great Refactor done
+        if (state.architectureUpgrades.includes('perpetual-loop') && state.greatRefactorCount > 0) {
+          tokensEarned += Math.floor(state.greatRefactorCount * 0.5);
+        }
+
         const { startProducers, keptUpgrades, startLoc } = buildStartState(
           state.legacyUpgrades,
           state.upgrades,
@@ -736,6 +759,7 @@ export const useGameStore = create<GameState>()(
           architectureUpgrades: state.architectureUpgrades,
           prestigeCount: newPrestigeCount,
           eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+          greatRefactorCount: state.greatRefactorCount,
         };
 
         set({
@@ -776,7 +800,12 @@ export const useGameStore = create<GameState>()(
         const apGainMult = state.architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
         const apEarned = Math.max(2, 3 + state.greatRefactorCount * 2) * apGainMult;
         const newGreatRefactorCount = state.greatRefactorCount + 1;
-        const newArchitecturePoints = state.architecturePoints + apEarned;
+
+        // Token Archive: convert unspent legacy tokens to AP at 20:1
+        const tokenArchiveAP = state.architectureUpgrades.includes('token-archive')
+          ? Math.floor(state.legacyTokens / 20)
+          : 0;
+        const newArchitecturePoints = state.architecturePoints + apEarned + tokenArchiveAP;
 
         const cacheInput: CacheInput = {
           producers: {},
@@ -787,6 +816,7 @@ export const useGameStore = create<GameState>()(
           architectureUpgrades: state.architectureUpgrades,
           prestigeCount: 0,
           eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+          greatRefactorCount: newGreatRefactorCount,
         };
 
         set({
@@ -841,6 +871,7 @@ export const useGameStore = create<GameState>()(
           architectureUpgrades: state.architectureUpgrades,
           prestigeCount: newPrestigeCount,
           eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+          greatRefactorCount: state.greatRefactorCount,
         };
 
         set({
@@ -875,12 +906,33 @@ export const useGameStore = create<GameState>()(
       dismissEvent: () => {
         const state = get();
         const wasNegative = state.activeEvent?.isNegative ?? false;
+        const hasEventDriven = state.architectureUpgrades.includes('event-driven');
+
+        let newEventSurvivalBonus = state.eventSurvivalProductionBonus;
+        if (wasNegative && hasEventDriven) {
+          newEventSurvivalBonus = Math.min(state.eventSurvivalProductionBonus + 0.005, 2.0);
+        }
+
+        const cachedLegacyMult =
+          wasNegative && hasEventDriven
+            ? computeLegacyMult(
+                state.legacyUpgrades,
+                state.legacyTokens,
+                state.architectureUpgrades,
+                state.prestigeCount,
+                newEventSurvivalBonus,
+                state.greatRefactorCount,
+              )
+            : state.cachedLegacyMult;
+
         set({
           activeEvent: null,
           eventEndTime: null,
           negativeEventssurvived: wasNegative
             ? state.negativeEventssurvived + 1
             : state.negativeEventssurvived,
+          eventSurvivalProductionBonus: newEventSurvivalBonus,
+          cachedLegacyMult,
         });
       },
 
@@ -942,20 +994,7 @@ export const useGameStore = create<GameState>()(
       },
       onRehydrateStorage: () => (state) => {
         if (state) {
-          const caches = computeCaches({
-            producers: state.producers ?? {},
-            upgrades: state.upgrades ?? [],
-            locPerClick: state.locPerClick ?? 1,
-            legacyUpgrades: state.legacyUpgrades ?? [],
-            legacyTokens: state.legacyTokens ?? 0,
-            architectureUpgrades: state.architectureUpgrades ?? [],
-            prestigeCount: state.prestigeCount ?? 0,
-            eventSurvivalProductionBonus: state.eventSurvivalProductionBonus ?? 0,
-          });
-          state.cachedLOCps = caches.cachedLOCps;
-          state.cachedClickValue = caches.cachedClickValue;
-          state.cachedLegacyMult = caches.cachedLegacyMult;
-          // Ensure new fields default properly on old saves
+          // Ensure new fields default properly on old saves (before cache computation)
           state.greatRefactorCount = state.greatRefactorCount ?? 0;
           state.architecturePoints = state.architecturePoints ?? 0;
           state.architectureUpgrades = state.architectureUpgrades ?? [];
@@ -964,6 +1003,21 @@ export const useGameStore = create<GameState>()(
           state.eventSurvivalProductionBonus = state.eventSurvivalProductionBonus ?? 0;
           state.nestedDucks = state.nestedDucks ?? [];
           state.clicksThisRun = state.clicksThisRun ?? 0;
+
+          const caches = computeCaches({
+            producers: state.producers ?? {},
+            upgrades: state.upgrades ?? [],
+            locPerClick: state.locPerClick ?? 1,
+            legacyUpgrades: state.legacyUpgrades ?? [],
+            legacyTokens: state.legacyTokens ?? 0,
+            architectureUpgrades: state.architectureUpgrades,
+            prestigeCount: state.prestigeCount ?? 0,
+            eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
+            greatRefactorCount: state.greatRefactorCount,
+          });
+          state.cachedLOCps = caches.cachedLOCps;
+          state.cachedClickValue = caches.cachedClickValue;
+          state.cachedLegacyMult = caches.cachedLegacyMult;
         }
       },
     },

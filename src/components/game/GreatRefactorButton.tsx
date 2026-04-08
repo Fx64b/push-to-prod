@@ -6,6 +6,7 @@ const MIN_PRESTIGES = 3;
 
 export function GreatRefactorButton() {
   const legacyUpgrades = useGameStore((s) => s.legacyUpgrades);
+  const legacyTokens = useGameStore((s) => s.legacyTokens);
   const prestigeCount = useGameStore((s) => s.prestigeCount);
   const clicksThisRun = useGameStore((s) => s.clicksThisRun);
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
@@ -21,6 +22,10 @@ export function GreatRefactorButton() {
 
   const apGainMult = architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
   const apToEarn = Math.max(2, 3 + greatRefactorCount * 2) * apGainMult;
+  const tokenArchiveAP = architectureUpgrades.includes('token-archive')
+    ? Math.floor(legacyTokens / 20)
+    : 0;
+  const totalApToEarn = apToEarn + tokenArchiveAP;
   const clicksReady = clicksThisRun >= MIN_CLICKS_TO_PRESTIGE;
 
   const handleClick = () => {
@@ -43,9 +48,15 @@ export function GreatRefactorButton() {
         <span className="text-gh-muted">Resets ALL progress including legacy upgrades</span>
         <br />
         <span className="text-gh-muted">Earn </span>
-        <span className="text-gh-yellow font-bold">+{apToEarn} Architecture Point{apToEarn !== 1 ? 's' : ''}</span>
+        <span className="text-gh-yellow font-bold">+{totalApToEarn} Architecture Point{totalApToEarn !== 1 ? 's' : ''}</span>
         {apGainMult > 1 && (
           <span className="text-gh-green"> (×{apGainMult} from God Mode)</span>
+        )}
+        {tokenArchiveAP > 0 && (
+          <>
+            <br />
+            <span className="text-gh-green">+{tokenArchiveAP} AP from Token Archive ({legacyTokens} unspent tokens)</span>
+          </>
         )}
       </div>
 

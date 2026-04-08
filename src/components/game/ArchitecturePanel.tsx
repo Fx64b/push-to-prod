@@ -28,6 +28,12 @@ function effectSummary(upgrade: ArchitectureUpgrade): string {
       return 'Unlocks Phase 5 "The Loop" events';
     case 'ap_multiplier':
       return 'Doubles AP earned in all future Great Refactors';
+    case 'token_to_ap':
+      return 'Great Refactor converts unspent Legacy Tokens → AP (20:1)';
+    case 'gr_production_bonus':
+      return '+3% global production per Great Refactor completed (stacks)';
+    case 'perpetual_loop':
+      return '+0.5 bonus Legacy Tokens per prestige per Great Refactor done';
     default:
       return '';
   }
