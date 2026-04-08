@@ -28,6 +28,8 @@ Displayed with abbreviated suffixes. Hovering over a suffix in the main display 
 | Qid | 1e48 | quindecillion |
 | Sxd | 1e51 | sexdecillion |
 | Spd | 1e54 | septendecillion |
+| Ocd | 1e57 | octodecillion |
+| Nvd | 1e60 | novemdecillion |
 
 Secondary metrics shown in the sidebar:
 - **LOC/s** — passive production rate (smoothed EMA over recent ticks)
@@ -77,6 +79,15 @@ All producers generate LOC/s passively. Default cost scaling is **1.15× per uni
 | 23 | Tech Oracle | 🔮 | 2,500,000,000 | 500,000,000,000,000 | 1T |
 | 24 | Infinite Monkey Farm | 🐒 | 20,000,000,000 | 5,000,000,000,000,000 | 1Qa |
 
+### The Loop Era (unlocks after 1st Great Refactor)
+
+| # | Name | Icon | Base LOC/s | Base Cost | Unlock (totalLoc / GR) |
+|---|------|------|-----------|-----------|----------------------|
+| 25 | The Process Itself | ⚙️ | 100,000,000,000 | 5e18 | 1Qi / GR1 |
+| 26 | Sentient Codebase | 🌐 | 500,000,000,000 | 5e21 | 1Sx / GR1 |
+| 27 | Duck Collective LLC | 🦆⚖️ | 2,000,000,000,000 | 5e24 | 1Sp / GR1 |
+| 28 | Recursive Self | 🪞 | 10,000,000,000,000 | 5e27 | 1Oc / GR2 |
+
 **Rubber Duck cost scaling**: 1.09× (cheaper than default to encourage hoarding)
 
 ---
@@ -112,6 +123,9 @@ Ducks also march across the news footer as a visual parade — count scales as `
 | Hyperfocus | ×50 | 20,000,000 total LOC |
 | Neural Interface | ×200 | 1 Qa total LOC |
 | Thought Compiler | ×500 | 1 Qi total LOC |
+| Loop Memory | ×2,000 | 1 Sx total LOC |
+| Quantum Keystroke | ×10,000 | 1 Oc total LOC |
+| The Final Keypress | ×50,000 | 1 Dc total LOC |
 
 All click multipliers stack multiplicatively.
 
@@ -185,6 +199,8 @@ Applied multiplicatively to total LOC/s after all per-producer multipliers.
 | Codebase Transcendence | All ×10 | 1 Qid |
 | Hyperdimensional Refactor | All ×15 | 1 Sxd |
 | Infinite Monkey Theorem: Proved | All ×20 | 1 Spd |
+
+> **Note**: Global upgrades cap at 1 Spd (1e54). Infinite scaling beyond that point comes exclusively from architecture upgrades (Compounding Interest, Infinite Feedback Loop), legacy production bonuses, and Event-Driven Architecture stacking.
 
 > **Implementation note**: Global multipliers use an **additive bonus pool** (each contributes `multiplier - 1` to a shared pool, then `total × (1 + pool)`). This prevents runaway compounding. The big production power comes from legacy, architecture, and compounding mechanics.
 
@@ -309,6 +325,8 @@ Events trigger randomly with a minimum 30s interval. Shown as a dismissable bann
 ## Prestige: "Refactor"
 
 Unlocks after reaching **10,000,000 LOC** (10M). Resets current LOC, producers, and regular upgrades in exchange for **Legacy Code Tokens (LCT)**.
+
+**Preserved across prestige**: legacy upgrades, architecture upgrades, achievements, total click count, event survival count, tech stack, prestige/GR counts, event/GR bonuses.
 
 **Token formula**: `floor(log10(totalLoc)) - 5`
 - At 1M LOC → 1 token
@@ -505,10 +523,13 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Duck Incorporated 🦆⚖️ | Own 1 Duck Collective LLC |
 | You Have Met Yourself 🪞 | Own 1 Recursive Self |
 | The Loop Is Complete 🔄🌌 | Own all four Loop era entities |
+| Five of You 🪞🪞 | Own 5 Recursive Selves |
 | Process Horde ⚙️⚙️ | Own 10 of The Process Itself |
 | Hive Mind 🧠🌐 | Own 10 Sentient Codebases |
 | Duck Empire 🦆👑 | Own 10 Duck Collective LLCs |
 | Infinite Mirror 🪞🪞 | Own 10 Recursive Selves |
+| Deep in the Loop 🔄🏗️ | Own 5 of each Loop era entity |
+| The Loop Is Eternal ♾️🌀 | Own 10 of each Loop era entity |
 
 ### Event Achievements
 | Achievement | Condition |
@@ -518,7 +539,7 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | npm audit fix --force 💀 | Survive 10 negative events |
 | Battle Hardened 🛡️ | Survive 25 negative events |
 | Desensitized 😶 | Survive 50 negative events |
-| Battle Hardened 🛡️ | Survive 100 negative events |
+| Chaos Enjoyer 🌪️ | Survive 100 negative events |
 
 ### Upgrade Achievements
 | Achievement | Condition |
@@ -563,6 +584,8 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Unified Field Coder 🔬 | 1 Td total LOC |
 | Hyperdimensional Dev 🌌 | 1 Sxd total LOC |
 | The Infinite Monkey 🐒 | 1 Spd total LOC |
+| Post-Spd Coder 🌠 | 1 Ocd total LOC |
+| The Codebase Ate The Universe 🌌🦆 | 1 Nvd total LOC |
 
 ### Tech Stack Achievements
 | Achievement | Condition |

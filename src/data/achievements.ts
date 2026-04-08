@@ -670,15 +670,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: ({ greatRefactorCount }) => greatRefactorCount >= 100,
   },
 
-  // ── Negative event survival deep milestones ───────────────────────────────────
-  {
-    id: 'battle-hardened',
-    name: 'Battle Hardened',
-    description: 'Survived 100 negative events. The oncall alerts are white noise now.',
-    icon: '🛡️',
-    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 100,
-  },
-
   // ── Loop era depth achievements ───────────────────────────────────────────────
   {
     id: 'process-horde',
@@ -708,6 +699,35 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🪞🪞',
     condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 10,
   },
+  {
+    id: 'recursive-self-5',
+    name: 'Five of You',
+    description: '5 Recursive Selves. A quorum. They have opinions about your code.',
+    icon: '🪞🪞',
+    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 5,
+  },
+  {
+    id: 'loop-team-5',
+    name: 'Deep in the Loop',
+    description: 'Own 5 of each Loop era entity. The recursion is structural.',
+    icon: '🔄🏗️',
+    condition: ({ producers }) =>
+      (producers['the-process'] ?? 0) >= 5 &&
+      (producers['sentient-codebase'] ?? 0) >= 5 &&
+      (producers['duck-collective-llc'] ?? 0) >= 5 &&
+      (producers['recursive-self'] ?? 0) >= 5,
+  },
+  {
+    id: 'loop-team-10',
+    name: 'The Loop Is Eternal',
+    description: 'Own 10 of each Loop era entity. You have been doing this forever.',
+    icon: '♾️🌀',
+    condition: ({ producers }) =>
+      (producers['the-process'] ?? 0) >= 10 &&
+      (producers['sentient-codebase'] ?? 0) >= 10 &&
+      (producers['duck-collective-llc'] ?? 0) >= 10 &&
+      (producers['recursive-self'] ?? 0) >= 10,
+  },
 
   // ── Ultra late-game LOC milestones ────────────────────────────────────────────
   {
@@ -730,5 +750,19 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Reached 1 Spd LOC. They proved the theorem. Empirically.',
     icon: '🐒',
     condition: ({ totalLoc }) => totalLoc >= 1e54,
+  },
+  {
+    id: 'loc-1e57',
+    name: 'Post-Spd Coder',
+    description: 'Reached 1 Ocd LOC. Numbers stopped meaning anything five digits ago.',
+    icon: '🌠',
+    condition: ({ totalLoc }) => totalLoc >= 1e57,
+  },
+  {
+    id: 'loc-1e60',
+    name: 'The Codebase Ate The Universe',
+    description: 'Reached 1 Nod LOC. There is only code.',
+    icon: '🌌🦆',
+    condition: ({ totalLoc }) => totalLoc >= 1e60,
   },
 ];
