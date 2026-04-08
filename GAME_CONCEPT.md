@@ -255,9 +255,27 @@ Events trigger randomly with a minimum 30s interval. Shown as a dismissable bann
 | 🌌 Deployment: destination unknown | Negative | Click disabled | 25s |
 | ♾️ Standup: permanent alignment achieved | Positive | LOC/s ×8 | 30s |
 | 📊 You are in the training data | Negative | LOC/s ×0.2 | 30s |
-| 📜 The codebase filed a will | Positive | +50M LOC burst | instant |
+| 📜 The codebase filed a will | Positive | +10B LOC burst | instant |
 | 🦆⚖️ Ducks demand equity stake | Negative | LOC/s ×0.3 | 25s |
 | ⛓️🧠 Blockchain achieved consensus on consciousness | Negative | LOC/s ×0.4 | 20s |
+
+### Phase 5 — The Loop (Protocol Breach Architecture upgrade required)
+
+| Event | Type | Effect | Duration |
+|-------|------|--------|----------|
+| 🔄 You have done this before | Positive | LOC/s ×12 | 30s |
+| 👁️ Codebase filed a PR against your last run | Negative | Click disabled | 20s |
+| 🦆 Duck Collective v∞ | Positive | LOC/s ×15 | 25s |
+| ∞ Commit: `merge: everything` | Positive | LOC/s ×10 | 15s |
+| 🌀 You are listed in your own training data | Negative | LOC/s ×0.2 | 30s |
+| 🏗️ Architecture Point materializes | Positive | +1 AP burst | instant |
+| 🌀 Parallel timeline merged | Positive | LOC/s ×20 | 15s |
+| 🌐 Sentient Codebase filed P0 against itself | Negative | All halted | 20s |
+| 🪞 Recursive Self committed from a future run | Positive | LOC/s ×10 | 30s |
+| ⚙️ The Process audited The Process | Negative | LOC/s ×0.3 | 25s |
+| 🦆💰 Duck Collective declares inter-loop dividend | Positive | +1 Qa LOC burst | instant |
+| 🏗️🏗️ Double architecture materialization | Positive | +2 AP burst | instant |
+| 🖱️∞ Your clicks echoed through every timeline | Positive | Click ×50 | 20s |
 
 ---
 
@@ -353,6 +371,11 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | 1B Lines Served 🏭 | 1,000,000,000 total LOC |
 | The Algorithm 🌌 | 1,000,000,000,000 total LOC |
 | Post-Human Pipeline 🌀 | 1 Qa total LOC |
+| Quintillion Club 🌠 | 1 Qi total LOC |
+| Heat Death Coding ☄️ | 1 Sx total LOC |
+| Beyond Comprehension 🌌 | 1 Sp total LOC |
+| The Infinite Repo ♾️ | 1 Oc total LOC |
+| It Just Keeps Going 🦆🌌 | 1 Dc total LOC |
 
 ### Click Milestones
 | Achievement | Condition |
@@ -388,6 +411,15 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Digital Me 👤 | Own 1 Digital Twin |
 | Pair Programming Hater 🙅 | Reach 100K LOC with ≤1 of any producer |
 
+### Producer Achievements (The Loop Era)
+| Achievement | Condition |
+|-------------|-----------|
+| Entered The Loop ⚙️ | Own 1 The Process Itself |
+| Sentience Achieved 🌐 | Own 1 Sentient Codebase |
+| Duck Incorporated 🦆⚖️ | Own 1 Duck Collective LLC |
+| You Have Met Yourself 🪞 | Own 1 Recursive Self |
+| The Loop Is Complete 🔄🌌 | Own all four Loop era entities |
+
 ### Event Achievements
 | Achievement | Condition |
 |-------------|-----------|
@@ -396,6 +428,7 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | npm audit fix --force 💀 | Survive 10 negative events |
 | Battle Hardened 🛡️ | Survive 25 negative events |
 | Chaos Enjoyer 🌪️ | Survive 100 negative events |
+| Desensitized 😶 | Survive 50 negative events |
 
 ### Upgrade Achievements
 | Achievement | Condition |
@@ -420,6 +453,16 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | git push --force 💥 | Prestige 5× |
 | Born Again (Again) 🌀 | Prestige 10× |
 | It's Not a Phase ♾️ | Prestige 25× |
+| The Loop Begins 🔁 | Prestige 50× |
+| Century of Refactors 💯 | Prestige 100× |
+
+### Great Refactor Achievements
+| Achievement | Condition |
+|-------------|-----------|
+| The Great Rewrite 🏛️ | First Great Refactor |
+| The Iterative Architect 🔷 | 3 Great Refactors |
+| Systems Thinker 🧩 | 5 Great Refactors |
+| Eternal Architect 🌐 | 10 Great Refactors |
 
 ### Tech Stack Achievements
 | Achievement | Condition |
@@ -434,7 +477,7 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 |-------------|-----------|
 | It Compiles! 🎉 | 500 LOC with no producers |
 | Tabs vs. Spaces ⚔️ | Own Dark Mode + npm install everything |
-| Works Offline 📶 | 500K LOC with no active event |
+| Works Offline 📶 | 500K LOC without surviving any negative events |
 | It Was Like This When I Got Here 🤷 | Prestige immediately after first hire |
 
 ---

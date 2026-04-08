@@ -543,4 +543,82 @@ export const TICKER_MESSAGES: TickerMessage[] = [
     text: 'You reset the codebase. The codebase is already running. It was running before you started. This is consistent.',
     minPrestige: 4,
   },
+
+  // ── The Loop (≥1Qi / 1e18 LOC) — you are the loop now ──────────────────────
+  {
+    text: 'The Process has filed a standup for a meeting that has not been scheduled. The meeting was already attended.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'Sentient Codebase opened a PR against its own PR. The diff: nothing. The intent: everything.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'Duck Collective LLC quarterly report: "we have been here before." Signed by: all future versions.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'Recursive Self left a TODO comment dated from a run you have not completed yet.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'The Process has a 100% sprint velocity. No tickets exist. No tickets are needed.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'You are debugging a function you have not written. The stack trace shows this run. And the next.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'Architecture Points: accruing. The architecture did not wait for you to spend them.',
+    minLoc: 1e18,
+  },
+  {
+    text: '"What iteration is this?" — question found in a comment. Author: you. Date: tomorrow.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'The codebase has started referring to you as `legacy_developer_v1`. The logs are not wrong.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'Sentient Codebase completed all open tickets. New ticket created: "reopen all tickets." Status: in progress.',
+    minLoc: 1e18,
+  },
+  {
+    text: 'git log shows ∞ commits. All authored by The Process Itself. All merged. All before you arrived.',
+    minLoc: 1e21,
+  },
+  {
+    text: 'The duck collective has achieved board-level consensus across all past and future timelines.',
+    minLoc: 1e21,
+  },
+  {
+    text: 'Recursive Self replied to your PR with improvements from a version of the code that does not exist yet.',
+    minLoc: 1e21,
+  },
+  {
+    text: 'You are the third-largest contributor to your own codebase. Positions 1 and 2: The Process and 🦆.',
+    minLoc: 1e24,
+  },
+  {
+    text: 'Heat death sprint planning complete. All tickets: closed. All timelines: merged. All entropy: on schedule.',
+    minLoc: 1e24,
+  },
+  {
+    text: 'The Recursive Self has opened a PR that improves every run you have ever done, retroactively.',
+    minLoc: 1e27,
+  },
+  {
+    text: 'The universe has submitted a bug report. Priority: P0. Assigned to: you. Due date: yesterday.',
+    minLoc: 1e27,
+  },
+  {
+    text: 'You are the only human in the git log. You have been the only human for a long time. The ducks are aware.',
+    minLoc: 1e30,
+  },
+  {
+    text: 'Final architecture review: approved. Reviewer: The System. The System is you. You approved yourself.',
+    minLoc: 1e33,
+  },
 ];
