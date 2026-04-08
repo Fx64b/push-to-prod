@@ -9,7 +9,11 @@ import { generateProductName } from '@/data/socialPosts';
 import { UPGRADES } from '@/data/upgrades';
 import { producerBulkCost, producerCost } from '@/utils/costs';
 import { formatLOC } from '@/utils/format';
-import { calculateClickValue, calculateLOCps, calculateSingleProducerLOCps } from '@/utils/production';
+import {
+  calculateClickValue,
+  calculateLOCps,
+  calculateSingleProducerLOCps,
+} from '@/utils/production';
 
 export interface FloatingText {
   id: number;
@@ -160,7 +164,13 @@ function computeLegacyMult(
   // Event-Driven: permanent accumulated bonus
   const eventDrivenMult = 1 + eventSurvivalProductionBonus;
 
-  return (1 + legacyTokens * 0.05) * legacyUpgradeMult * archUpgradeMult * compoundingMult * eventDrivenMult;
+  return (
+    (1 + legacyTokens * 0.05) *
+    legacyUpgradeMult *
+    archUpgradeMult *
+    compoundingMult *
+    eventDrivenMult
+  );
 }
 
 function computeCaches(s: CacheInput) {
@@ -170,7 +180,13 @@ function computeCaches(s: CacheInput) {
   return {
     cachedLOCps: calculateLOCps(s),
     cachedClickValue: calculateClickValue(s),
-    cachedLegacyMult: computeLegacyMult(s.legacyUpgrades, s.legacyTokens, archUpgrades, prestige, eventBonus),
+    cachedLegacyMult: computeLegacyMult(
+      s.legacyUpgrades,
+      s.legacyTokens,
+      archUpgrades,
+      prestige,
+      eventBonus,
+    ),
   };
 }
 
@@ -421,10 +437,7 @@ export const useGameStore = create<GameState>()(
             negativeEventssurvived += 1;
             // Event-Driven: accumulate +0.5% per survived negative event (cap at +200%)
             if (state.architectureUpgrades.includes('event-driven')) {
-              eventSurvivalProductionBonus = Math.min(
-                eventSurvivalProductionBonus + 0.005,
-                2.0,
-              );
+              eventSurvivalProductionBonus = Math.min(eventSurvivalProductionBonus + 0.005, 2.0);
             }
           }
           activeEvent = null;
@@ -484,7 +497,11 @@ export const useGameStore = create<GameState>()(
               const targetId = ownedIds[Math.floor(Math.random() * ownedIds.length)];
               nestedDucks = [
                 ...nestedDucks,
-                { id: `nd-${now}-${Math.random().toString(36).slice(2)}`, producerId: targetId, storedLoc: 0 },
+                {
+                  id: `nd-${now}-${Math.random().toString(36).slice(2)}`,
+                  producerId: targetId,
+                  storedLoc: 0,
+                },
               ];
             }
           }
@@ -493,7 +510,14 @@ export const useGameStore = create<GameState>()(
           if (nestedDucks.length > 0) {
             nestedDucks = nestedDucks.map((duck) => {
               const singleLOCps = calculateSingleProducerLOCps(duck.producerId, state);
-              const stolen = singleLOCps * 0.08 * locpsMult * legacyMult * stackProductionMult * debtPenalty * dt;
+              const stolen =
+                singleLOCps *
+                0.08 *
+                locpsMult *
+                legacyMult *
+                stackProductionMult *
+                debtPenalty *
+                dt;
               nestedStolenTotal += stolen;
               return { ...duck, storedLoc: duck.storedLoc + stolen };
             });
@@ -530,7 +554,9 @@ export const useGameStore = create<GameState>()(
 
           // Event Horizon: positive events last 2× longer
           const durationMult =
-            !newActiveEvent.isNegative && state.architectureUpgrades.includes('event-horizon') ? 2 : 1;
+            !newActiveEvent.isNegative && state.architectureUpgrades.includes('event-horizon')
+              ? 2
+              : 1;
           newEventEndTime = now + newActiveEvent.duration * 1000 * durationMult;
 
           // Instant effects on fire
@@ -551,6 +577,7 @@ export const useGameStore = create<GameState>()(
           totalClicks: state.totalClicks,
           negativeEventssurvived,
           prestigeCount: state.prestigeCount,
+          greatRefactorCount: state.greatRefactorCount,
           activeEventTriggered,
           technicalDebt: newTechnicalDebt,
           techStack: state.techStack,

@@ -11,6 +11,7 @@ export interface Achievement {
     totalClicks: number;
     negativeEventssurvived: number;
     prestigeCount: number;
+    greatRefactorCount: number;
     activeEventTriggered: boolean;
     technicalDebt: number;
     techStack: string | null;
@@ -129,6 +130,41 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: '1 quadrillion lines. The word "developer" no longer applies.',
     icon: '🌀',
     condition: ({ totalLoc }) => totalLoc >= 1000000000000000,
+  },
+  {
+    id: 'quintillion-lines',
+    name: 'Quintillion Club',
+    description: '1 quintillion lines. The repository is larger than some star systems.',
+    icon: '🌠',
+    condition: ({ totalLoc }) => totalLoc >= 1e18,
+  },
+  {
+    id: 'sextillion-lines',
+    name: 'Heat Death Coding',
+    description: '1 sextillion lines. The universe has opinions.',
+    icon: '☄️',
+    condition: ({ totalLoc }) => totalLoc >= 1e21,
+  },
+  {
+    id: 'septillion-lines',
+    name: 'Beyond Comprehension',
+    description: '1 septillion lines. No human can read it. It is perfect.',
+    icon: '🌌',
+    condition: ({ totalLoc }) => totalLoc >= 1e24,
+  },
+  {
+    id: 'octillion-lines',
+    name: 'The Infinite Repo',
+    description: '1 octillion lines. The codebase contains the codebase.',
+    icon: '♾️',
+    condition: ({ totalLoc }) => totalLoc >= 1e27,
+  },
+  {
+    id: 'decillion-lines',
+    name: 'It Just Keeps Going',
+    description: '1 decillion lines. You stopped counting. The ducks kept counting.',
+    icon: '🦆🌌',
+    condition: ({ totalLoc }) => totalLoc >= 1e33,
   },
 
   // ── Click milestones ──────────────────────────────────────────────────────────
@@ -362,10 +398,10 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'five-stages',
-    name: 'The Five Stages',
-    description: 'Survived 5 events back-to-back. Bargaining has failed.',
+    name: 'Desensitized',
+    description: 'Survived 50 negative events. The incidents no longer register emotionally.',
     icon: '😶',
-    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 5,
+    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 50,
   },
 
   // ── Upgrade achievements ───────────────────────────────────────────────────────
@@ -457,6 +493,93 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '♾️',
     condition: ({ prestigeCount }) => prestigeCount >= 25,
   },
+  {
+    id: 'prestige-50',
+    name: 'The Loop Begins',
+    description: 'Prestiged 50 times. The codebase remembers all of them.',
+    icon: '🔁',
+    condition: ({ prestigeCount }) => prestigeCount >= 50,
+  },
+  {
+    id: 'prestige-100',
+    name: 'Century of Refactors',
+    description: 'Prestiged 100 times. Version control has given up.',
+    icon: '💯',
+    condition: ({ prestigeCount }) => prestigeCount >= 100,
+  },
+
+  // ── Great Refactor achievements ────────────────────────────────────────────
+  {
+    id: 'first-great-refactor',
+    name: 'The Great Rewrite',
+    description:
+      'Completed your first Great Refactor. Everything is gone. The architecture remains.',
+    icon: '🏛️',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 1,
+  },
+  {
+    id: 'great-refactor-3',
+    name: 'The Iterative Architect',
+    description: 'Completed 3 Great Refactors. Each time, a new pattern emerges.',
+    icon: '🔷',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 3,
+  },
+  {
+    id: 'great-refactor-5',
+    name: 'Systems Thinker',
+    description: 'Completed 5 Great Refactors. You think in layers now.',
+    icon: '🧩',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 5,
+  },
+  {
+    id: 'great-refactor-10',
+    name: 'Eternal Architect',
+    description: 'Completed 10 Great Refactors. The architecture itself is the product.',
+    icon: '🌐',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 10,
+  },
+
+  // ── The Loop era producer achievements ───────────────────────────────────────
+  {
+    id: 'the-loop-begins',
+    name: 'Entered The Loop',
+    description: 'Deployed The Process Itself. Nobody started it. Nobody can stop it.',
+    icon: '⚙️',
+    condition: ({ producers }) => (producers['the-process'] ?? 0) >= 1,
+  },
+  {
+    id: 'sentient-deployed',
+    name: 'Sentience Achieved',
+    description: 'Deployed a Sentient Codebase. It approved this purchase before you clicked.',
+    icon: '🌐',
+    condition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 1,
+  },
+  {
+    id: 'duck-incorporated',
+    name: 'Duck Incorporated',
+    description:
+      'Incorporated Duck Collective LLC. Registered in Delaware. The ducks have lawyers.',
+    icon: '🦆⚖️',
+    condition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 1,
+  },
+  {
+    id: 'recursive-self-met',
+    name: 'You Have Met Yourself',
+    description: 'Deployed Recursive Self. It leaves comments you recognize from dreams.',
+    icon: '🪞',
+    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 1,
+  },
+  {
+    id: 'full-loop',
+    name: 'The Loop Is Complete',
+    description: 'Own all four Loop era entities. You were here before. They remember.',
+    icon: '🔄🌌',
+    condition: ({ producers }) =>
+      (producers['the-process'] ?? 0) >= 1 &&
+      (producers['sentient-codebase'] ?? 0) >= 1 &&
+      (producers['duck-collective-llc'] ?? 0) >= 1 &&
+      (producers['recursive-self'] ?? 0) >= 1,
+  },
 
   // ── Tech Stack achievements ────────────────────────────────────────────────────
   {
@@ -508,10 +631,10 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'works-offline',
     name: 'Works Offline',
-    description: '500,000 LOC with no active event. Suspiciously stable.',
+    description: 'Reach 500,000 LOC without surviving any negative events. Suspiciously stable.',
     icon: '📶',
-    condition: ({ totalLoc, producers }) =>
-      totalLoc >= 500000 && Object.values(producers).reduce((a, b) => a + b, 0) > 0,
+    condition: ({ totalLoc, negativeEventssurvived }) =>
+      totalLoc >= 500000 && negativeEventssurvived === 0,
   },
   {
     id: 'it-was-like-this',
