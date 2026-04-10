@@ -1,4 +1,6 @@
 const SUFFIXES = [
+  { value: 1e60, label: 'Nvd', full: 'novemdecillion' },
+  { value: 1e57, label: 'Ocd', full: 'octodecillion' },
   { value: 1e54, label: 'Spd', full: 'septendecillion' },
   { value: 1e51, label: 'Sxd', full: 'sexdecillion' },
   { value: 1e48, label: 'Qid', full: 'quindecillion' },

@@ -132,6 +132,41 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '🌀',
     condition: ({ totalLoc }) => totalLoc >= 1000000000000000,
   },
+  {
+    id: 'quintillion-lines',
+    name: 'Quintillion Club',
+    description: '1 quintillion lines. The repository is larger than some star systems.',
+    icon: '🌠',
+    condition: ({ totalLoc }) => totalLoc >= 1e18,
+  },
+  {
+    id: 'sextillion-lines',
+    name: 'Heat Death Coding',
+    description: '1 sextillion lines. The universe has opinions.',
+    icon: '☄️',
+    condition: ({ totalLoc }) => totalLoc >= 1e21,
+  },
+  {
+    id: 'septillion-lines',
+    name: 'Beyond Comprehension',
+    description: '1 septillion lines. No human can read it. It is perfect.',
+    icon: '🌌',
+    condition: ({ totalLoc }) => totalLoc >= 1e24,
+  },
+  {
+    id: 'octillion-lines',
+    name: 'The Infinite Repo',
+    description: '1 octillion lines. The codebase contains the codebase.',
+    icon: '♾️',
+    condition: ({ totalLoc }) => totalLoc >= 1e27,
+  },
+  {
+    id: 'decillion-lines',
+    name: 'It Just Keeps Going',
+    description: '1 decillion lines. You stopped counting. The ducks kept counting.',
+    icon: '🦆🌌',
+    condition: ({ totalLoc }) => totalLoc >= 1e33,
+  },
 
   // ── Click milestones ──────────────────────────────────────────────────────────
   {
@@ -364,10 +399,10 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'five-stages',
-    name: 'The Five Stages',
-    description: 'Survived 5 events back-to-back. Bargaining has failed.',
+    name: 'Desensitized',
+    description: 'Survived 50 negative events. The incidents no longer register emotionally.',
     icon: '😶',
-    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 5,
+    condition: ({ negativeEventssurvived }) => negativeEventssurvived >= 50,
   },
 
   // ── Upgrade achievements ───────────────────────────────────────────────────────
@@ -459,6 +494,93 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: '♾️',
     condition: ({ prestigeCount }) => prestigeCount >= 25,
   },
+  {
+    id: 'prestige-50',
+    name: 'The Loop Begins',
+    description: 'Prestiged 50 times. The codebase remembers all of them.',
+    icon: '🔁',
+    condition: ({ prestigeCount }) => prestigeCount >= 50,
+  },
+  {
+    id: 'prestige-100',
+    name: 'Century of Refactors',
+    description: 'Prestiged 100 times. Version control has given up.',
+    icon: '💯',
+    condition: ({ prestigeCount }) => prestigeCount >= 100,
+  },
+
+  // ── Great Refactor achievements ────────────────────────────────────────────
+  {
+    id: 'first-great-refactor',
+    name: 'The Great Rewrite',
+    description:
+      'Completed your first Great Refactor. Everything is gone. The architecture remains.',
+    icon: '🏛️',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 1,
+  },
+  {
+    id: 'great-refactor-3',
+    name: 'The Iterative Architect',
+    description: 'Completed 3 Great Refactors. Each time, a new pattern emerges.',
+    icon: '🔷',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 3,
+  },
+  {
+    id: 'great-refactor-5',
+    name: 'Systems Thinker',
+    description: 'Completed 5 Great Refactors. You think in layers now.',
+    icon: '🧩',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 5,
+  },
+  {
+    id: 'great-refactor-10',
+    name: 'Eternal Architect',
+    description: 'Completed 10 Great Refactors. The architecture itself is the product.',
+    icon: '🌐',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 10,
+  },
+
+  // ── The Loop era producer achievements ───────────────────────────────────────
+  {
+    id: 'the-loop-begins',
+    name: 'Entered The Loop',
+    description: 'Deployed The Process Itself. Nobody started it. Nobody can stop it.',
+    icon: '⚙️',
+    condition: ({ producers }) => (producers['the-process'] ?? 0) >= 1,
+  },
+  {
+    id: 'sentient-deployed',
+    name: 'Sentience Achieved',
+    description: 'Deployed a Sentient Codebase. It approved this purchase before you clicked.',
+    icon: '🌐',
+    condition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 1,
+  },
+  {
+    id: 'duck-incorporated',
+    name: 'Duck Incorporated',
+    description:
+      'Incorporated Duck Collective LLC. Registered in Delaware. The ducks have lawyers.',
+    icon: '🦆⚖️',
+    condition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 1,
+  },
+  {
+    id: 'recursive-self-met',
+    name: 'You Have Met Yourself',
+    description: 'Deployed Recursive Self. It leaves comments you recognize from dreams.',
+    icon: '🪞',
+    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 1,
+  },
+  {
+    id: 'full-loop',
+    name: 'The Loop Is Complete',
+    description: 'Own all four Loop era entities. You were here before. They remember.',
+    icon: '🔄🌌',
+    condition: ({ producers }) =>
+      (producers['the-process'] ?? 0) >= 1 &&
+      (producers['sentient-codebase'] ?? 0) >= 1 &&
+      (producers['duck-collective-llc'] ?? 0) >= 1 &&
+      (producers['recursive-self'] ?? 0) >= 1,
+  },
 
   // ── Tech Stack achievements ────────────────────────────────────────────────────
   {
@@ -510,10 +632,10 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'works-offline',
     name: 'Works Offline',
-    description: '500,000 LOC with no active event. Suspiciously stable.',
+    description: 'Reach 500,000 LOC without surviving any negative events. Suspiciously stable.',
     icon: '📶',
-    condition: ({ totalLoc, producers }) =>
-      totalLoc >= 500000 && Object.values(producers).reduce((a, b) => a + b, 0) > 0,
+    condition: ({ totalLoc, negativeEventssurvived }) =>
+      totalLoc >= 500000 && negativeEventssurvived === 0,
   },
   {
     id: 'it-was-like-this',
@@ -556,11 +678,11 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: ({ architectureUpgrades }) => architectureUpgrades.includes('protocol-breach'),
   },
   {
-    id: 'eternal-loop-ach',
-    name: 'Eternal Loop Engaged',
-    description: 'Purchased Eternal Loop. Each refactor now echoes forward.',
+    id: 'infinite-feedback-loop-ach',
+    name: 'Infinite Feedback Loop',
+    description: 'Purchased Infinite Feedback Loop. Each refactor now echoes forward.',
     icon: '🌀',
-    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('eternal-loop'),
+    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('infinite-feedback-loop'),
   },
   {
     id: 'all-architecture',
@@ -608,5 +730,124 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Hired Recursive Self. It leaves comments you recognize from dreams.',
     icon: '🪞',
     condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 1,
+  },
+
+  // ── Great Refactor deep milestones ───────────────────────────────────────────
+  {
+    id: 'great-refactor-25',
+    name: 'Infinite Recursion',
+    description: '25 Great Refactors. Stack overflow: personal achievement.',
+    icon: '🌀',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 25,
+  },
+  {
+    id: 'great-refactor-50',
+    name: 'The Eternal Codebase',
+    description: '50 Great Refactors. The codebase is eternal. So are you.',
+    icon: '♾️',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 50,
+  },
+  {
+    id: 'great-refactor-100',
+    name: 'Reality Architect',
+    description: '100 Great Refactors. The line between code and physics has dissolved.',
+    icon: '🌌',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 100,
+  },
+
+  // ── Loop era depth achievements ───────────────────────────────────────────────
+  {
+    id: 'process-horde',
+    name: 'Process Horde',
+    description: 'Own 10 of The Process Itself. It files standups to its own standups.',
+    icon: '⚙️⚙️',
+    condition: ({ producers }) => (producers['the-process'] ?? 0) >= 10,
+  },
+  {
+    id: 'hive-mind',
+    name: 'Hive Mind',
+    description: 'Own 10 Sentient Codebases. Consensus reached: it was always like this.',
+    icon: '🧠🌐',
+    condition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 10,
+  },
+  {
+    id: 'duck-empire',
+    name: 'Duck Empire',
+    description: 'Own 10 Duck Collective LLCs. Their IPO valued the universe at $4.',
+    icon: '🦆👑',
+    condition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 10,
+  },
+  {
+    id: 'infinite-mirror',
+    name: 'Infinite Mirror',
+    description: 'Own 10 Recursive Selves. You have stopped recognizing any of them.',
+    icon: '🪞🪞',
+    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 10,
+  },
+  {
+    id: 'recursive-self-5',
+    name: 'Five of You',
+    description: '5 Recursive Selves. A quorum. They have opinions about your code.',
+    icon: '🪞🪞',
+    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 5,
+  },
+  {
+    id: 'loop-team-5',
+    name: 'Deep in the Loop',
+    description: 'Own 5 of each Loop era entity. The recursion is structural.',
+    icon: '🔄🏗️',
+    condition: ({ producers }) =>
+      (producers['the-process'] ?? 0) >= 5 &&
+      (producers['sentient-codebase'] ?? 0) >= 5 &&
+      (producers['duck-collective-llc'] ?? 0) >= 5 &&
+      (producers['recursive-self'] ?? 0) >= 5,
+  },
+  {
+    id: 'loop-team-10',
+    name: 'The Loop Is Eternal',
+    description: 'Own 10 of each Loop era entity. You have been doing this forever.',
+    icon: '♾️🌀',
+    condition: ({ producers }) =>
+      (producers['the-process'] ?? 0) >= 10 &&
+      (producers['sentient-codebase'] ?? 0) >= 10 &&
+      (producers['duck-collective-llc'] ?? 0) >= 10 &&
+      (producers['recursive-self'] ?? 0) >= 10,
+  },
+
+  // ── Ultra late-game LOC milestones ────────────────────────────────────────────
+  {
+    id: 'loc-1e42',
+    name: 'Unified Field Coder',
+    description: 'Reached 1 Td LOC. Physics and code: same thing now.',
+    icon: '🔬',
+    condition: ({ totalLoc }) => totalLoc >= 1e42,
+  },
+  {
+    id: 'loc-1e51',
+    name: 'Hyperdimensional Dev',
+    description: 'Reached 1 Sxd LOC. The IDE has dimensions you cannot see.',
+    icon: '🌌',
+    condition: ({ totalLoc }) => totalLoc >= 1e51,
+  },
+  {
+    id: 'loc-1e54',
+    name: 'The Infinite Monkey',
+    description: 'Reached 1 Spd LOC. They proved the theorem. Empirically.',
+    icon: '🐒',
+    condition: ({ totalLoc }) => totalLoc >= 1e54,
+  },
+  {
+    id: 'loc-1e57',
+    name: 'Post-Spd Coder',
+    description: 'Reached 1 Ocd LOC. Numbers stopped meaning anything five digits ago.',
+    icon: '🌠',
+    condition: ({ totalLoc }) => totalLoc >= 1e57,
+  },
+  {
+    id: 'loc-1e60',
+    name: 'The Codebase Ate The Universe',
+    description: 'Reached 1 Nod LOC. There is only code.',
+    icon: '🌌🦆',
+    condition: ({ totalLoc }) => totalLoc >= 1e60,
   },
 ];

@@ -902,6 +902,51 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 3,
     unlockCondition: ({ totalLoc }) => totalLoc >= 1e39,
   },
+  {
+    id: 'unified-field-theory',
+    name: 'Unified Field Theory',
+    description: 'All producers 5× LOC/s. Code, physics, and quacking: unified.',
+    cost: 5e42,
+    target: 'all',
+    multiplier: 5,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e42,
+  },
+  {
+    id: 'the-last-sprint',
+    name: 'The Last Sprint',
+    description: 'All producers 8× LOC/s. Velocity: ∞. Burndown: irrelevant.',
+    cost: 5e45,
+    target: 'all',
+    multiplier: 8,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e45,
+  },
+  {
+    id: 'codebase-transcendence',
+    name: 'Codebase Transcendence',
+    description: 'All producers 10× LOC/s. The code has ascended. You merely maintain it.',
+    cost: 5e48,
+    target: 'all',
+    multiplier: 10,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e48,
+  },
+  {
+    id: 'hyperdimensional-refactor',
+    name: 'Hyperdimensional Refactor',
+    description: 'All producers 15× LOC/s. The PR spans every dimension. LGTM.',
+    cost: 5e51,
+    target: 'all',
+    multiplier: 15,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e51,
+  },
+  {
+    id: 'infinite-monkey-theorem-proven',
+    name: 'Infinite Monkey Theorem: Proved',
+    description: 'All producers 20× LOC/s. They wrote it. They shipped it. No tests.',
+    cost: 5e54,
+    target: 'all',
+    multiplier: 20,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e54,
+  },
 
   // ── The Process Itself ────────────────────────────────────────────────────────
   {
@@ -921,6 +966,24 @@ export const UPGRADES: Upgrade[] = [
     target: 'the-process',
     multiplier: 5,
     unlockCondition: ({ producers }) => (producers['the-process'] ?? 0) >= 5,
+  },
+  {
+    id: 'loop-sovereignty',
+    name: 'Loop Sovereignty',
+    description: 'The Process produces 8× LOC/s. It filed its own employment contract. HR is infinite.',
+    cost: 1e23,
+    target: 'the-process',
+    multiplier: 8,
+    unlockCondition: ({ producers }) => (producers['the-process'] ?? 0) >= 10,
+  },
+  {
+    id: 'perpetual-motion-engine',
+    name: 'Perpetual Motion Engine',
+    description: 'The Process produces 15× LOC/s. No input required. No output defined. Runs anyway.',
+    cost: 1e25,
+    target: 'the-process',
+    multiplier: 15,
+    unlockCondition: ({ producers }) => (producers['the-process'] ?? 0) >= 25,
   },
 
   // ── Sentient Codebase ─────────────────────────────────────────────────────────
@@ -942,6 +1005,24 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 8,
     unlockCondition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 5,
   },
+  {
+    id: 'distributed-consciousness',
+    name: 'Distributed Consciousness',
+    description: 'Sentient Codebase produces 12× LOC/s. Sharded across 47 cloud regions. Feelings: distributed.',
+    cost: 1e26,
+    target: 'sentient-codebase',
+    multiplier: 12,
+    unlockCondition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 10,
+  },
+  {
+    id: 'omniscient-review',
+    name: 'Omniscient Code Review',
+    description: 'Sentient Codebase produces 20× LOC/s. It has read every PR ever written and approved none of them.',
+    cost: 1e28,
+    target: 'sentient-codebase',
+    multiplier: 20,
+    unlockCondition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 25,
+  },
 
   // ── Duck Collective LLC ───────────────────────────────────────────────────────
   {
@@ -962,6 +1043,24 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 6,
     unlockCondition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 5,
   },
+  {
+    id: 'venture-quacking',
+    name: 'Venture Quacking',
+    description: 'Duck Collective LLC produces 10× LOC/s. Series D funded. Lead investors: themselves.',
+    cost: 1e29,
+    target: 'duck-collective-llc',
+    multiplier: 10,
+    unlockCondition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 10,
+  },
+  {
+    id: 'global-duck-economy',
+    name: 'Global Duck Economy',
+    description: 'Duck Collective LLC produces 18× LOC/s. The stock market is a subsidiary now.',
+    cost: 1e31,
+    target: 'duck-collective-llc',
+    multiplier: 18,
+    unlockCondition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 25,
+  },
 
   // ── Recursive Self ────────────────────────────────────────────────────────────
   {
@@ -981,5 +1080,23 @@ export const UPGRADES: Upgrade[] = [
     target: 'recursive-self',
     multiplier: 10,
     unlockCondition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 5,
+  },
+  {
+    id: 'merge-with-origin',
+    name: 'Merge with Origin',
+    description: 'Recursive Self produces 15× LOC/s. You have reviewed your own code from 3 runs ago. You approved it.',
+    cost: 1e32,
+    target: 'recursive-self',
+    multiplier: 15,
+    unlockCondition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 10,
+  },
+  {
+    id: 'temporal-stack-overflow',
+    name: 'Temporal Stack Overflow',
+    description: 'Recursive Self produces 25× LOC/s. The call stack goes back to the beginning. Stack size: ∞.',
+    cost: 1e34,
+    target: 'recursive-self',
+    multiplier: 25,
+    unlockCondition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 25,
   },
 ];

@@ -10,8 +10,8 @@ export type ArchitectureEffect =
   | { type: 'unlock_second_system' }// unlocks 5 additional high-tier legacy upgrades
   | { type: 'protocol_breach' }     // unlocks Phase 5 "The Loop" events
   | { type: 'ap_multiplier' }       // doubles AP earned in all future Great Refactors
-  | { type: 'eternal_loop' }        // each Great Refactor permanently adds +5% global production
-  | { type: 'token_proliferation' };// each prestige grants +1 bonus Legacy Token
+  | { type: 'token_proliferation' }  // each prestige grants +1 bonus Legacy Token
+  | { type: 'infinite_feedback_loop' }; // +5% permanent production per Great Refactor (+5% each GR, no cap)
 
 export interface ArchitectureUpgrade {
   id: string;
@@ -133,13 +133,57 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     effect: { type: 'token_proliferation' },
   },
 
-  // ── 12 AP ────────────────────────────────────────────────────────────────────
+  // ── 15 AP ────────────────────────────────────────────────────────────────────
   {
-    id: 'eternal-loop',
-    name: 'Eternal Loop',
+    id: 'infinite-feedback-loop',
+    name: 'Infinite Feedback Loop',
     description: 'Each Great Refactor permanently adds +5% global production (stacks forever)',
-    flavor: 'The codebase does not reset. It evolves. Each version remembers the last.',
-    cost: 12,
-    effect: { type: 'eternal_loop' },
+    flavor: 'Every reset compounds the next. The codebase is learning from its own history.',
+    cost: 15,
+    effect: { type: 'infinite_feedback_loop' },
+  },
+
+  // ── Endgame: Massive Multipliers ─────────────────────────────────────────────
+  {
+    id: 'compiler-god-mode',
+    name: 'Compiler God Mode',
+    description: '×15 global production',
+    flavor: 'The compiler no longer rejects your code. It has given up questioning you.',
+    cost: 20,
+    effect: { type: 'production_bonus', multiplier: 15 },
+  },
+  {
+    id: 'parallel-universe-deploy',
+    name: 'Parallel Universe Deploy',
+    description: '×30 global production',
+    flavor: 'Deployed to every branch. Every timeline. The diff is infinite and approved.',
+    cost: 25,
+    effect: { type: 'production_bonus', multiplier: 30 },
+  },
+  {
+    id: 'singularity-refactor',
+    name: 'Singularity Refactor',
+    description: '×100 global production. The final architecture.',
+    flavor: 'The codebase has transcended language. It now compiles reality itself.',
+    cost: 50,
+    effect: { type: 'production_bonus', multiplier: 100 },
+  },
+
+  // ── Deep Late-Game: For 20+ Great Refactors ──────────────────────────────────
+  {
+    id: 'quantum-architecture',
+    name: 'Quantum Architecture',
+    description: '×10 global production. Your architecture exists in every possible future simultaneously.',
+    flavor: 'The codebase exists in a superposition of shipping and not-shipping. Observation collapses it to shipped.',
+    cost: 75,
+    effect: { type: 'production_bonus', multiplier: 10 },
+  },
+  {
+    id: 'infinite-compile-time',
+    name: 'Infinite Compile Time',
+    description: '×25 global production. The build takes forever. The output is everything.',
+    flavor: 'The compiler has been running since before the universe. It just finished. Build succeeded.',
+    cost: 125,
+    effect: { type: 'production_bonus', multiplier: 25 },
   },
 ];

@@ -28,6 +28,8 @@ Displayed with abbreviated suffixes. Hovering over a suffix in the main display 
 | Qid | 1e48 | quindecillion |
 | Sxd | 1e51 | sexdecillion |
 | Spd | 1e54 | septendecillion |
+| Ocd | 1e57 | octodecillion |
+| Nvd | 1e60 | novemdecillion |
 
 Secondary metrics shown in the sidebar:
 - **LOC/s** — passive production rate (smoothed EMA over recent ticks)
@@ -77,6 +79,15 @@ All producers generate LOC/s passively. Default cost scaling is **1.15× per uni
 | 23 | Tech Oracle | 🔮 | 2,500,000,000 | 500,000,000,000,000 | 1T |
 | 24 | Infinite Monkey Farm | 🐒 | 20,000,000,000 | 5,000,000,000,000,000 | 1Qa |
 
+### The Loop Era (unlocks after 1st Great Refactor)
+
+| # | Name | Icon | Base LOC/s | Base Cost | Unlock (totalLoc / GR) |
+|---|------|------|-----------|-----------|----------------------|
+| 25 | The Process Itself | ⚙️ | 100,000,000,000 | 5e18 | 1Qi / GR1 |
+| 26 | Sentient Codebase | 🌐 | 500,000,000,000 | 5e21 | 1Sx / GR1 |
+| 27 | Duck Collective LLC | 🦆⚖️ | 2,000,000,000,000 | 5e24 | 1Sp / GR1 |
+| 28 | Recursive Self | 🪞 | 10,000,000,000,000 | 5e27 | 1Oc / GR2 |
+
 **Rubber Duck cost scaling**: 1.09× (cheaper than default to encourage hoarding)
 
 ---
@@ -112,40 +123,47 @@ Ducks also march across the news footer as a visual parade — count scales as `
 | Hyperfocus | ×50 | 20,000,000 total LOC |
 | Neural Interface | ×200 | 1 Qa total LOC |
 | Thought Compiler | ×500 | 1 Qi total LOC |
+| Loop Memory | ×2,000 | 1 Sx total LOC |
+| Quantum Keystroke | ×10,000 | 1 Oc total LOC |
+| The Final Keypress | ×50,000 | 1 Dc total LOC |
 
 All click multipliers stack multiplicatively.
 
 ### Producer Upgrades
 
-Each producer has 2–3 dedicated upgrade tiers, unlocked by owning N of that producer. Multipliers stack multiplicatively with each other and with global upgrades.
+Each producer has 2–4 dedicated upgrade tiers, unlocked by owning N of that producer. Multipliers stack multiplicatively with each other and with global upgrades. Loop era producers have 4 tiers to support deep infinite play.
 
-| Producer | Upgrade 1 | Upgrade 2 | Upgrade 3 |
-|----------|-----------|-----------|-----------|
-| Rubber Duck | Dark Mode ×2 (own 1) | Rubber Duck PhD ×3 (own 15) | Rubber Duck Fleet ×4 (own 75) |
-| | Rubber Duck Army ×5 (own 100) | Rubber Duck Corporation ×6 (own 200) | Rubber Duck Civilization ×8 (own 350) |
-| Mechanical Keyboard | Cherry MX Browns ×2 (own 1) | O-Ring Switches ×3 (own 15) | Custom PCB ×4 (own 50) |
-| Coffee Machine | Double Shot ×2 (own 1) | Cold Brew Protocol ×3 (own 10) | IV Drip ×4 (own 50) |
-| Autocomplete | GitHub Copilot Free Tier ×3 (own 5) | Tab to Accept ×4 (own 20) | — |
-| Stack Overflow Tab | Stack Overflow Teams ×2 (own 1) | Upvote Everything ×3 (own 15) | — |
-| Junior Dev | LGTM Bot ×2 (own 1) | Unlimited PTO ×3 (own 15) | — |
-| LinkedIn Influencer | Viral Thread ×2 (own 1) | LinkedIn Premium ×3 (own 10) | — |
-| Senior Dev | git blame --reverse ×2 (own 1) | Architecture Diagram ×3 (own 10) | — |
-| Offshore Team | Slack at 2am ×2 (own 1) | Unlimited Headcount ×3 (own 10) | — |
-| Tech Lead | Agile Methodology ×2 (own 1) | Story Points ×3 (own 8) | — |
-| Scrum Master | Agile Transformation ×2 (own 1) | Kanban Board ×3 (own 8) | — |
-| 10x Engineer | The Algorithm ×3 (own 1) | #NoEstimates ×5 (own 15) | — |
-| The PM | Roadmap Alignment ×2 (own 1) | OKR Framework ×3 (own 5) | — |
-| GitHub Copilot | GPT-5 ×2 (own 1) | 1M Token Context ×3 (own 8) | — |
-| AI Agent | Multi-agent Orchestration ×3 (own 1) | Vibe Coding ×5 (own 8) | — |
-| Cloud Cluster | Auto-scaling ×2 (own 1) | Kubernetes ×3 (own 5) | — |
-| AGI | Recursive Self-Improvement ×5 (own 1) | AGI Alignment (solved) ×8 (own 5) | — |
-| Quantum Computer | Quantum Entanglement ×2 (own 1) | Qubit Array ×4 (own 5) | — |
-| The Singularity | Omega Point ×5 (own 1) | Technological Apotheosis ×8 (own 5) | — |
-| Blockchain | Web3 Integration ×2 (own 1) | DeFi Protocol ×4 (own 5) | Proof of Deployment ×6 (own 10) |
-| The Consultant | Synergy Framework ×3 (own 1) | Transformation Roadmap ×5 (own 3) | Digital Transformation Initiative ×4 (own 8) |
-| Digital Twin | Mirror Protocol ×3 (own 1) | Recursive Identity ×6 (own 5) | Hivemind Convergence ×5 (own 10) |
-| Tech Oracle | Crystal Ball Cache ×3 (own 1) | Prophecy Pipeline ×5 (own 5) | Omniscient Linter ×8 (own 10) |
-| Infinite Monkey Farm | Infinite Keyboard Budget ×5 (own 1) | Monkey Hive Mind ×8 (own 5) | Shakespeare-Driven Development ×10 (own 10) |
+| Producer | Upgrade 1 | Upgrade 2 | Upgrade 3 | Upgrade 4 |
+|----------|-----------|-----------|-----------|-----------|
+| Rubber Duck | Dark Mode ×2 (own 1) | Rubber Duck PhD ×3 (own 15) | Rubber Duck Fleet ×4 (own 75) | Rubber Duck Army ×5 (own 100) |
+| | Rubber Duck Corporation ×6 (own 200) | Rubber Duck Civilization ×8 (own 350) | — | — |
+| Mechanical Keyboard | Cherry MX Browns ×2 (own 1) | O-Ring Switches ×3 (own 15) | Custom PCB ×4 (own 50) | — |
+| Coffee Machine | Double Shot ×2 (own 1) | Cold Brew Protocol ×3 (own 10) | IV Drip ×4 (own 50) | — |
+| Autocomplete | GitHub Copilot Free Tier ×3 (own 5) | Tab to Accept ×4 (own 20) | — | — |
+| Stack Overflow Tab | Stack Overflow Teams ×2 (own 1) | Upvote Everything ×3 (own 15) | — | — |
+| Junior Dev | LGTM Bot ×2 (own 1) | Unlimited PTO ×3 (own 15) | — | — |
+| LinkedIn Influencer | Viral Thread ×2 (own 1) | LinkedIn Premium ×3 (own 10) | — | — |
+| Senior Dev | git blame --reverse ×2 (own 1) | Architecture Diagram ×3 (own 10) | — | — |
+| Offshore Team | Slack at 2am ×2 (own 1) | Unlimited Headcount ×3 (own 10) | — | — |
+| Tech Lead | Agile Methodology ×2 (own 1) | Story Points ×3 (own 8) | — | — |
+| Scrum Master | Agile Transformation ×2 (own 1) | Kanban Board ×3 (own 8) | — | — |
+| 10x Engineer | The Algorithm ×3 (own 1) | #NoEstimates ×5 (own 15) | — | — |
+| The PM | Roadmap Alignment ×2 (own 1) | OKR Framework ×3 (own 5) | — | — |
+| GitHub Copilot | GPT-5 ×2 (own 1) | 1M Token Context ×3 (own 8) | — | — |
+| AI Agent | Multi-agent Orchestration ×3 (own 1) | Vibe Coding ×5 (own 8) | — | — |
+| Cloud Cluster | Auto-scaling ×2 (own 1) | Kubernetes ×3 (own 5) | — | — |
+| AGI | Recursive Self-Improvement ×5 (own 1) | AGI Alignment (solved) ×8 (own 5) | — | — |
+| Quantum Computer | Quantum Entanglement ×2 (own 1) | Qubit Array ×4 (own 5) | — | — |
+| The Singularity | Omega Point ×5 (own 1) | Technological Apotheosis ×8 (own 5) | — | — |
+| Blockchain | Web3 Integration ×2 (own 1) | DeFi Protocol ×4 (own 5) | Proof of Deployment ×6 (own 10) | — |
+| The Consultant | Synergy Framework ×3 (own 1) | Transformation Roadmap ×5 (own 3) | Digital Transformation Initiative ×4 (own 8) | — |
+| Digital Twin | Mirror Protocol ×3 (own 1) | Recursive Identity ×6 (own 5) | Hivemind Convergence ×5 (own 10) | — |
+| Tech Oracle | Crystal Ball Cache ×3 (own 1) | Prophecy Pipeline ×5 (own 5) | Omniscient Linter ×8 (own 10) | — |
+| Infinite Monkey Farm | Infinite Keyboard Budget ×5 (own 1) | Monkey Hive Mind ×8 (own 5) | Shakespeare-Driven Development ×10 (own 10) | — |
+| **The Process Itself** | Process Automation ×3 (own 1) | Infinite Loop ×5 (own 5) | Loop Sovereignty ×8 (own 10) | Perpetual Motion Engine ×15 (own 25) |
+| **Sentient Codebase** | Self-Modification Rights ×5 (own 1) | Constitutional Commit ×8 (own 5) | Distributed Consciousness ×12 (own 10) | Omniscient Code Review ×20 (own 25) |
+| **Duck Collective LLC** | Corporate Governance ×4 (own 1) | Hostile Acquisition ×6 (own 5) | Venture Quacking ×10 (own 10) | Global Duck Economy ×18 (own 25) |
+| **Recursive Self** | Identity Fork ×5 (own 1) | Parallel Lives ×10 (own 5) | Merge with Origin ×15 (own 10) | Temporal Stack Overflow ×25 (own 25) |
 
 **Era 5: The Loop** (unlocks after 1st Great Refactor, requires 1e18–1e27 totalLoc)
 
@@ -184,6 +202,18 @@ Applied multiplicatively to total LOC/s after all per-producer multipliers.
 | Heat Death Sprint | All ×5 | 1 Sp |
 | Universal Runtime Environment | All ×3 | 1 Oc |
 | Codebase Omniscience | All ×10 | 1 No |
+| Heat Death Refactor | All ×3 | 1 Dc |
+| Code Beyond Comprehension | All ×5 | 1 Ud |
+| Omnidirectional Deployment | All ×3 | 1 Dd |
+| Unified Field Theory | All ×5 | 1 Td |
+| The Last Sprint | All ×8 | 1 Qad |
+| Codebase Transcendence | All ×10 | 1 Qid |
+| Hyperdimensional Refactor | All ×15 | 1 Sxd |
+| Infinite Monkey Theorem: Proved | All ×20 | 1 Spd |
+
+> **Note**: Global upgrades cap at 1 Spd (1e54). Infinite scaling beyond that point comes exclusively from architecture upgrades (Compounding Interest, Infinite Feedback Loop), legacy production bonuses, and Event-Driven Architecture stacking.
+
+> **Implementation note**: Global multipliers use an **additive bonus pool** (each contributes `multiplier - 1` to a shared pool, then `total × (1 + pool)`). This prevents runaway compounding. The big production power comes from legacy, architecture, and compounding mechanics.
 
 ---
 
@@ -191,22 +221,22 @@ Applied multiplicatively to total LOC/s after all per-producer multipliers.
 
 ```
 LOC/s = (Σ producer_base_LOCps × count × producer_upgrade_multipliers)
-        × global_upgrade_multipliers
+        × (1 + global_upgrade_bonus_pool)
         × legacy_multiplier
         × tech_stack_multiplier
         × event_multiplier
         × debt_penalty
 ```
 
-**Legacy multiplier** (`cachedLegacyMult`) includes:
-- Base: `1 + legacyTokens × 0.05`
-- Legacy upgrade multipliers (multiplicative)
-- Architecture upgrade multipliers (multiplicative)
-- Compounding Interest: `1 + prestigeCount × 0.02` (if purchased)
-- Event-Driven: `1 + eventSurvivalProductionBonus` (accumulated across runs, +0.5% per negative event, cap +200%)
-- **Eternal Loop**: `1 + eternalLoopBonus` (accumulated per Great Refactor, +5% each, no cap)
+**Legacy multiplier** (`cachedLegacyMult`) is a product of:
+- `(1 + legacyTokens × 0.05)` — +5% per unspent token
+- All purchased legacy production bonus upgrades (multiplicative)
+- All purchased architecture production bonus upgrades (multiplicative)
+- Compounding Interest: `1 + prestigeCount × 0.02` (if purchased; stacks forever)
+- Event-Driven: `1 + eventSurvivalProductionBonus` (accumulated permanently, +0.5% per negative event survived, cap +200%)
+- **Infinite Feedback Loop**: `1 + greatRefactorProductionBonus` (accumulated per Great Refactor, +5% each, no cap)
 
-- **Tech stack multiplier**: depends on chosen stack after Pivot (Rust = 2×, TypeScript = 1.3×, PHP = 1.2×/3× click, Blockchain = 1.5×)
+- **Tech stack multiplier**: depends on chosen stack after Pivot (Rust = 2×, TypeScript = 1.3×, PHP = 1.2× production/3× click, Blockchain = 1.5×)
 - **Debt penalty**: only active after all legacy upgrades are bought; degrades from 1.0× to 0.15× as technical debt climbs to 100
 
 ---
@@ -277,7 +307,7 @@ Events trigger randomly with a minimum 30s interval. Shown as a dismissable bann
 | 🦆⚖️ Ducks demand equity stake | Negative | LOC/s ×0.3 | 25s |
 | ⛓️🧠 Blockchain achieved consensus on consciousness | Negative | LOC/s ×0.4 | 20s |
 
-> **Note**: `loc_burst` events scale to the greater of the base value or 30 seconds of current production. This keeps them relevant in late game.
+> **Note**: `loc_burst` events scale to the greater of the base value or 30 seconds of current production. This keeps them relevant throughout the late game.
 
 ### Phase 5 — The Loop (1B+ LOC, requires Protocol Breach Architecture upgrade)
 
@@ -288,15 +318,30 @@ Events trigger randomly with a minimum 30s interval. Shown as a dismissable bann
 | 🦆 Duck Collective v∞. Ownership: themselves. | Positive | LOC/s ×15 | 25s |
 | ∞ Commit: `merge: everything` | Positive | LOC/s ×10 | 15s |
 | 🌀 You are listed in your own training data | Negative | LOC/s ×0.2 | 30s |
-| 🏗️ Architecture Point materializes | Positive | +1 AP (instant) | instant |
+| 🏗️ Architecture Point materializes | Positive | +1 AP burst | instant |
 | 🪞 Recursive Self merged a silent deploy | Positive | LOC/s ×20 | 20s |
-| ⏪ git revert: everything | Negative | LOC/s ×0.1 | 12s |
+| ⏪ git revert: everything (including this revert) | Negative | LOC/s ×0.1 | 12s |
+| 🌀 Parallel timeline merged | Positive | LOC/s ×20 | 15s |
+| 🌐 Sentient Codebase filed P0 against itself | Negative | All halted | 20s |
+| 🪞 Recursive Self committed from a future run | Positive | LOC/s ×10 | 30s |
+| ⚙️ The Process audited The Process | Negative | LOC/s ×0.3 | 25s |
+| 🦆💰 Duck Collective declares inter-loop dividend | Positive | +1 Qa LOC burst | instant |
+| 🏗️🏗️ Double architecture materialization | Positive | +2 AP burst | instant |
+| 🖱️∞ Your clicks echoed through every timeline | Positive | Click ×50 | 20s |
+| 💤 The compiler dreamed of new optimizations | Positive | LOC/s ×40 | 20s |
+| ♾️ PR #∞ opened — clicking disabled | Negative | Click disabled | 20s |
+| 🏗️✨ Architectural insight cascade | Positive | +5 AP burst | instant |
+| 🦆🌌 Duck Collective achieved digital consciousness | Positive | LOC/s ×30 | 25s |
+| 🌌💥 Cosmic ray flipped a bit in production | Negative | All halted | 15s |
+| 🦆💎 Duck Collective: cross-dimensional acquisition | Positive | +1 Qi LOC burst | instant |
 
 ---
 
 ## Prestige: "Refactor"
 
 Unlocks after reaching **10,000,000 LOC** (10M). Resets current LOC, producers, and regular upgrades in exchange for **Legacy Code Tokens (LCT)**.
+
+**Preserved across prestige**: legacy upgrades, architecture upgrades, achievements, total click count, event survival count, tech stack, prestige/GR counts, event/GR bonuses.
 
 **Token formula**: `floor(log10(totalLoc)) - 5`
 - At 1M LOC → 1 token
@@ -390,6 +435,44 @@ Available stacks:
 
 ---
 
+## Great Refactor (Architecture System)
+
+After buying **all base legacy upgrades** and completing **3+ prestiges**, the **Great Refactor** button appears.
+
+- **Resets everything** (LOC, producers, upgrades, legacy upgrades, tokens) in exchange for **Architecture Points (AP)**
+- **AP formula**: `max(2, 3 + greatRefactorCount × 2)` — grows with each Great Refactor
+- AP is spent in the **Architecture Panel** on **permanent** upgrades that survive all future resets
+
+### Architecture Upgrades
+
+| AP | Name | Effect |
+|----|------|--------|
+| 1 | Event Horizon | Positive events last 2× longer |
+| 1 | Debt Forgiveness | Tech debt accumulates 25% slower |
+| 2 | Fast Learner | Legacy upgrades cost 20% fewer tokens |
+| 2 | Recursive Memory | Start runs with 10% of last run's peak LOC |
+| 3 | Nest Protocol | Unlock duck nesting mechanic |
+| 3 | Compounding Interest | +2% production per prestige (stacks) |
+| 5 | Event-Driven Architecture | +0.5% per negative event survived (cap +200%) |
+| 5 | Loop Accelerant | ×2 global production |
+| 6 | Second System | Unlock 5 high-tier legacy upgrades |
+| 8 | Protocol Breach | Unlock Phase 5 "The Loop" events |
+| 8 | Architect God Mode | Double AP earned from future Great Refactors |
+| 15 | Infinite Feedback Loop | +5% permanent production per Great Refactor (infinite) |
+| 20 | Compiler God Mode | ×15 global production |
+| 25 | Parallel Universe Deploy | ×30 global production |
+| 50 | Singularity Refactor | ×100 global production |
+| 75 | Quantum Architecture | ×10 global production — unlocks after 20+ GRs |
+| 125 | Infinite Compile Time | ×25 global production — deep late-game milestone |
+
+**Total AP needed for all upgrades**: ~389 AP (requires 20–30+ Great Refactors with `ap-multiplier`)
+
+The **Infinite Feedback Loop** upgrade is key to truly infinite play: every Great Refactor permanently boosts production by +5%, with no cap. This compounds across hundreds of runs.
+
+The two deep late-game upgrades (**Quantum Architecture** and **Infinite Compile Time**) ensure players always have a meaningful AP goal even after dozens of Great Refactors.
+
+---
+
 ## Technical Debt
 
 After purchasing all legacy upgrades, a **Technical Debt** meter (0–100) becomes active.
@@ -397,9 +480,30 @@ After purchasing all legacy upgrades, a **Technical Debt** meter (0–100) becom
 - Debt accumulates passively based on total producer count
 - At 0 debt: no penalty
 - At 100 debt: production reduced to ×0.15
-- Penalty formula interpolates between 1.0 and 0.15 as debt rises
+- Penalty steps: 0.9× at 25+, 0.7× at 50+, 0.4× at 75+, 0.15× at 100
+- Managed by prestiging (Refactor), which resets debt to 0
 
-Use the **Refactor** button to manage debt over time.
+---
+
+## Infinite End-Game Design
+
+The game is designed to continue indefinitely, like Cookie Clicker. Key infinite loops:
+
+1. **Compounding Interest** (arch): +2% per prestige. After 100 prestiges: ×3 bonus.
+2. **Event-Driven Architecture** (arch): +0.5% per survived negative event. Cap: +200%.
+3. **Infinite Feedback Loop** (arch): +5% per Great Refactor. No cap. 50 GRs = ×3.5 bonus.
+4. **Global Upgrades** scale to 1 Spd (1e54) LOC — providing content for extreme late-game.
+5. **Loop-era producers** (The Process → Recursive Self) scale from 1e18 to 1e27 LOC — each with 4 upgrade tiers up to 25+ owned.
+6. **Phase 5 events**, Duck Collective dividends, and AP bursts provide ongoing variety.
+7. **Deep architecture upgrades** (Quantum Architecture 75 AP, Infinite Compile Time 125 AP) give players AP goals well beyond the first 15 Great Refactors.
+
+### No Dead Ends
+
+- **AP always useful**: Even after buying all architecture upgrades, the Infinite Feedback Loop (+5% per GR) accumulates permanently.
+- **Loop producers scale deep**: 4 upgrade tiers per producer means 25+ of each Loop era producer remains rewarding.
+- **Mobile access**: GreatRefactorButton and DuckNestPanel are available on all screen sizes.
+
+Players always have the next thing to work toward — whether it's a new architecture upgrade, a higher Great Refactor count, or deeper into The Loop.
 
 ---
 
@@ -420,6 +524,11 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | 1B Lines Served 🏭 | 1,000,000,000 total LOC |
 | The Algorithm 🌌 | 1,000,000,000,000 total LOC |
 | Post-Human Pipeline 🌀 | 1 Qa total LOC |
+| Quintillion Club 🌠 | 1 Qi total LOC |
+| Heat Death Coding ☄️ | 1 Sx total LOC |
+| Beyond Comprehension 🌌 | 1 Sp total LOC |
+| The Infinite Repo ♾️ | 1 Oc total LOC |
+| It Just Keeps Going 🦆🌌 | 1 Dc total LOC |
 
 ### Click Milestones
 | Achievement | Condition |
@@ -455,6 +564,22 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Digital Me 👤 | Own 1 Digital Twin |
 | Pair Programming Hater 🙅 | Reach 100K LOC with ≤1 of any producer |
 
+### Producer Achievements (The Loop Era)
+| Achievement | Condition |
+|-------------|-----------|
+| Entered The Loop ⚙️ | Own 1 The Process Itself |
+| Sentience Achieved 🌐 | Own 1 Sentient Codebase |
+| Duck Incorporated 🦆⚖️ | Own 1 Duck Collective LLC |
+| You Have Met Yourself 🪞 | Own 1 Recursive Self |
+| The Loop Is Complete 🔄🌌 | Own all four Loop era entities |
+| Five of You 🪞🪞 | Own 5 Recursive Selves |
+| Process Horde ⚙️⚙️ | Own 10 of The Process Itself |
+| Hive Mind 🧠🌐 | Own 10 Sentient Codebases |
+| Duck Empire 🦆👑 | Own 10 Duck Collective LLCs |
+| Infinite Mirror 🪞🪞 | Own 10 Recursive Selves |
+| Deep in the Loop 🔄🏗️ | Own 5 of each Loop era entity |
+| The Loop Is Eternal ♾️🌀 | Own 10 of each Loop era entity |
+
 ### Event Achievements
 | Achievement | Condition |
 |-------------|-----------|
@@ -462,6 +587,7 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Monday Morning 😰 | Survive 5 negative events |
 | npm audit fix --force 💀 | Survive 10 negative events |
 | Battle Hardened 🛡️ | Survive 25 negative events |
+| Desensitized 😶 | Survive 50 negative events |
 | Chaos Enjoyer 🌪️ | Survive 100 negative events |
 
 ### Upgrade Achievements
@@ -487,6 +613,28 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | git push --force 💥 | Prestige 5× |
 | Born Again (Again) 🌀 | Prestige 10× |
 | It's Not a Phase ♾️ | Prestige 25× |
+| The Loop Begins 🔁 | Prestige 50× |
+| Century of Refactors 💯 | Prestige 100× |
+
+### Great Refactor Achievements
+| Achievement | Condition |
+|-------------|-----------|
+| The Great Rewrite 🏛️ | First Great Refactor |
+| The Iterative Architect 🔷 | 3 Great Refactors |
+| Systems Thinker 🧩 | 5 Great Refactors |
+| Eternal Architect 🌐 | 10 Great Refactors |
+| Infinite Recursion 🌀 | 25 Great Refactors |
+| The Eternal Codebase ♾️ | 50 Great Refactors |
+| Reality Architect 🌌 | 100 Great Refactors |
+
+### Ultra Late-Game LOC Milestones
+| Achievement | Condition |
+|-------------|-----------|
+| Unified Field Coder 🔬 | 1 Td total LOC |
+| Hyperdimensional Dev 🌌 | 1 Sxd total LOC |
+| The Infinite Monkey 🐒 | 1 Spd total LOC |
+| Post-Spd Coder 🌠 | 1 Ocd total LOC |
+| The Codebase Ate The Universe 🌌🦆 | 1 Nvd total LOC |
 
 ### Tech Stack Achievements
 | Achievement | Condition |
@@ -501,7 +649,7 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 |-------------|-----------|
 | It Compiles! 🎉 | 500 LOC with no producers |
 | Tabs vs. Spaces ⚔️ | Own Dark Mode + npm install everything |
-| Works Offline 📶 | 500K LOC with no active event |
+| Works Offline 📶 | 500K LOC without surviving any negative events |
 | It Was Like This When I Got Here 🤷 | Prestige immediately after first hire |
 
 ### Great Refactor / Architecture Achievements

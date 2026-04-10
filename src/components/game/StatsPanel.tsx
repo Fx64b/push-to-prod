@@ -26,13 +26,14 @@ export function StatsPanel() {
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
   const architecturePoints = useGameStore((s) => s.architecturePoints);
   const clicksThisRun = useGameStore((s) => s.clicksThisRun);
+  const greatRefactorProductionBonus = useGameStore((s) => s.greatRefactorProductionBonus);
 
   const clickValue = useMemo(
     () => calculateClickValue({ producers, upgrades, locPerClick }),
     [producers, upgrades, locPerClick],
   );
 
-  const { commits } = getCommitInfo(totalLoc);
+  const { commits, threshold, progress } = getCommitInfo(totalLoc);
 
   const ownedProducers = PRODUCERS.filter((p) => (producers[p.id] ?? 0) > 0);
 
@@ -49,20 +50,53 @@ export function StatsPanel() {
           <StatRow label="LOC/s" value={formatRate(locps)} color="text-gh-blue" />
           <StatRow label="Per click" value={formatLOC(clickValue)} />
           <StatRow label="Commits" value={commits.toLocaleString()} />
+          <div className="flex flex-col gap-0.5">
+            <div className="flex justify-between items-center">
+              <span className="text-gh-muted text-[10px]">Next commit</span>
+              <span className="text-[10px] text-gh-muted tabular-nums">
+                {formatLOC(threshold)} LOC
+              </span>
+            </div>
+            <div className="w-full h-1 bg-gh-border rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gh-blue rounded-full transition-all duration-300"
+                style={{ width: `${Math.min(100, progress * 100).toFixed(1)}%` }}
+              />
+            </div>
+          </div>
           <StatRow label="Clicks" value={totalClicks.toLocaleString()} />
           {prestigeCount > 0 && (
             <StatRow label="Refactors" value={prestigeCount.toString()} color="text-gh-purple" />
           )}
           {greatRefactorCount > 0 && (
-            <StatRow label="Great Refactors" value={greatRefactorCount.toString()} color="text-gh-yellow" />
+            <StatRow
+              label="Great Refactors"
+              value={greatRefactorCount.toString()}
+              color="text-gh-yellow"
+            />
           )}
           {legacyTokens > 0 && (
             <StatRow label="Legacy Tokens" value={legacyTokens.toString()} color="text-gh-yellow" />
           )}
           {architecturePoints > 0 && (
-            <StatRow label="Arch. Points" value={architecturePoints.toString()} color="text-gh-yellow" />
+            <StatRow
+              label="Arch. Points"
+              value={architecturePoints.toString()}
+              color="text-gh-yellow"
+            />
           )}
-          <StatRow label="Clicks (run)" value={clicksThisRun.toLocaleString()} color={clicksThisRun >= 1000 ? 'text-gh-green' : 'text-gh-muted'} />
+          <StatRow
+            label="Clicks (run)"
+            value={clicksThisRun.toLocaleString()}
+            color={clicksThisRun >= 1000 ? 'text-gh-green' : 'text-gh-muted'}
+          />
+          {greatRefactorProductionBonus > 0 && (
+            <StatRow
+              label="Loop Feedback"
+              value={`+${(greatRefactorProductionBonus * 100).toFixed(0)}%`}
+              color="text-gh-yellow"
+            />
+          )}
           {techStack && (
             <StatRow
               label="Tech Stack"
