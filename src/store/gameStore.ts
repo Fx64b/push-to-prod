@@ -574,8 +574,13 @@ export const useGameStore = create<GameState>()(
 
           // Instant effects on fire
           if (newActiveEvent.effectType === 'loc_burst') {
-            newLoc += newActiveEvent.effectValue;
-            newTotalLoc += newActiveEvent.effectValue;
+            // Scale burst to 30s of current production (minimum the base effectValue)
+            const burstAmount = Math.max(
+              newActiveEvent.effectValue,
+              Math.floor(state.cachedLOCps * legacyMult * stackProductionMult * 30),
+            );
+            newLoc += burstAmount;
+            newTotalLoc += burstAmount;
           } else if (newActiveEvent.effectType === 'ap_burst') {
             newArchitecturePoints += newActiveEvent.effectValue;
           }
@@ -595,6 +600,7 @@ export const useGameStore = create<GameState>()(
           technicalDebt: newTechnicalDebt,
           techStack: state.techStack,
           pivotCount: state.pivotCount,
+          architectureUpgrades: state.architectureUpgrades,
         };
 
         const newAchievements = [...state.achievements];
@@ -765,7 +771,9 @@ export const useGameStore = create<GameState>()(
         if (state.totalLoc < 10000000) return;
         if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
 
-        const tokensEarned = calcPrestigeTokens(state.totalLoc, state.prestigeCount);
+        const baseTokens = calcPrestigeTokens(state.totalLoc, state.prestigeCount);
+        const bonusTokens = state.architectureUpgrades.includes('token-proliferation') ? 1 : 0;
+        const tokensEarned = baseTokens + bonusTokens;
         const { startProducers, keptUpgrades, startLoc } = buildStartState(
           state.legacyUpgrades,
           state.upgrades,
@@ -875,12 +883,13 @@ export const useGameStore = create<GameState>()(
       pivot: (stack: TechStack) => {
         const state = get();
         if (state.prestigeCount < 5) return;
-        if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
 
-        const tokensEarned = Math.max(
+        const baseTokens = Math.max(
           0,
           Math.floor(Math.log10(Math.max(state.totalLoc, 1000000))) - 5,
         );
+        const bonusTokens = state.architectureUpgrades.includes('token-proliferation') ? 1 : 0;
+        const tokensEarned = baseTokens + bonusTokens;
 
         const { startProducers, keptUpgrades, startLoc } = buildStartState(
           state.legacyUpgrades,

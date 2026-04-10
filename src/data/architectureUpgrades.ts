@@ -10,7 +10,8 @@ export type ArchitectureEffect =
   | { type: 'unlock_second_system' }// unlocks 5 additional high-tier legacy upgrades
   | { type: 'protocol_breach' }     // unlocks Phase 5 "The Loop" events
   | { type: 'ap_multiplier' }       // doubles AP earned in all future Great Refactors
-  | { type: 'infinite_feedback_loop' }; // +5% permanent production per Great Refactor
+  | { type: 'token_proliferation' }  // each prestige grants +1 bonus Legacy Token
+  | { type: 'infinite_feedback_loop' }; // +5% permanent production per Great Refactor (+5% each GR, no cap)
 
 export interface ArchitectureUpgrade {
   id: string;
@@ -122,7 +123,17 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     effect: { type: 'ap_multiplier' },
   },
 
-  // ── Late-Game: Infinite Scaling ──────────────────────────────────────────────
+  // ── 10 AP ────────────────────────────────────────────────────────────────────
+  {
+    id: 'token-proliferation',
+    name: 'Token Proliferation',
+    description: 'Each prestige grants +1 bonus Legacy Token',
+    flavor: 'The economy of loops has been solved. The solution is: more tokens.',
+    cost: 10,
+    effect: { type: 'token_proliferation' },
+  },
+
+  // ── 15 AP ────────────────────────────────────────────────────────────────────
   {
     id: 'infinite-feedback-loop',
     name: 'Infinite Feedback Loop',
@@ -131,6 +142,8 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     cost: 15,
     effect: { type: 'infinite_feedback_loop' },
   },
+
+  // ── Endgame: Massive Multipliers ─────────────────────────────────────────────
   {
     id: 'compiler-god-mode',
     name: 'Compiler God Mode',
@@ -156,7 +169,7 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     effect: { type: 'production_bonus', multiplier: 100 },
   },
 
-  // ── Deep Late-Game: For 20+ Great Refactors ───────────────────────────────────
+  // ── Deep Late-Game: For 20+ Great Refactors ──────────────────────────────────
   {
     id: 'quantum-architecture',
     name: 'Quantum Architecture',

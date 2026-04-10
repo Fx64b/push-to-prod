@@ -165,6 +165,17 @@ Each producer has 2–4 dedicated upgrade tiers, unlocked by owning N of that pr
 | **Duck Collective LLC** | Corporate Governance ×4 (own 1) | Hostile Acquisition ×6 (own 5) | Venture Quacking ×10 (own 10) | Global Duck Economy ×18 (own 25) |
 | **Recursive Self** | Identity Fork ×5 (own 1) | Parallel Lives ×10 (own 5) | Merge with Origin ×15 (own 10) | Temporal Stack Overflow ×25 (own 25) |
 
+**Era 5: The Loop** (unlocks after 1st Great Refactor, requires 1e18–1e27 totalLoc)
+
+These producers appear only after the first Great Refactor. They represent the recursive, self-referential phase of development.
+
+| Producer | Upgrade 1 | Upgrade 2 | Upgrade 3 |
+|----------|-----------|-----------|-----------|
+| The Process Itself | — | — | — |
+| Sentient Codebase | — | — | — |
+| Duck Collective LLC | — | — | — |
+| Recursive Self | — | — | — |
+
 ### Global Multiplier Upgrades
 
 Applied multiplicatively to total LOC/s after all per-producer multipliers.
@@ -217,15 +228,15 @@ LOC/s = (Σ producer_base_LOCps × count × producer_upgrade_multipliers)
         × debt_penalty
 ```
 
-**Legacy multiplier** is itself a product of:
+**Legacy multiplier** (`cachedLegacyMult`) is a product of:
 - `(1 + legacyTokens × 0.05)` — +5% per unspent token
 - All purchased legacy production bonus upgrades (multiplicative)
 - All purchased architecture production bonus upgrades (multiplicative)
-- Compounding Interest: `1 + prestigeCount × 0.02` if arch upgrade owned
-- Event-Driven: `1 + eventSurvivalProductionBonus` (accumulated permanently)
-- Infinite Feedback Loop: `1 + greatRefactorProductionBonus` (accumulated per Great Refactor)
+- Compounding Interest: `1 + prestigeCount × 0.02` (if purchased; stacks forever)
+- Event-Driven: `1 + eventSurvivalProductionBonus` (accumulated permanently, +0.5% per negative event survived, cap +200%)
+- **Infinite Feedback Loop**: `1 + greatRefactorProductionBonus` (accumulated per Great Refactor, +5% each, no cap)
 
-- **Tech stack multiplier**: depends on chosen stack after Pivot (Rust = 2× production)
+- **Tech stack multiplier**: depends on chosen stack after Pivot (Rust = 2×, TypeScript = 1.3×, PHP = 1.2× production/3× click, Blockchain = 1.5×)
 - **Debt penalty**: only active after all legacy upgrades are bought; degrades from 1.0× to 0.15× as technical debt climbs to 100
 
 ---
@@ -292,20 +303,24 @@ Events trigger randomly with a minimum 30s interval. Shown as a dismissable bann
 | 🌌 Deployment: destination unknown | Negative | Click disabled | 25s |
 | ♾️ Standup: permanent alignment achieved | Positive | LOC/s ×8 | 30s |
 | 📊 You are in the training data | Negative | LOC/s ×0.2 | 30s |
-| 📜 The codebase filed a will | Positive | +10B LOC burst | instant |
+| 📜 The codebase filed a will | Positive | LOC burst (30s of production) | instant |
 | 🦆⚖️ Ducks demand equity stake | Negative | LOC/s ×0.3 | 25s |
 | ⛓️🧠 Blockchain achieved consensus on consciousness | Negative | LOC/s ×0.4 | 20s |
 
-### Phase 5 — The Loop (Protocol Breach Architecture upgrade required)
+> **Note**: `loc_burst` events scale to the greater of the base value or 30 seconds of current production. This keeps them relevant throughout the late game.
+
+### Phase 5 — The Loop (1B+ LOC, requires Protocol Breach Architecture upgrade)
 
 | Event | Type | Effect | Duration |
 |-------|------|--------|----------|
 | 🔄 You have done this before | Positive | LOC/s ×12 | 30s |
 | 👁️ Codebase filed a PR against your last run | Negative | Click disabled | 20s |
-| 🦆 Duck Collective v∞ | Positive | LOC/s ×15 | 25s |
+| 🦆 Duck Collective v∞. Ownership: themselves. | Positive | LOC/s ×15 | 25s |
 | ∞ Commit: `merge: everything` | Positive | LOC/s ×10 | 15s |
 | 🌀 You are listed in your own training data | Negative | LOC/s ×0.2 | 30s |
 | 🏗️ Architecture Point materializes | Positive | +1 AP burst | instant |
+| 🪞 Recursive Self merged a silent deploy | Positive | LOC/s ×20 | 20s |
+| ⏪ git revert: everything (including this revert) | Negative | LOC/s ×0.1 | 12s |
 | 🌀 Parallel timeline merged | Positive | LOC/s ×20 | 15s |
 | 🌐 Sentient Codebase filed P0 against itself | Negative | All halted | 20s |
 | 🪞 Recursive Self committed from a future run | Positive | LOC/s ×10 | 30s |
@@ -371,6 +386,40 @@ Tokens are spent in the **Legacy Panel** on permanent upgrades that survive all 
 | 30 | Duck Singularity | Start with 200 Rubber Ducks |
 
 Production bonus legacy upgrades stack multiplicatively.
+
+**Second System** legacy upgrades (require `second-system` Architecture upgrade):
+
+| Cost | Name | Effect |
+|------|------|--------|
+| 25 | Hot Module Replacement | Start with 1 Cloud Cluster, AGI, Quantum Computer |
+| 30 | Zero Downtime Reset | Keep all producer upgrades on reset |
+| 35 | Distributed Architecture | ×3 global production |
+| 40 | Infinite Monkey Legacy | Start with 5 Infinite Monkey Farms |
+| 50 | The Final Commit | ×20 global production |
+
+---
+
+## Architecture Upgrades
+
+Earned via **Great Refactors** (Architecture Points / AP). Survive forever — never reset.
+
+| Cost | ID | Effect |
+|------|----|--------|
+| 1 | Event Horizon | Positive events last 2× longer |
+| 1 | Debt Forgiveness | Technical debt accumulates 25% slower |
+| 2 | Fast Learner | Legacy upgrades cost 20% fewer tokens (min 1) |
+| 2 | Recursive Memory | Start each run with 10% of previous run's peak LOC |
+| 3 | Nest Protocol | Enables duck nesting mechanic |
+| 3 | Compounding Interest | +2% global production per prestige (stacks) |
+| 5 | Event-Driven Architecture | +0.5% permanent production per negative event survived (cap +200%) |
+| 5 | Loop Accelerant | ×2 global production |
+| 6 | Second System | Unlocks 5 additional high-tier Legacy upgrades |
+| 8 | Protocol Breach | Unlocks Phase 5 "The Loop" events |
+| 8 | Architect God Mode | Doubles AP earned in future Great Refactors |
+| 10 | Token Proliferation | +1 bonus Legacy Token per prestige |
+| 12 | **Eternal Loop** | Each Great Refactor permanently adds +5% global production (no cap — enables infinite scaling) |
+
+**Eternal Loop** is the key infinite-scaling mechanic. Each Great Refactor with this upgrade adds a permanent +5% to the legacy multiplier, meaning the game can scale indefinitely through repeated loops.
 
 ---
 
@@ -603,12 +652,27 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Works Offline 📶 | 500K LOC without surviving any negative events |
 | It Was Like This When I Got Here 🤷 | Prestige immediately after first hire |
 
+### Great Refactor / Architecture Achievements
+| Achievement | Condition |
+|-------------|-----------|
+| The Great Architect 🏗️ | First Great Refactor |
+| Loops All the Way Down 🔁 | 5 Great Refactors |
+| Eternal Looper ♾️ | 10 Great Refactors |
+| Protocol Breach 🔓 | Purchase Protocol Breach upgrade |
+| Eternal Loop Engaged 🌀 | Purchase Eternal Loop upgrade |
+| Peak Architecture 🧱 | Purchase all base Architecture upgrades |
+| Chaos Veteran 🔥 | Survive 500 negative events |
+| Entered The Loop ⚙️ | Hire The Process Itself |
+| Sentient Codebase Online 🌐 | Hire Sentient Codebase |
+| Incorporated in Delaware 🦆⚖️ | Hire Duck Collective LLC |
+| You, But Better 🪞 | Hire Recursive Self |
+
 ---
 
 ## UI & Visual Features
 
 ### News Ticker
-Scrolling marquee at the bottom of the game area. Displays lore-flavored messages filtered by `minLoc`, `minDucks`, and `minPrestige` thresholds. Color changes with Duckapocalypse stage.
+Scrolling marquee at the bottom of the game area. Displays lore-flavored messages filtered by `minLoc`, `minDucks`, `minPrestige`, and `minGreatRefactor` thresholds. Color changes with Duckapocalypse stage. The Loop era messages (requiring `minGreatRefactor ≥ 1`) appear after the first Great Refactor.
 
 ### Duck Parade
 Rubber duck emojis walk above the news ticker border, facing their direction of travel. Count scales as `min(ceil(√duckCount), 20)`. Only visible when you own at least 1 duck.
