@@ -601,6 +601,7 @@ export const useGameStore = create<GameState>()(
           techStack: state.techStack,
           pivotCount: state.pivotCount,
           architectureUpgrades: state.architectureUpgrades,
+          greatRefactorProductionBonus: state.greatRefactorProductionBonus,
         };
 
         const newAchievements = [...state.achievements];
@@ -1039,6 +1040,7 @@ export const useGameStore = create<GameState>()(
             architectureUpgrades: state.architectureUpgrades ?? [],
             prestigeCount: state.prestigeCount ?? 0,
             eventSurvivalProductionBonus: state.eventSurvivalProductionBonus ?? 0,
+            greatRefactorProductionBonus: state.greatRefactorProductionBonus ?? 0,
           });
           state.cachedLOCps = caches.cachedLOCps;
           state.cachedClickValue = caches.cachedClickValue;

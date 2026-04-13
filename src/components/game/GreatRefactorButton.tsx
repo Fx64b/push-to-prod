@@ -11,14 +11,62 @@ export function GreatRefactorButton() {
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
   const architectureUpgrades = useGameStore((s) => s.architectureUpgrades);
   const greatRefactorProductionBonus = useGameStore((s) => s.greatRefactorProductionBonus);
+  const legacyTokens = useGameStore((s) => s.legacyTokens);
   const greatRefactor = useGameStore((s) => s.greatRefactor);
   const [confirming, setConfirming] = useState(false);
 
   const baseUpgrades = LEGACY_UPGRADES.filter((u) => !u.requiresSecondSystem);
   const allBaseBought = baseUpgrades.every((u) => legacyUpgrades.includes(u.id));
+  const missingUpgrades = baseUpgrades.filter((u) => !legacyUpgrades.includes(u.id));
+  const boughtCount = baseUpgrades.length - missingUpgrades.length;
 
-  // Only show once all base legacy upgrades are bought AND min prestiges done
-  if (!allBaseBought || prestigeCount < MIN_PRESTIGES) return null;
+  // Show progress panel when not all bought (but only after first prestige)
+  if (prestigeCount < 1) return null;
+
+  // Show progress indicator when not yet eligible
+  if (!allBaseBought || prestigeCount < MIN_PRESTIGES) {
+    // Don't show anything until the player has at least 1 prestige
+    if (prestigeCount < 1) return null;
+    return (
+      <div className="flex flex-col items-center gap-1 font-mono mt-1 w-full max-w-xs">
+        <div className="w-full border-t border-gh-yellow/10 pt-2" />
+        <div className="text-[10px] text-center text-gh-muted">
+          <span className="text-gh-yellow font-bold">🏗️ Great Refactor</span>
+          <span className="text-gh-muted"> — locked</span>
+        </div>
+        <div className="w-full bg-gh-surface border border-gh-border/40 rounded p-2 space-y-1">
+          <div className="flex justify-between text-[10px]">
+            <span className="text-gh-muted">Legacy upgrades</span>
+            <span className={boughtCount === baseUpgrades.length ? 'text-gh-green' : 'text-gh-yellow'}>
+              {boughtCount}/{baseUpgrades.length}
+            </span>
+          </div>
+          <div className="w-full h-1 bg-gh-border rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gh-yellow/60 rounded-full transition-all duration-300"
+              style={{ width: `${(boughtCount / baseUpgrades.length) * 100}%` }}
+            />
+          </div>
+          {!allBaseBought && missingUpgrades.length <= 4 && (
+            <div className="text-[9px] text-gh-muted/70 italic">
+              Need: {missingUpgrades.slice(0, 3).map((u) => u.name).join(', ')}
+              {missingUpgrades.length > 3 ? ` +${missingUpgrades.length - 3} more` : ''}
+            </div>
+          )}
+          {allBaseBought && prestigeCount < MIN_PRESTIGES && (
+            <div className="text-[10px] text-gh-muted text-center">
+              Need <span className="text-gh-yellow">{MIN_PRESTIGES - prestigeCount} more</span> refactor{MIN_PRESTIGES - prestigeCount !== 1 ? 's' : ''}
+            </div>
+          )}
+          {legacyTokens > 0 && !allBaseBought && (
+            <div className="text-[9px] text-gh-blue text-center">
+              {legacyTokens} Legacy Token{legacyTokens !== 1 ? 's' : ''} available to spend
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const apGainMult = architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
   const apToEarn = Math.max(2, 3 + greatRefactorCount * 2) * apGainMult;
