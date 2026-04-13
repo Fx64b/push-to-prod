@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { ArchitecturePanel } from '@/components/game/ArchitecturePanel';
 import { LegacyPanel } from '@/components/game/LegacyPanel';
 import { ACHIEVEMENTS, type Achievement } from '@/data/achievements';
+import { ARCHITECTURE_UPGRADES } from '@/data/architectureUpgrades';
 import { PRODUCERS, type Producer } from '@/data/producers';
 import { UPGRADES } from '@/data/upgrades';
 import { useGameStore } from '@/store/gameStore';
@@ -25,8 +26,10 @@ export function StatsPanel() {
   const locps = useGameStore((s) => s.displayedLOCps);
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
   const architecturePoints = useGameStore((s) => s.architecturePoints);
+  const architectureUpgradesPurchased = useGameStore((s) => s.architectureUpgrades);
   const clicksThisRun = useGameStore((s) => s.clicksThisRun);
   const greatRefactorProductionBonus = useGameStore((s) => s.greatRefactorProductionBonus);
+  const eventSurvivalProductionBonus = useGameStore((s) => s.eventSurvivalProductionBonus);
 
   const clickValue = useMemo(
     () => calculateClickValue({ producers, upgrades, locPerClick }),
@@ -95,6 +98,20 @@ export function StatsPanel() {
               label="Loop Feedback"
               value={`+${(greatRefactorProductionBonus * 100).toFixed(0)}%`}
               color="text-gh-yellow"
+            />
+          )}
+          {eventSurvivalProductionBonus > 0 && (
+            <StatRow
+              label="Event Bonus"
+              value={`+${(eventSurvivalProductionBonus * 100).toFixed(1)}%`}
+              color="text-gh-green"
+            />
+          )}
+          {architectureUpgradesPurchased.length > 0 && (
+            <StatRow
+              label="Arch. Upgrades"
+              value={`${architectureUpgradesPurchased.length}/${ARCHITECTURE_UPGRADES.length}`}
+              color={architectureUpgradesPurchased.length === ARCHITECTURE_UPGRADES.length ? 'text-gh-yellow' : 'text-gh-muted'}
             />
           )}
           {techStack && (

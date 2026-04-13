@@ -502,8 +502,21 @@ The game is designed to continue indefinitely, like Cookie Clicker. Key infinite
 - **AP always useful**: Even after buying all architecture upgrades, the Infinite Feedback Loop (+5% per GR) accumulates permanently.
 - **Loop producers scale deep**: 4 upgrade tiers per producer means 25+ of each Loop era producer remains rewarding.
 - **Mobile access**: GreatRefactorButton and DuckNestPanel are available on all screen sizes.
+- **Great Refactor progress bar**: The GreatRefactorButton shows how many base legacy upgrades remain, which specific upgrades are missing (when ≤4 remain), and how many legacy tokens are available to spend — eliminating the "what do I do now?" dead end.
 
 Players always have the next thing to work toward — whether it's a new architecture upgrade, a higher Great Refactor count, or deeper into The Loop.
+
+### Achievement Milestones for Infinite Progression
+
+The following late-game achievement tiers ensure players always have a visible goal:
+
+| Category | Milestones |
+|----------|-----------|
+| Great Refactors | 1, 3, 5, 10, 25, 50, 100 |
+| Infinite Feedback Loop bonus | +100%, +500%, +1000% |
+| Loop era ownership | 1, 5, 10, 25 of each entity |
+| Total LOC | Every order of magnitude up to 1e60+ |
+| Architecture | Foundation Complete (all base arch), Singularity Refactor, Quantum, Infinite Compile Time |
 
 ---
 
@@ -555,8 +568,8 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Unsubstantiated Velocity 📈 | Own 5 Scrum Masters |
 | It's On The Roadmap 🗺️ | Own 1 PM |
 | 10x Team 🏆 | Own 1 of each of the first 10 producers |
-| All Hands on Deck 🤝 | Own 1 of every producer (first 22) |
-| Full Stack Developer 🥞 | Own 5 of every producer (first 22) |
+| All Hands on Deck 🤝 | Own 1 of every base producer (24 total, excludes Loop era) |
+| Full Stack Developer 🥞 | Own 5 of every base producer (24 total) |
 | Big O(h no) 📈 | Own 100 of any single producer |
 | The Architect 🏗️ | Own 10 of each core producer |
 | Fortune 500 Company 🤯 | Own 100 of each core producer |
@@ -579,6 +592,10 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Infinite Mirror 🪞🪞 | Own 10 Recursive Selves |
 | Deep in the Loop 🔄🏗️ | Own 5 of each Loop era entity |
 | The Loop Is Eternal ♾️🌀 | Own 10 of each Loop era entity |
+| Process Array ⚙️🔄 | Own 25 of The Process Itself |
+| Distributed Consciousness 🌐🧠 | Own 25 Sentient Codebases |
+| Market Monopoly 🦆⚖️💰 | Own 25 Duck Collective LLCs |
+| Infinite Regress 🪞♾️ | Own 25 Recursive Selves |
 
 ### Event Achievements
 | Achievement | Condition |
@@ -659,13 +676,19 @@ Shown as GitHub notification toasts (bottom-right). Click to dismiss immediately
 | Loops All the Way Down 🔁 | 5 Great Refactors |
 | Eternal Looper ♾️ | 10 Great Refactors |
 | Protocol Breach 🔓 | Purchase Protocol Breach upgrade |
-| Eternal Loop Engaged 🌀 | Purchase Eternal Loop upgrade |
-| Peak Architecture 🧱 | Purchase all base Architecture upgrades |
+| Infinite Feedback Loop 🌀 | Purchase Infinite Feedback Loop upgrade |
+| Foundation Complete 🏛️ | Purchase all base Architecture upgrades (through Token Proliferation + IFL) |
+| Singularity Architect ⚡🏗️ | Purchase Singularity Refactor (50 AP) |
+| Quantum Architect ⚛️🏗️ | Purchase Quantum Architecture (75 AP) |
+| The Build Never Ends ⏳♾️ | Purchase Infinite Compile Time (125 AP) |
 | Chaos Veteran 🔥 | Survive 500 negative events |
-| Entered The Loop ⚙️ | Hire The Process Itself |
-| Sentient Codebase Online 🌐 | Hire Sentient Codebase |
-| Incorporated in Delaware 🦆⚖️ | Hire Duck Collective LLC |
-| You, But Better 🪞 | Hire Recursive Self |
+
+### Infinite Feedback Loop Bonus Achievements
+| Achievement | Condition |
+|-------------|-----------|
+| Self-Reinforcing System 🔄💯 | Feedback Loop bonus reaches +100% (20 GRs with IFL) |
+| The Feedback Singularity 🔄🌌 | Feedback Loop bonus reaches +500% (100 GRs with IFL) |
+| Transcendent Loop ♾️💥 | Feedback Loop bonus reaches +1000% (200 GRs with IFL) |
 
 ---
 
@@ -688,6 +711,12 @@ Atmospheric code-flavored text drifts in the background of the center panel.
 
 ### Achievement Toasts
 GitHub-notification-styled toasts appear in the bottom-right. Auto-dismiss after 40 seconds; click to dismiss immediately.
+
+### Stats Panel Late-Game Info
+The Stats Panel shows additional late-game metrics when relevant:
+- **Loop Feedback**: Accumulated Infinite Feedback Loop bonus (e.g., +350%)
+- **Event Bonus**: Accumulated Event-Driven Architecture bonus (capped at +200%)
+- **Arch. Upgrades**: `X/Y` count of Architecture upgrades purchased
 
 ### Event Banner
 Slack-message-styled banner below the header. Shows event name, description, emoji, and countdown. Dismissable.

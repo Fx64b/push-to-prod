@@ -17,10 +17,11 @@ export interface Achievement {
     pivotCount: number;
     greatRefactorCount: number;
     architectureUpgrades: string[];
+    greatRefactorProductionBonus: number;
   }) => boolean;
 }
 
-// All producer IDs (original 15 + 7 new)
+// All base producer IDs (excludes Loop era producers which require Great Refactor)
 const ALL_PRODUCERS = [
   'rubber-duck',
   'mechanical-keyboard',
@@ -44,6 +45,8 @@ const ALL_PRODUCERS = [
   'blockchain',
   'the-consultant',
   'digital-twin',
+  'tech-oracle',
+  'infinite-monkey-farm',
 ];
 
 // First 10 original producers (for tiered ownership achievements)
@@ -705,31 +708,31 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'the-loop-producer',
-    name: 'Entered The Loop',
-    description: 'Hired The Process Itself. It was already running.',
-    icon: '⚙️',
-    condition: ({ producers }) => (producers['the-process'] ?? 0) >= 1,
+    name: 'Process Array',
+    description: 'Own 25 of The Process Itself. The process is now self-auditing its process audits.',
+    icon: '⚙️🔄',
+    condition: ({ producers }) => (producers['the-process'] ?? 0) >= 25,
   },
   {
     id: 'sentient-code',
-    name: 'Sentient Codebase Online',
-    description: 'Hired a Sentient Codebase. It approved this achievement before you earned it.',
-    icon: '🌐',
-    condition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 1,
+    name: 'Distributed Consciousness',
+    description: 'Own 25 Sentient Codebases. Consensus was reached before you thought to ask.',
+    icon: '🌐🧠',
+    condition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 25,
   },
   {
     id: 'duck-collective-llc-ach',
-    name: 'Incorporated in Delaware',
-    description: 'Hired Duck Collective LLC. Zero documentation. One mission.',
-    icon: '🦆⚖️',
-    condition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 1,
+    name: 'Market Monopoly',
+    description: 'Own 25 Duck Collective LLCs. The ducks have cornered the market on code.',
+    icon: '🦆⚖️💰',
+    condition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 25,
   },
   {
     id: 'recursive-self-ach',
-    name: 'You, But Better',
-    description: 'Hired Recursive Self. It leaves comments you recognize from dreams.',
-    icon: '🪞',
-    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 1,
+    name: 'Infinite Regress',
+    description: 'Own 25 Recursive Selves. You have lost count of which one is original.',
+    icon: '🪞♾️',
+    condition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 25,
   },
 
   // ── Great Refactor deep milestones ───────────────────────────────────────────
@@ -812,6 +815,63 @@ export const ACHIEVEMENTS: Achievement[] = [
       (producers['sentient-codebase'] ?? 0) >= 10 &&
       (producers['duck-collective-llc'] ?? 0) >= 10 &&
       (producers['recursive-self'] ?? 0) >= 10,
+  },
+
+  // ── Infinite Feedback Loop bonus milestones ───────────────────────────────────
+  {
+    id: 'feedback-loop-100',
+    name: 'Self-Reinforcing System',
+    description: 'Infinite Feedback Loop bonus reached +100%. The loop feeds itself.',
+    icon: '🔄💯',
+    condition: ({ greatRefactorProductionBonus }) => greatRefactorProductionBonus >= 1.0,
+  },
+  {
+    id: 'feedback-loop-500',
+    name: 'The Feedback Singularity',
+    description: 'Infinite Feedback Loop bonus reached +500%. Production is a formality now.',
+    icon: '🔄🌌',
+    condition: ({ greatRefactorProductionBonus }) => greatRefactorProductionBonus >= 5.0,
+  },
+  {
+    id: 'feedback-loop-1000',
+    name: 'Transcendent Loop',
+    description: 'Infinite Feedback Loop bonus reached +1000%. Numbers have lost their meaning.',
+    icon: '♾️💥',
+    condition: ({ greatRefactorProductionBonus }) => greatRefactorProductionBonus >= 10.0,
+  },
+
+  // ── Architecture mastery achievements ─────────────────────────────────────────
+  {
+    id: 'arch-all-base',
+    name: 'Foundation Complete',
+    description: 'Purchased all base Architecture upgrades through Token Proliferation.',
+    icon: '🏛️',
+    condition: ({ architectureUpgrades }) =>
+      ['event-horizon', 'debt-forgiveness', 'fast-learner', 'recursive-memory',
+       'nest-protocol', 'compounding-interest', 'event-driven', 'loop-accelerant',
+       'second-system', 'protocol-breach', 'ap-multiplier', 'token-proliferation',
+       'infinite-feedback-loop'].every((id) => architectureUpgrades.includes(id)),
+  },
+  {
+    id: 'arch-singularity',
+    name: 'Singularity Architect',
+    description: 'Purchased the Singularity Refactor. You compile reality.',
+    icon: '⚡🏗️',
+    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('singularity-refactor'),
+  },
+  {
+    id: 'arch-quantum',
+    name: 'Quantum Architect',
+    description: 'Purchased Quantum Architecture. The codebase exists in all futures simultaneously.',
+    icon: '⚛️🏗️',
+    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('quantum-architecture'),
+  },
+  {
+    id: 'arch-infinite-compile',
+    name: 'The Build Never Ends',
+    description: 'Purchased Infinite Compile Time. It has been compiling since before the universe.',
+    icon: '⏳♾️',
+    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('infinite-compile-time'),
   },
 
   // ── Ultra late-game LOC milestones ────────────────────────────────────────────
