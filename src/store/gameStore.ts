@@ -983,8 +983,15 @@ export const useGameStore = create<GameState>()(
       greatRefactor: () => {
         const state = get();
         if (!allLegacyBought(state.legacyUpgrades)) return;
-        if (state.prestigeCount < 3) return;
-        if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
+        // After the first Great Refactor, prestige requirements decrease
+        const requiredPrestiges = Math.max(1, 3 - state.greatRefactorCount);
+        if (state.prestigeCount < requiredPrestiges) return;
+        // After each Great Refactor, click requirements decrease (min 200)
+        const requiredClicks = Math.max(
+          200,
+          MIN_CLICKS_TO_PRESTIGE - state.greatRefactorCount * 200,
+        );
+        if (state.clicksThisRun < requiredClicks) return;
 
         const apGainMult = state.architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
         const apEarned = Math.max(2, 3 + state.greatRefactorCount * 2) * apGainMult;

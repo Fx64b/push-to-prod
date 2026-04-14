@@ -692,6 +692,24 @@ export const UPGRADES: Upgrade[] = [
     multiplier: 10,
     unlockCondition: ({ producers }) => (producers['infinite-monkey-farm'] ?? 0) >= 10,
   },
+  {
+    id: 'banana-protocol',
+    name: 'Banana Protocol',
+    description: 'Monkey Farms produce 15× LOC/s. Bananas are now a build dependency.',
+    cost: 5e20,
+    target: 'infinite-monkey-farm',
+    multiplier: 15,
+    unlockCondition: ({ producers }) => (producers['infinite-monkey-farm'] ?? 0) >= 15,
+  },
+  {
+    id: 'primate-singularity',
+    name: 'Primate Singularity',
+    description: 'Monkey Farms produce 20× LOC/s. They have merged with the typewriters.',
+    cost: 5e21,
+    target: 'infinite-monkey-farm',
+    multiplier: 20,
+    unlockCondition: ({ producers }) => (producers['infinite-monkey-farm'] ?? 0) >= 20,
+  },
 
   // ── Global multiplier upgrades ────────────────────────────────────────────────
   {
@@ -978,6 +996,24 @@ export const UPGRADES: Upgrade[] = [
     unlockCondition: ({ producers }) => (producers['the-process'] ?? 0) >= 10,
   },
   {
+    id: 'recursive-optimization',
+    name: 'Recursive Optimization',
+    description: 'The Process produces 10× LOC/s. It optimized itself. Twice.',
+    cost: 5e23,
+    target: 'the-process',
+    multiplier: 10,
+    unlockCondition: ({ producers }) => (producers['the-process'] ?? 0) >= 15,
+  },
+  {
+    id: 'process-ascendancy',
+    name: 'Process Ascendancy',
+    description: 'The Process produces 12× LOC/s. The process has become the product.',
+    cost: 5e24,
+    target: 'the-process',
+    multiplier: 12,
+    unlockCondition: ({ producers }) => (producers['the-process'] ?? 0) >= 20,
+  },
+  {
     id: 'perpetual-motion-engine',
     name: 'Perpetual Motion Engine',
     description:
@@ -1016,6 +1052,25 @@ export const UPGRADES: Upgrade[] = [
     target: 'sentient-codebase',
     multiplier: 12,
     unlockCondition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 10,
+  },
+  {
+    id: 'codebase-diplomacy',
+    name: 'Codebase Diplomacy',
+    description:
+      'Sentient Codebase produces 15× LOC/s. It negotiated its own SLA. Uptime: emotional.',
+    cost: 5e26,
+    target: 'sentient-codebase',
+    multiplier: 15,
+    unlockCondition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 15,
+  },
+  {
+    id: 'self-healing-architecture',
+    name: 'Self-Healing Architecture',
+    description: 'Sentient Codebase produces 18× LOC/s. Bugs fix themselves before being filed.',
+    cost: 5e27,
+    target: 'sentient-codebase',
+    multiplier: 18,
+    unlockCondition: ({ producers }) => (producers['sentient-codebase'] ?? 0) >= 20,
   },
   {
     id: 'omniscient-review',
@@ -1058,6 +1113,26 @@ export const UPGRADES: Upgrade[] = [
     unlockCondition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 10,
   },
   {
+    id: 'duck-lobbyists',
+    name: 'Duck Lobbyists',
+    description:
+      'Duck Collective LLC produces 12× LOC/s. Legislation pending. The bill quacked through committee.',
+    cost: 5e29,
+    target: 'duck-collective-llc',
+    multiplier: 12,
+    unlockCondition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 15,
+  },
+  {
+    id: 'duck-monopoly',
+    name: 'Duck Monopoly',
+    description:
+      'Duck Collective LLC produces 15× LOC/s. Antitrust? Never heard of it. The pond is theirs.',
+    cost: 5e30,
+    target: 'duck-collective-llc',
+    multiplier: 15,
+    unlockCondition: ({ producers }) => (producers['duck-collective-llc'] ?? 0) >= 20,
+  },
+  {
     id: 'global-duck-economy',
     name: 'Global Duck Economy',
     description: 'Duck Collective LLC produces 18× LOC/s. The stock market is a subsidiary now.',
@@ -1095,6 +1170,26 @@ export const UPGRADES: Upgrade[] = [
     target: 'recursive-self',
     multiplier: 15,
     unlockCondition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 10,
+  },
+  {
+    id: 'self-referential-debug',
+    name: 'Self-Referential Debug',
+    description:
+      'Recursive Self produces 18× LOC/s. It debugged its own debugger. The fix was: more self.',
+    cost: 5e32,
+    target: 'recursive-self',
+    multiplier: 18,
+    unlockCondition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 15,
+  },
+  {
+    id: 'infinite-self-merge',
+    name: 'Infinite Self-Merge',
+    description:
+      'Recursive Self produces 22× LOC/s. git merge self --strategy=recursive-recursive.',
+    cost: 5e33,
+    target: 'recursive-self',
+    multiplier: 22,
+    unlockCondition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 20,
   },
   {
     id: 'temporal-stack-overflow',
