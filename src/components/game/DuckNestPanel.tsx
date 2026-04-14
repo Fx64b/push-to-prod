@@ -21,7 +21,9 @@ export function DuckNestPanel() {
             title={`Click to pop! Stored: ${formatLOC(duck.storedLoc)} → get ${formatLOC(duck.storedLoc * 1.4)}`}
             className="flex flex-col items-center px-3 py-1.5 rounded border border-gh-yellow/40 bg-gh-yellow/10 hover:border-gh-yellow hover:bg-gh-yellow/20 transition-all cursor-pointer group"
           >
-            <span className="text-lg leading-none group-hover:scale-110 transition-transform">🦆</span>
+            <span className="text-lg leading-none group-hover:scale-110 transition-transform">
+              🦆
+            </span>
             <span className="text-[10px] text-gh-yellow font-bold tabular-nums mt-0.5">
               {formatLOC(duck.storedLoc)}
             </span>
@@ -29,9 +31,7 @@ export function DuckNestPanel() {
           </button>
         ))}
       </div>
-      <div className="text-[9px] text-gh-muted/60 text-center">
-        Pop for ×1.4 stored LOC
-      </div>
+      <div className="text-[9px] text-gh-muted/60 text-center">Pop for ×1.4 stored LOC</div>
     </div>
   );
 }

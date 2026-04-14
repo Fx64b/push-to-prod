@@ -14,7 +14,8 @@ export function NewsTicker() {
       if (msg.minLoc !== undefined && totalLoc < msg.minLoc) return false;
       if (msg.minDucks !== undefined && duckCount < msg.minDucks) return false;
       if (msg.minPrestige !== undefined && prestigeCount < msg.minPrestige) return false;
-      if (msg.minGreatRefactor !== undefined && greatRefactorCount < msg.minGreatRefactor) return false;
+      if (msg.minGreatRefactor !== undefined && greatRefactorCount < msg.minGreatRefactor)
+        return false;
       return true;
     });
   }, [totalLoc, duckCount, prestigeCount, greatRefactorCount]);

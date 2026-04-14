@@ -37,7 +37,9 @@ export function GreatRefactorButton() {
         <div className="w-full bg-gh-surface border border-gh-border/40 rounded p-2 space-y-1">
           <div className="flex justify-between text-[10px]">
             <span className="text-gh-muted">Legacy upgrades</span>
-            <span className={boughtCount === baseUpgrades.length ? 'text-gh-green' : 'text-gh-yellow'}>
+            <span
+              className={boughtCount === baseUpgrades.length ? 'text-gh-green' : 'text-gh-yellow'}
+            >
               {boughtCount}/{baseUpgrades.length}
             </span>
           </div>
@@ -49,13 +51,18 @@ export function GreatRefactorButton() {
           </div>
           {!allBaseBought && missingUpgrades.length <= 4 && (
             <div className="text-[9px] text-gh-muted/70 italic">
-              Need: {missingUpgrades.slice(0, 3).map((u) => u.name).join(', ')}
+              Need:{' '}
+              {missingUpgrades
+                .slice(0, 3)
+                .map((u) => u.name)
+                .join(', ')}
               {missingUpgrades.length > 3 ? ` +${missingUpgrades.length - 3} more` : ''}
             </div>
           )}
           {allBaseBought && prestigeCount < MIN_PRESTIGES && (
             <div className="text-[10px] text-gh-muted text-center">
-              Need <span className="text-gh-yellow">{MIN_PRESTIGES - prestigeCount} more</span> refactor{MIN_PRESTIGES - prestigeCount !== 1 ? 's' : ''}
+              Need <span className="text-gh-yellow">{MIN_PRESTIGES - prestigeCount} more</span>{' '}
+              refactor{MIN_PRESTIGES - prestigeCount !== 1 ? 's' : ''}
             </div>
           )}
           {legacyTokens > 0 && !allBaseBought && (
@@ -94,10 +101,10 @@ export function GreatRefactorButton() {
         <span className="text-gh-muted">Resets ALL progress including legacy upgrades</span>
         <br />
         <span className="text-gh-muted">Earn </span>
-        <span className="text-gh-yellow font-bold">+{apToEarn} Architecture Point{apToEarn !== 1 ? 's' : ''}</span>
-        {apGainMult > 1 && (
-          <span className="text-gh-green"> (×{apGainMult} from God Mode)</span>
-        )}
+        <span className="text-gh-yellow font-bold">
+          +{apToEarn} Architecture Point{apToEarn !== 1 ? 's' : ''}
+        </span>
+        {apGainMult > 1 && <span className="text-gh-green"> (×{apGainMult} from God Mode)</span>}
         {hasInfiniteFeedback && (
           <>
             <br />
@@ -135,7 +142,8 @@ export function GreatRefactorButton() {
 
       {confirming && (
         <p className="text-[10px] text-gh-red text-center">
-          This resets legacy tokens, upgrades, and producers — permanently trades them for Architecture Points!
+          This resets legacy tokens, upgrades, and producers — permanently trades them for
+          Architecture Points!
         </p>
       )}
     </div>

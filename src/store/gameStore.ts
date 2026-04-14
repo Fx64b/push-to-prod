@@ -6,6 +6,7 @@ import { EVENTS, type GameEvent } from '@/data/events';
 import { LEGACY_UPGRADES } from '@/data/legacyUpgrades';
 import { PRODUCERS } from '@/data/producers';
 import { generateProductName } from '@/data/socialPosts';
+import { computeSynergyMult } from '@/data/synergies';
 import { UPGRADES } from '@/data/upgrades';
 import { producerBulkCost, producerCost } from '@/utils/costs';
 import { formatLOC } from '@/utils/format';
@@ -148,6 +149,7 @@ function computeLegacyMult(
   eventSurvivalProductionBonus: number,
   _greatRefactorProductionBonus: number, // kept for signature compat, no longer used
   greatRefactorCount: number,
+  producers: Record<string, number> = {},
 ): number {
   const legacyUpgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
     if (u.effect.type === 'production_bonus' && legacyUpgrades.includes(u.id)) {
@@ -176,13 +178,19 @@ function computeLegacyMult(
   const grPerMult = architectureUpgrades.includes('infinite-feedback-loop') ? 2.0 : 1.5;
   const grScaling = greatRefactorCount > 0 ? Math.pow(grPerMult, greatRefactorCount) : 1;
 
+  // Synergy multiplier: activated by Synergy Protocol architecture upgrade
+  const synergyMult = architectureUpgrades.includes('synergy-protocol')
+    ? computeSynergyMult(producers, architectureUpgrades.includes('enhanced-synergies'))
+    : 1;
+
   return (
     (1 + legacyTokens * 0.05) *
     legacyUpgradeMult *
     archUpgradeMult *
     compoundingMult *
     eventDrivenMult *
-    grScaling
+    grScaling *
+    synergyMult
   );
 }
 
@@ -203,6 +211,7 @@ function computeCaches(s: CacheInput) {
       eventBonus,
       grBonus,
       grCount,
+      s.producers,
     ),
   };
 }
@@ -276,6 +285,10 @@ const EVENT_CHANCE_PER_TICK = 1 / 600;
 const MIN_EVENT_INTERVAL = 30;
 let lastEventTime = 0;
 
+// Autobuyer timers
+let lastAutobuyProducerTime = 0;
+let lastAutobuyUpgradeTime = 0;
+
 // ── Event multiplier ────────────────────────────────────────────────────────
 
 function getEventMultiplier(event: GameEvent | null): {
@@ -310,7 +323,18 @@ function calcPrestigeTokens(totalLoc: number, prestigeCount: number): number {
   return Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
 }
 
-const LOOP_ERA_PRODUCER_IDS = ['the-process', 'sentient-codebase', 'duck-collective-llc', 'recursive-self'];
+const LOOP_ERA_PRODUCER_IDS = [
+  'the-process',
+  'sentient-codebase',
+  'duck-collective-llc',
+  'recursive-self',
+];
+const BEYOND_ERA_PRODUCER_IDS = [
+  'multiverse-compiler',
+  'the-boardroom',
+  'reality-engine',
+  'the-final-push',
+];
 
 function buildStartState(
   legacyUpgrades: string[],
@@ -355,6 +379,16 @@ function buildStartState(
   // Loop Inheritance (GR3): carry over Loop era producers on regular prestige
   if (architectureUpgrades.includes('loop-producer-inheritance')) {
     for (const id of LOOP_ERA_PRODUCER_IDS) {
+      const count = currentProducers[id] ?? 0;
+      if (count > 0) {
+        startProducers[id] = (startProducers[id] ?? 0) + count;
+      }
+    }
+  }
+
+  // Beyond Inheritance (GR7): carry over Beyond era producers on regular prestige
+  if (architectureUpgrades.includes('beyond-producer-inheritance')) {
+    for (const id of BEYOND_ERA_PRODUCER_IDS) {
       const count = currentProducers[id] ?? 0;
       if (count > 0) {
         startProducers[id] = (startProducers[id] ?? 0) + count;
@@ -498,6 +532,7 @@ export const useGameStore = create<GameState>()(
                 eventSurvivalProductionBonus,
                 state.greatRefactorProductionBonus,
                 state.greatRefactorCount,
+                state.producers,
               )
             : state.cachedLegacyMult;
 
@@ -656,7 +691,7 @@ export const useGameStore = create<GameState>()(
             : state.floatingTexts;
 
         // ── Recache if event survival bonus changed ─────────────────────────────
-        const cachedLegacyMult =
+        let updatedCachedLegacyMult =
           eventSurvivalProductionBonus !== state.eventSurvivalProductionBonus
             ? computeLegacyMult(
                 state.legacyUpgrades,
@@ -666,11 +701,87 @@ export const useGameStore = create<GameState>()(
                 eventSurvivalProductionBonus,
                 state.greatRefactorProductionBonus,
                 state.greatRefactorCount,
+                state.producers,
               )
             : state.cachedLegacyMult;
 
+        // ── Autobuyer: producers ────────────────────────────────────────────────
+        let autobuyProducers = state.producers;
+        let autobuyUpgrades = state.upgrades;
+        let autobuyLoc = newLoc;
+        let autobuyerBought = false;
+
+        if (state.architectureUpgrades.includes('autobuyer-producers')) {
+          const elapsed = (now - lastAutobuyProducerTime) / 1000;
+          if (elapsed >= 2) {
+            lastAutobuyProducerTime = now;
+            let cheapestCost = Number.POSITIVE_INFINITY;
+            let cheapestId = '';
+            for (const producer of PRODUCERS) {
+              if ((producer.unlockLoc ?? 0) > newTotalLoc) continue;
+              if ((producer.unlockGreatRefactor ?? 0) > state.greatRefactorCount) continue;
+              const owned = autobuyProducers[producer.id] ?? 0;
+              const cost = producerCost(producer, owned);
+              if (cost <= autobuyLoc && cost < cheapestCost) {
+                cheapestCost = cost;
+                cheapestId = producer.id;
+              }
+            }
+            if (cheapestId) {
+              const owned = autobuyProducers[cheapestId] ?? 0;
+              autobuyProducers = { ...autobuyProducers, [cheapestId]: owned + 1 };
+              autobuyLoc -= cheapestCost;
+              autobuyerBought = true;
+            }
+          }
+        }
+
+        // ── Autobuyer: upgrades ─────────────────────────────────────────────────
+        if (state.architectureUpgrades.includes('autobuyer-upgrades')) {
+          const elapsed = (now - lastAutobuyUpgradeTime) / 1000;
+          if (elapsed >= 5) {
+            lastAutobuyUpgradeTime = now;
+            let cheapestCost = Number.POSITIVE_INFINITY;
+            let cheapestId = '';
+            for (const upgrade of UPGRADES) {
+              if (autobuyUpgrades.includes(upgrade.id)) continue;
+              if (
+                !upgrade.unlockCondition({
+                  totalLoc: newTotalLoc,
+                  producers: autobuyProducers,
+                  upgrades: autobuyUpgrades,
+                })
+              )
+                continue;
+              if (upgrade.cost <= autobuyLoc && upgrade.cost < cheapestCost) {
+                cheapestCost = upgrade.cost;
+                cheapestId = upgrade.id;
+              }
+            }
+            if (cheapestId) {
+              autobuyUpgrades = [...autobuyUpgrades, cheapestId];
+              autobuyLoc -= cheapestCost;
+              autobuyerBought = true;
+            }
+          }
+        }
+
+        // ── Recompute caches if autobuyer changed state ─────────────────────────
+        let finalCachedLOCps = state.cachedLOCps;
+        let finalCachedClickValue = state.cachedClickValue;
+        if (autobuyerBought) {
+          const caches = computeCaches({
+            ...state,
+            producers: autobuyProducers,
+            upgrades: autobuyUpgrades,
+          });
+          finalCachedLOCps = caches.cachedLOCps;
+          finalCachedClickValue = caches.cachedClickValue;
+          updatedCachedLegacyMult = caches.cachedLegacyMult;
+        }
+
         set({
-          loc: newLoc,
+          loc: autobuyLoc,
           totalLoc: newTotalLoc,
           lastRunPeakLoc: newLastRunPeakLoc,
           activeEvent: newActiveEvent,
@@ -687,7 +798,15 @@ export const useGameStore = create<GameState>()(
           nestedDucks,
           eventSurvivalProductionBonus,
           architecturePoints: newArchitecturePoints,
-          cachedLegacyMult,
+          cachedLegacyMult: updatedCachedLegacyMult,
+          ...(autobuyerBought
+            ? {
+                producers: autobuyProducers,
+                upgrades: autobuyUpgrades,
+                cachedLOCps: finalCachedLOCps,
+                cachedClickValue: finalCachedClickValue,
+              }
+            : {}),
         });
       },
 
@@ -764,6 +883,7 @@ export const useGameStore = create<GameState>()(
           state.eventSurvivalProductionBonus,
           state.greatRefactorProductionBonus,
           state.greatRefactorCount,
+          state.producers,
         );
 
         set({
@@ -998,6 +1118,7 @@ export const useGameStore = create<GameState>()(
             eventSurvivalProductionBonus,
             state.greatRefactorProductionBonus,
             state.greatRefactorCount,
+            state.producers,
           );
         }
 
