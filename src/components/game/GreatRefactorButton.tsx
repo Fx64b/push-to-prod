@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { LEGACY_UPGRADES } from '@/data/legacyUpgrades';
-import { useGameStore, MIN_CLICKS_TO_PRESTIGE } from '@/store/gameStore';
-
-const MIN_PRESTIGES = 3;
+import { MIN_CLICKS_TO_PRESTIGE, useGameStore } from '@/store/gameStore';
 
 export function GreatRefactorButton() {
   const legacyUpgrades = useGameStore((s) => s.legacyUpgrades);
@@ -15,6 +13,11 @@ export function GreatRefactorButton() {
   const greatRefactor = useGameStore((s) => s.greatRefactor);
   const [confirming, setConfirming] = useState(false);
 
+  // After the first Great Refactor, prestige requirements decrease (min 1)
+  const minPrestiges = Math.max(1, 3 - greatRefactorCount);
+  // After each Great Refactor, click requirements decrease (min 200)
+  const requiredClicks = Math.max(200, MIN_CLICKS_TO_PRESTIGE - greatRefactorCount * 200);
+
   const baseUpgrades = LEGACY_UPGRADES.filter((u) => !u.requiresSecondSystem);
   const allBaseBought = baseUpgrades.every((u) => legacyUpgrades.includes(u.id));
   const missingUpgrades = baseUpgrades.filter((u) => !legacyUpgrades.includes(u.id));
@@ -24,7 +27,7 @@ export function GreatRefactorButton() {
   if (prestigeCount < 1) return null;
 
   // Show progress indicator when not yet eligible
-  if (!allBaseBought || prestigeCount < MIN_PRESTIGES) {
+  if (!allBaseBought || prestigeCount < minPrestiges) {
     // Don't show anything until the player has at least 1 prestige
     if (prestigeCount < 1) return null;
     return (
@@ -59,10 +62,10 @@ export function GreatRefactorButton() {
               {missingUpgrades.length > 3 ? ` +${missingUpgrades.length - 3} more` : ''}
             </div>
           )}
-          {allBaseBought && prestigeCount < MIN_PRESTIGES && (
+          {allBaseBought && prestigeCount < minPrestiges && (
             <div className="text-[10px] text-gh-muted text-center">
-              Need <span className="text-gh-yellow">{MIN_PRESTIGES - prestigeCount} more</span>{' '}
-              refactor{MIN_PRESTIGES - prestigeCount !== 1 ? 's' : ''}
+              Need <span className="text-gh-yellow">{minPrestiges - prestigeCount} more</span>{' '}
+              refactor{minPrestiges - prestigeCount !== 1 ? 's' : ''}
             </div>
           )}
           {legacyTokens > 0 && !allBaseBought && (
@@ -77,7 +80,7 @@ export function GreatRefactorButton() {
 
   const apGainMult = architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
   const apToEarn = Math.max(2, 3 + greatRefactorCount * 2) * apGainMult;
-  const clicksReady = clicksThisRun >= MIN_CLICKS_TO_PRESTIGE;
+  const clicksReady = clicksThisRun >= requiredClicks;
   const hasInfiniteFeedback = architectureUpgrades.includes('infinite-feedback-loop');
   const feedbackAfter = greatRefactorProductionBonus + (hasInfiniteFeedback ? 0.05 : 0);
 
@@ -119,7 +122,7 @@ export function GreatRefactorButton() {
       {!clicksReady && (
         <div className="text-[10px] text-gh-muted text-center">
           <span className="text-gh-red">{clicksThisRun}</span>
-          <span className="text-gh-muted"> / {MIN_CLICKS_TO_PRESTIGE} clicks required</span>
+          <span className="text-gh-muted"> / {requiredClicks} clicks required</span>
         </div>
       )}
 
