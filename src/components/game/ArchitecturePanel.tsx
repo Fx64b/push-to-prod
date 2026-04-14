@@ -38,6 +38,16 @@ function effectSummary(upgrade: ArchitectureUpgrade): string {
       return "Each run starts with 30% of last run's peak LOC (supersedes Recursive Memory)";
     case 'loop_producer_inheritance':
       return 'The Process, Sentient Codebase, Duck Collective, and Recursive Self survive regular prestige resets';
+    case 'unlock_synergies':
+      return 'Unlocks producer synergies — combinations of producers grant bonus multipliers';
+    case 'enhanced_synergies':
+      return 'All synergy bonuses are doubled';
+    case 'autobuyer_producers':
+      return 'Auto-buys the cheapest affordable producer every 2 seconds';
+    case 'autobuyer_upgrades':
+      return 'Auto-buys the cheapest affordable upgrade every 5 seconds';
+    case 'beyond_producer_inheritance':
+      return 'Multiverse Compiler, The Boardroom, Reality Engine, and The Final Push survive regular prestige resets';
     default:
       return '';
   }
@@ -159,7 +169,9 @@ export function ArchitecturePanel() {
               {architecturePoints} AP
             </span>
           )}
-          <span className="text-gh-muted text-[10px]">{purchased}/{unlocked}</span>
+          <span className="text-gh-muted text-[10px]">
+            {purchased}/{unlocked}
+          </span>
         </div>
       </button>
 

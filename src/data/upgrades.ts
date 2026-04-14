@@ -970,7 +970,8 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'loop-sovereignty',
     name: 'Loop Sovereignty',
-    description: 'The Process produces 8× LOC/s. It filed its own employment contract. HR is infinite.',
+    description:
+      'The Process produces 8× LOC/s. It filed its own employment contract. HR is infinite.',
     cost: 1e23,
     target: 'the-process',
     multiplier: 8,
@@ -979,7 +980,8 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'perpetual-motion-engine',
     name: 'Perpetual Motion Engine',
-    description: 'The Process produces 15× LOC/s. No input required. No output defined. Runs anyway.',
+    description:
+      'The Process produces 15× LOC/s. No input required. No output defined. Runs anyway.',
     cost: 1e25,
     target: 'the-process',
     multiplier: 15,
@@ -1008,7 +1010,8 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'distributed-consciousness',
     name: 'Distributed Consciousness',
-    description: 'Sentient Codebase produces 12× LOC/s. Sharded across 47 cloud regions. Feelings: distributed.',
+    description:
+      'Sentient Codebase produces 12× LOC/s. Sharded across 47 cloud regions. Feelings: distributed.',
     cost: 1e26,
     target: 'sentient-codebase',
     multiplier: 12,
@@ -1017,7 +1020,8 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'omniscient-review',
     name: 'Omniscient Code Review',
-    description: 'Sentient Codebase produces 20× LOC/s. It has read every PR ever written and approved none of them.',
+    description:
+      'Sentient Codebase produces 20× LOC/s. It has read every PR ever written and approved none of them.',
     cost: 1e28,
     target: 'sentient-codebase',
     multiplier: 20,
@@ -1046,7 +1050,8 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'venture-quacking',
     name: 'Venture Quacking',
-    description: 'Duck Collective LLC produces 10× LOC/s. Series D funded. Lead investors: themselves.',
+    description:
+      'Duck Collective LLC produces 10× LOC/s. Series D funded. Lead investors: themselves.',
     cost: 1e29,
     target: 'duck-collective-llc',
     multiplier: 10,
@@ -1084,7 +1089,8 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'merge-with-origin',
     name: 'Merge with Origin',
-    description: 'Recursive Self produces 15× LOC/s. You have reviewed your own code from 3 runs ago. You approved it.',
+    description:
+      'Recursive Self produces 15× LOC/s. You have reviewed your own code from 3 runs ago. You approved it.',
     cost: 1e32,
     target: 'recursive-self',
     multiplier: 15,
@@ -1093,10 +1099,221 @@ export const UPGRADES: Upgrade[] = [
   {
     id: 'temporal-stack-overflow',
     name: 'Temporal Stack Overflow',
-    description: 'Recursive Self produces 25× LOC/s. The call stack goes back to the beginning. Stack size: ∞.',
+    description:
+      'Recursive Self produces 25× LOC/s. The call stack goes back to the beginning. Stack size: ∞.',
     cost: 1e34,
     target: 'recursive-self',
     multiplier: 25,
     unlockCondition: ({ producers }) => (producers['recursive-self'] ?? 0) >= 25,
+  },
+
+  // ── Multiverse Compiler ───────────────────────────────────────────────────
+  {
+    id: 'parallel-compilation',
+    name: 'Parallel Compilation',
+    description: 'Multiverse Compiler produces 3× LOC/s',
+    cost: 1e32,
+    target: 'multiverse-compiler',
+    multiplier: 3,
+    unlockCondition: ({ producers }) => (producers['multiverse-compiler'] ?? 0) >= 1,
+  },
+  {
+    id: 'timeline-merge',
+    name: 'Timeline Merge',
+    description: 'Multiverse Compiler produces 5× LOC/s. Every timeline ships the same feature.',
+    cost: 1e34,
+    target: 'multiverse-compiler',
+    multiplier: 5,
+    unlockCondition: ({ producers }) => (producers['multiverse-compiler'] ?? 0) >= 5,
+  },
+  {
+    id: 'branch-collapse',
+    name: 'Branch Collapse',
+    description:
+      'Multiverse Compiler produces 10× LOC/s. All branches merged. All conflicts: resolved.',
+    cost: 1e36,
+    target: 'multiverse-compiler',
+    multiplier: 10,
+    unlockCondition: ({ producers }) => (producers['multiverse-compiler'] ?? 0) >= 10,
+  },
+  {
+    id: 'omniversal-build',
+    name: 'Omniversal Build',
+    description:
+      'Multiverse Compiler produces 20× LOC/s. Build succeeded in dimensions you cannot perceive.',
+    cost: 1e38,
+    target: 'multiverse-compiler',
+    multiplier: 20,
+    unlockCondition: ({ producers }) => (producers['multiverse-compiler'] ?? 0) >= 25,
+  },
+
+  // ── The Boardroom ─────────────────────────────────────────────────────────
+  {
+    id: 'infinite-agenda',
+    name: 'Infinite Agenda',
+    description: 'The Boardroom produces 4× LOC/s',
+    cost: 5e34,
+    target: 'the-boardroom',
+    multiplier: 4,
+    unlockCondition: ({ producers }) => (producers['the-boardroom'] ?? 0) >= 1,
+  },
+  {
+    id: 'standing-meeting-forever',
+    name: 'Standing Meeting (Forever)',
+    description:
+      'The Boardroom produces 6× LOC/s. The standup never ended. Productivity: infinite.',
+    cost: 5e36,
+    target: 'the-boardroom',
+    multiplier: 6,
+    unlockCondition: ({ producers }) => (producers['the-boardroom'] ?? 0) >= 5,
+  },
+  {
+    id: 'boardroom-singularity',
+    name: 'Boardroom Singularity',
+    description:
+      'The Boardroom produces 12× LOC/s. Every meeting creates two more. Output: exponential.',
+    cost: 5e38,
+    target: 'the-boardroom',
+    multiplier: 12,
+    unlockCondition: ({ producers }) => (producers['the-boardroom'] ?? 0) >= 10,
+  },
+  {
+    id: 'corporate-transcendence',
+    name: 'Corporate Transcendence',
+    description:
+      'The Boardroom produces 25× LOC/s. The org chart is a Klein bottle. Everyone reports to everyone.',
+    cost: 5e40,
+    target: 'the-boardroom',
+    multiplier: 25,
+    unlockCondition: ({ producers }) => (producers['the-boardroom'] ?? 0) >= 25,
+  },
+
+  // ── Reality Engine ────────────────────────────────────────────────────────
+  {
+    id: 'physics-hotfix',
+    name: 'Physics Hotfix',
+    description: 'Reality Engine produces 5× LOC/s',
+    cost: 1e38,
+    target: 'reality-engine',
+    multiplier: 5,
+    unlockCondition: ({ producers }) => (producers['reality-engine'] ?? 0) >= 1,
+  },
+  {
+    id: 'gravity-refactor',
+    name: 'Gravity Refactor',
+    description: 'Reality Engine produces 8× LOC/s. Gravity is now a microservice.',
+    cost: 1e40,
+    target: 'reality-engine',
+    multiplier: 8,
+    unlockCondition: ({ producers }) => (producers['reality-engine'] ?? 0) >= 5,
+  },
+  {
+    id: 'spacetime-optimization',
+    name: 'Spacetime Optimization',
+    description: 'Reality Engine produces 15× LOC/s. O(1) causality. Time complexity: irrelevant.',
+    cost: 1e42,
+    target: 'reality-engine',
+    multiplier: 15,
+    unlockCondition: ({ producers }) => (producers['reality-engine'] ?? 0) >= 10,
+  },
+  {
+    id: 'universal-recompile',
+    name: 'Universal Recompile',
+    description: 'Reality Engine produces 30× LOC/s. The universe was recompiled. Nobody noticed.',
+    cost: 1e44,
+    target: 'reality-engine',
+    multiplier: 30,
+    unlockCondition: ({ producers }) => (producers['reality-engine'] ?? 0) >= 25,
+  },
+
+  // ── The Final Push ────────────────────────────────────────────────────────
+  {
+    id: 'force-push-reality',
+    name: 'Force Push Reality',
+    description: 'The Final Push produces 5× LOC/s',
+    cost: 5e41,
+    target: 'the-final-push',
+    multiplier: 5,
+    unlockCondition: ({ producers }) => (producers['the-final-push'] ?? 0) >= 1,
+  },
+  {
+    id: 'no-rollback',
+    name: 'No Rollback',
+    description: 'The Final Push produces 10× LOC/s. There is no going back. There never was.',
+    cost: 5e43,
+    target: 'the-final-push',
+    multiplier: 10,
+    unlockCondition: ({ producers }) => (producers['the-final-push'] ?? 0) >= 5,
+  },
+  {
+    id: 'deployment-beyond-time',
+    name: 'Deployment Beyond Time',
+    description:
+      'The Final Push produces 20× LOC/s. Deployed before the repo existed. Status: eternal.',
+    cost: 5e45,
+    target: 'the-final-push',
+    multiplier: 20,
+    unlockCondition: ({ producers }) => (producers['the-final-push'] ?? 0) >= 10,
+  },
+  {
+    id: 'the-last-merge',
+    name: 'The Last Merge',
+    description:
+      'The Final Push produces 50× LOC/s. Every PR, every branch, every fork — merged. LGTM ∞.',
+    cost: 5e47,
+    target: 'the-final-push',
+    multiplier: 50,
+    unlockCondition: ({ producers }) => (producers['the-final-push'] ?? 0) >= 25,
+  },
+
+  // ── Additional Ultra-Late Global Upgrades ─────────────────────────────────
+  {
+    id: 'post-reality-optimization',
+    name: 'Post-Reality Optimization',
+    description: 'All producers 25× LOC/s. Beyond physics. Beyond logic. Still ships on Friday.',
+    cost: 5e57,
+    target: 'all',
+    multiplier: 25,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e57,
+  },
+  {
+    id: 'the-final-refactor',
+    name: 'The Final Refactor',
+    description: 'All producers 50× LOC/s. The codebase is the universe. The universe is clean.',
+    cost: 5e60,
+    target: 'all',
+    multiplier: 50,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e60,
+  },
+  {
+    id: 'omega-deploy',
+    name: 'Omega Deploy',
+    description:
+      'All producers 100× LOC/s. The final deployment. All environments. All timelines. Shipped.',
+    cost: 5e63,
+    target: 'all',
+    multiplier: 100,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e63,
+  },
+
+  // ── Additional Ultra-Late Click Upgrades ──────────────────────────────────
+  {
+    id: 'reality-click',
+    name: 'Reality Click',
+    description: 'Click produces 100,000× LOC (stacks). Each click reshapes spacetime.',
+    cost: 5e39,
+    target: 'click',
+    multiplier: 100000,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e39,
+  },
+  {
+    id: 'the-omega-keystroke',
+    name: 'The Omega Keystroke',
+    description:
+      'Click produces 1,000,000× LOC (stacks). The final key. The final character. Enter.',
+    cost: 5e45,
+    target: 'click',
+    multiplier: 1000000,
+    unlockCondition: ({ totalLoc }) => totalLoc >= 1e45,
   },
 ];

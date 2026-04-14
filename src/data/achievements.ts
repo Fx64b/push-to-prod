@@ -685,7 +685,8 @@ export const ACHIEVEMENTS: Achievement[] = [
     name: 'Infinite Feedback Loop',
     description: 'Purchased Infinite Feedback Loop. Each refactor now echoes forward.',
     icon: '🌀',
-    condition: ({ architectureUpgrades }) => architectureUpgrades.includes('infinite-feedback-loop'),
+    condition: ({ architectureUpgrades }) =>
+      architectureUpgrades.includes('infinite-feedback-loop'),
   },
   {
     id: 'all-architecture',
@@ -693,11 +694,19 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Purchased all base Architecture upgrades. The diagram is complete.',
     icon: '🧱',
     condition: ({ architectureUpgrades }) =>
-      ['event-horizon', 'debt-forgiveness', 'fast-learner', 'recursive-memory',
-       'nest-protocol', 'compounding-interest', 'event-driven', 'loop-accelerant',
-       'second-system', 'protocol-breach', 'ap-multiplier'].every(
-        (id) => architectureUpgrades.includes(id),
-      ),
+      [
+        'event-horizon',
+        'debt-forgiveness',
+        'fast-learner',
+        'recursive-memory',
+        'nest-protocol',
+        'compounding-interest',
+        'event-driven',
+        'loop-accelerant',
+        'second-system',
+        'protocol-breach',
+        'ap-multiplier',
+      ].every((id) => architectureUpgrades.includes(id)),
   },
   {
     id: 'chaos-veteran',
@@ -709,7 +718,8 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'the-loop-producer',
     name: 'Process Array',
-    description: 'Own 25 of The Process Itself. The process is now self-auditing its process audits.',
+    description:
+      'Own 25 of The Process Itself. The process is now self-auditing its process audits.',
     icon: '⚙️🔄',
     condition: ({ producers }) => (producers['the-process'] ?? 0) >= 25,
   },
@@ -847,10 +857,21 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Purchased all base Architecture upgrades through Token Proliferation.',
     icon: '🏛️',
     condition: ({ architectureUpgrades }) =>
-      ['event-horizon', 'debt-forgiveness', 'fast-learner', 'recursive-memory',
-       'nest-protocol', 'compounding-interest', 'event-driven', 'loop-accelerant',
-       'second-system', 'protocol-breach', 'ap-multiplier', 'token-proliferation',
-       'infinite-feedback-loop'].every((id) => architectureUpgrades.includes(id)),
+      [
+        'event-horizon',
+        'debt-forgiveness',
+        'fast-learner',
+        'recursive-memory',
+        'nest-protocol',
+        'compounding-interest',
+        'event-driven',
+        'loop-accelerant',
+        'second-system',
+        'protocol-breach',
+        'ap-multiplier',
+        'token-proliferation',
+        'infinite-feedback-loop',
+      ].every((id) => architectureUpgrades.includes(id)),
   },
   {
     id: 'arch-singularity',
@@ -862,14 +883,16 @@ export const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'arch-quantum',
     name: 'Quantum Architect',
-    description: 'Purchased Quantum Architecture. The codebase exists in all futures simultaneously.',
+    description:
+      'Purchased Quantum Architecture. The codebase exists in all futures simultaneously.',
     icon: '⚛️🏗️',
     condition: ({ architectureUpgrades }) => architectureUpgrades.includes('quantum-architecture'),
   },
   {
     id: 'arch-infinite-compile',
     name: 'The Build Never Ends',
-    description: 'Purchased Infinite Compile Time. It has been compiling since before the universe.',
+    description:
+      'Purchased Infinite Compile Time. It has been compiling since before the universe.',
     icon: '⏳♾️',
     condition: ({ architectureUpgrades }) => architectureUpgrades.includes('infinite-compile-time'),
   },
@@ -909,5 +932,112 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Reached 1 Nod LOC. There is only code.',
     icon: '🌌🦆',
     condition: ({ totalLoc }) => totalLoc >= 1e60,
+  },
+
+  // ── Ultra-ultra LOC milestones ────────────────────────────────────────────────
+  {
+    id: 'loc-1e66',
+    name: 'Beyond Comprehension v2',
+    description: 'Reached 1e66 LOC. The number itself refuses to render.',
+    icon: '🔮✨',
+    condition: ({ totalLoc }) => totalLoc >= 1e66,
+  },
+  {
+    id: 'loc-1e72',
+    name: 'Cosmic Overflow',
+    description: 'Reached 1e72 LOC. JavaScript says this is still a valid number. Barely.',
+    icon: '💫🌌',
+    condition: ({ totalLoc }) => totalLoc >= 1e72,
+  },
+
+  // ── Era 6: Beyond producer achievements ───────────────────────────────────────
+  {
+    id: 'beyond-multiverse',
+    name: 'Multiverse Access',
+    description: 'Purchased your first Multiverse Compiler.',
+    icon: '🌀',
+    condition: ({ producers }) => (producers['multiverse-compiler'] ?? 0) >= 1,
+  },
+  {
+    id: 'beyond-boardroom',
+    name: 'Infinite Meeting',
+    description: 'Purchased your first Boardroom. The meeting has no end.',
+    icon: '🏢',
+    condition: ({ producers }) => (producers['the-boardroom'] ?? 0) >= 1,
+  },
+  {
+    id: 'beyond-reality',
+    name: 'Reality Hacker',
+    description: 'Purchased your first Reality Engine. Physics is just a config file now.',
+    icon: '⚡🌐',
+    condition: ({ producers }) => (producers['reality-engine'] ?? 0) >= 1,
+  },
+  {
+    id: 'beyond-final',
+    name: 'The Final Push',
+    description: 'Purchased your first Final Push. There are no more commits after this.',
+    icon: '🚀∞',
+    condition: ({ producers }) => (producers['the-final-push'] ?? 0) >= 1,
+  },
+  {
+    id: 'beyond-complete',
+    name: 'Beyond Complete',
+    description: 'Own at least 1 of every Beyond era producer.',
+    icon: '🌀🏢⚡🚀',
+    condition: ({ producers }) =>
+      (producers['multiverse-compiler'] ?? 0) >= 1 &&
+      (producers['the-boardroom'] ?? 0) >= 1 &&
+      (producers['reality-engine'] ?? 0) >= 1 &&
+      (producers['the-final-push'] ?? 0) >= 1,
+  },
+
+  // ── Synergy achievements ──────────────────────────────────────────────────────
+  {
+    id: 'first-synergy',
+    name: 'Synergy!',
+    description: 'Activated your first producer synergy.',
+    icon: '🔗',
+    condition: ({ architectureUpgrades, producers }) => {
+      if (!architectureUpgrades.includes('synergy-protocol')) return false;
+      // Check if any synergy conditions are met (simplified check for most common one)
+      return (
+        ((producers['junior-dev'] ?? 0) >= 10 &&
+          (producers['senior-dev'] ?? 0) >= 5 &&
+          (producers['tech-lead'] ?? 0) >= 3) ||
+        ((producers['coffee-machine'] ?? 0) >= 50 && (producers['senior-dev'] ?? 0) >= 10) ||
+        ((producers['mechanical-keyboard'] ?? 0) >= 50 && (producers.autocomplete ?? 0) >= 25) ||
+        ((producers['github-copilot'] ?? 0) >= 5 &&
+          (producers['ai-agent'] ?? 0) >= 3 &&
+          (producers.agi ?? 0) >= 1) ||
+        ((producers['rubber-duck'] ?? 0) >= 200 && (producers['duck-collective-llc'] ?? 0) >= 1)
+      );
+    },
+  },
+
+  // ── Higher GR achievements ────────────────────────────────────────────────────
+  {
+    id: 'gr-15',
+    name: 'Compulsive Refactorer',
+    description: 'Performed 15 Great Refactors. The codebase has trust issues.',
+    icon: '🔄🔷',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 15,
+  },
+  {
+    id: 'gr-30',
+    name: 'Architect of Architects',
+    description: 'Performed 30 Great Refactors. Architectures design themselves in your presence.',
+    icon: '🏛️♾️',
+    condition: ({ greatRefactorCount }) => greatRefactorCount >= 30,
+  },
+
+  // ── Autobuyer achievement ─────────────────────────────────────────────────────
+  {
+    id: 'fully-automated',
+    name: 'Fully Automated',
+    description: 'Installed both autobuyers. The game plays itself.',
+    icon: '🤖⚙️',
+    condition: ({ architectureUpgrades }) =>
+      architectureUpgrades.includes('autobuyer-producers') &&
+      architectureUpgrades.includes('autobuyer-upgrades'),
   },
 ];

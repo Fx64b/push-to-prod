@@ -14,7 +14,8 @@ export function RefactorButton() {
 
   if (totalLoc < PRESTIGE_THRESHOLD) return null;
 
-  const tokensToEarn = Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
+  const tokensToEarn =
+    Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
   const clicksReady = clicksThisRun >= MIN_CLICKS_TO_PRESTIGE;
   const canRefactor = clicksReady;
 
@@ -44,7 +45,10 @@ export function RefactorButton() {
       {!clicksReady && (
         <div className="text-[10px] text-gh-muted text-center">
           <span className="text-gh-red">{clicksThisRun}</span>
-          <span className="text-gh-muted"> / {MIN_CLICKS_TO_PRESTIGE} clicks this run required</span>
+          <span className="text-gh-muted">
+            {' '}
+            / {MIN_CLICKS_TO_PRESTIGE} clicks this run required
+          </span>
         </div>
       )}
 

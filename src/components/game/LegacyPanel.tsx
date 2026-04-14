@@ -227,7 +227,9 @@ export function LegacyPanel() {
                             key={u.id}
                             upgrade={{ ...u, cost: effectiveCost }}
                             purchased={legacyUpgrades.includes(u.id)}
-                            canAfford={legacyTokens >= effectiveCost && !legacyUpgrades.includes(u.id)}
+                            canAfford={
+                              legacyTokens >= effectiveCost && !legacyUpgrades.includes(u.id)
+                            }
                             onBuy={() => buyLegacyUpgrade(u.id)}
                           />
                         );

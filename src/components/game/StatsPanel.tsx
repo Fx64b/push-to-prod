@@ -2,6 +2,7 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { useMemo } from 'react';
 import { ArchitecturePanel } from '@/components/game/ArchitecturePanel';
 import { LegacyPanel } from '@/components/game/LegacyPanel';
+import { SynergyPanel } from '@/components/game/SynergyPanel';
 import { ACHIEVEMENTS, type Achievement } from '@/data/achievements';
 import { ARCHITECTURE_UPGRADES } from '@/data/architectureUpgrades';
 import { PRODUCERS, type Producer } from '@/data/producers';
@@ -110,7 +111,11 @@ export function StatsPanel() {
             <StatRow
               label="Arch. Upgrades"
               value={`${architectureUpgradesPurchased.length}/${ARCHITECTURE_UPGRADES.length}`}
-              color={architectureUpgradesPurchased.length === ARCHITECTURE_UPGRADES.length ? 'text-gh-yellow' : 'text-gh-muted'}
+              color={
+                architectureUpgradesPurchased.length === ARCHITECTURE_UPGRADES.length
+                  ? 'text-gh-yellow'
+                  : 'text-gh-muted'
+              }
             />
           )}
           {techStack && (
@@ -158,6 +163,9 @@ export function StatsPanel() {
           })}
         </div>
       </div>
+
+      {/* Synergies */}
+      <SynergyPanel />
 
       {/* Legacy Shop + Architecture — pinned to bottom */}
       <div className="mt-auto pt-2 border-t border-gh-border space-y-1.5">

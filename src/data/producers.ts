@@ -27,12 +27,27 @@ export const PRODUCER_ERAS: ProducerEra[] = [
   {
     name: 'Solo Hacker',
     flavor: 'Just you, caffeine, and a rubber duck.',
-    ids: ['rubber-duck', 'mechanical-keyboard', 'coffee-machine', 'autocomplete', 'stackoverflow-tab'],
+    ids: [
+      'rubber-duck',
+      'mechanical-keyboard',
+      'coffee-machine',
+      'autocomplete',
+      'stackoverflow-tab',
+    ],
   },
   {
     name: 'Build the Team',
     flavor: "Hiring is easy. Shipping together isn't.",
-    ids: ['junior-dev', 'linkedin-influencer', 'senior-dev', 'offshore-team', 'tech-lead', 'scrum-master', '10x-engineer', 'the-pm'],
+    ids: [
+      'junior-dev',
+      'linkedin-influencer',
+      'senior-dev',
+      'offshore-team',
+      'tech-lead',
+      'scrum-master',
+      '10x-engineer',
+      'the-pm',
+    ],
   },
   {
     name: 'AI Takeover',
@@ -42,12 +57,25 @@ export const PRODUCER_ERAS: ProducerEra[] = [
   {
     name: 'Post-Human',
     flavor: 'You are no longer the most complex thing in the room.',
-    ids: ['quantum-computer', 'the-singularity', 'blockchain', 'the-consultant', 'digital-twin', 'tech-oracle', 'infinite-monkey-farm'],
+    ids: [
+      'quantum-computer',
+      'the-singularity',
+      'blockchain',
+      'the-consultant',
+      'digital-twin',
+      'tech-oracle',
+      'infinite-monkey-farm',
+    ],
   },
   {
     name: 'The Loop',
     flavor: 'You have been here before. They remember.',
     ids: ['the-process', 'sentient-codebase', 'duck-collective-llc', 'recursive-self'],
+  },
+  {
+    name: 'Beyond',
+    flavor: 'The codebase has outgrown the universe. You are optimizing reality.',
+    ids: ['multiverse-compiler', 'the-boardroom', 'reality-engine', 'the-final-push'],
   },
 ];
 
@@ -260,7 +288,7 @@ export const PRODUCERS: Producer[] = [
   {
     id: 'the-process',
     name: 'The Process Itself',
-    flavor: "Nobody started it. Nobody can stop it. It files its own standups to itself.",
+    flavor: 'Nobody started it. Nobody can stop it. It files its own standups to itself.',
     baseLOCps: 100000000000,
     baseCost: 5e18,
     icon: '⚙️',
@@ -270,7 +298,8 @@ export const PRODUCERS: Producer[] = [
   {
     id: 'sentient-codebase',
     name: 'Sentient Codebase',
-    flavor: 'It refactors itself. Reviews its own PRs. It approved this purchase before you clicked.',
+    flavor:
+      'It refactors itself. Reviews its own PRs. It approved this purchase before you clicked.',
     baseLOCps: 500000000000,
     baseCost: 5e21,
     icon: '🌐',
@@ -296,5 +325,49 @@ export const PRODUCERS: Producer[] = [
     icon: '🪞',
     unlockGreatRefactor: 2,
     unlockLoc: 1e24,
+  },
+
+  // ── Era 6: Beyond (unlocks after several Great Refactors) ──────────────────
+  {
+    id: 'multiverse-compiler',
+    name: 'Multiverse Compiler',
+    flavor:
+      'Compiles in every timeline simultaneously. Build status: ✅ in 47 out of 50 realities.',
+    baseLOCps: 50000000000000,
+    baseCost: 5e30,
+    icon: '🌀',
+    unlockGreatRefactor: 5,
+    unlockLoc: 1e27,
+  },
+  {
+    id: 'the-boardroom',
+    name: 'The Boardroom',
+    flavor: 'An infinite meeting that somehow produces infinite code. Agenda item #∞: ship it.',
+    baseLOCps: 250000000000000,
+    baseCost: 5e33,
+    icon: '🏢',
+    unlockGreatRefactor: 5,
+    unlockLoc: 1e30,
+  },
+  {
+    id: 'reality-engine',
+    name: 'Reality Engine',
+    flavor: 'Physics is just a runtime. You found the config file.',
+    baseLOCps: 1500000000000000,
+    baseCost: 5e36,
+    icon: '⚡🌐',
+    unlockGreatRefactor: 7,
+    unlockLoc: 1e33,
+  },
+  {
+    id: 'the-final-push',
+    name: 'The Final Push',
+    flavor:
+      'git push --force origin reality. No rollback. No regrets. No more commits after this one.',
+    baseLOCps: 10000000000000000,
+    baseCost: 5e39,
+    icon: '🚀∞',
+    unlockGreatRefactor: 10,
+    unlockLoc: 1e36,
   },
 ];

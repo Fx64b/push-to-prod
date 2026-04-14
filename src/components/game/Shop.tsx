@@ -20,9 +20,7 @@ export function Shop() {
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
 
   const visibleProducers = PRODUCERS.filter(
-    (p) =>
-      (p.unlockLoc ?? 0) <= totalLoc &&
-      (p.unlockGreatRefactor ?? 0) <= greatRefactorCount,
+    (p) => (p.unlockLoc ?? 0) <= totalLoc && (p.unlockGreatRefactor ?? 0) <= greatRefactorCount,
   );
   const hiddenCount = PRODUCERS.length - visibleProducers.length;
 
@@ -78,7 +76,9 @@ export function Shop() {
                     <span className="text-[10px] font-bold text-gh-muted uppercase tracking-widest">
                       {era.name}
                     </span>
-                    <p className="text-[10px] text-gh-muted/60 italic leading-tight">{era.flavor}</p>
+                    <p className="text-[10px] text-gh-muted/60 italic leading-tight">
+                      {era.flavor}
+                    </p>
                   </div>
                   {eraProducers.map((p) => (
                     <ProducerCard key={p.id} producer={p} buyAmount={effectiveBuyAmount} />
