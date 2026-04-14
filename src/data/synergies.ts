@@ -211,6 +211,8 @@ export function computeSynergyMult(
   for (const synergy of SYNERGIES) {
     const active = synergy.conditions.every((c) => (producers[c.producerId] ?? 0) >= c.minCount);
     if (active) {
+      // Enhanced doubles the bonus portion: a ×3 synergy becomes ×5 (1 + (3-1)*2),
+      // not ×6, to avoid double-counting the base 1.0 multiplier.
       const bonus = enhancedSynergies ? synergy.multiplier * 2 - 1 : synergy.multiplier;
       mult *= bonus;
     }

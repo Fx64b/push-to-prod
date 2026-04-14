@@ -1005,10 +1005,10 @@ export const ACHIEVEMENTS: Achievement[] = [
           (producers['senior-dev'] ?? 0) >= 5 &&
           (producers['tech-lead'] ?? 0) >= 3) ||
         ((producers['coffee-machine'] ?? 0) >= 50 && (producers['senior-dev'] ?? 0) >= 10) ||
-        ((producers['mechanical-keyboard'] ?? 0) >= 50 && (producers.autocomplete ?? 0) >= 25) ||
+        ((producers['mechanical-keyboard'] ?? 0) >= 50 && (producers['autocomplete'] ?? 0) >= 25) ||
         ((producers['github-copilot'] ?? 0) >= 5 &&
           (producers['ai-agent'] ?? 0) >= 3 &&
-          (producers.agi ?? 0) >= 1) ||
+          (producers['agi'] ?? 0) >= 1) ||
         ((producers['rubber-duck'] ?? 0) >= 200 && (producers['duck-collective-llc'] ?? 0) >= 1)
       );
     },
