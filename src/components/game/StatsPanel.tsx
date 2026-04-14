@@ -28,7 +28,6 @@ export function StatsPanel() {
   const architecturePoints = useGameStore((s) => s.architecturePoints);
   const architectureUpgradesPurchased = useGameStore((s) => s.architectureUpgrades);
   const clicksThisRun = useGameStore((s) => s.clicksThisRun);
-  const greatRefactorProductionBonus = useGameStore((s) => s.greatRefactorProductionBonus);
   const eventSurvivalProductionBonus = useGameStore((s) => s.eventSurvivalProductionBonus);
 
   const clickValue = useMemo(
@@ -78,6 +77,13 @@ export function StatsPanel() {
               color="text-gh-yellow"
             />
           )}
+          {greatRefactorCount > 0 && (
+            <StatRow
+              label="GR Multiplier"
+              value={`×${Math.pow(architectureUpgradesPurchased.includes('infinite-feedback-loop') ? 2.0 : 1.5, greatRefactorCount).toFixed(2)}`}
+              color="text-gh-yellow"
+            />
+          )}
           {legacyTokens > 0 && (
             <StatRow label="Legacy Tokens" value={legacyTokens.toString()} color="text-gh-yellow" />
           )}
@@ -93,13 +99,6 @@ export function StatsPanel() {
             value={clicksThisRun.toLocaleString()}
             color={clicksThisRun >= 1000 ? 'text-gh-green' : 'text-gh-muted'}
           />
-          {greatRefactorProductionBonus > 0 && (
-            <StatRow
-              label="Loop Feedback"
-              value={`+${(greatRefactorProductionBonus * 100).toFixed(0)}%`}
-              color="text-gh-yellow"
-            />
-          )}
           {eventSurvivalProductionBonus > 0 && (
             <StatRow
               label="Event Bonus"

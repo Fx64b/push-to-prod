@@ -137,6 +137,7 @@ interface CacheInput {
   prestigeCount?: number;
   eventSurvivalProductionBonus?: number;
   greatRefactorProductionBonus?: number;
+  greatRefactorCount?: number;
 }
 
 function computeLegacyMult(
@@ -145,7 +146,8 @@ function computeLegacyMult(
   architectureUpgrades: string[],
   prestigeCount: number,
   eventSurvivalProductionBonus: number,
-  greatRefactorProductionBonus: number,
+  _greatRefactorProductionBonus: number, // kept for signature compat, no longer used
+  greatRefactorCount: number,
 ): number {
   const legacyUpgradeMult = LEGACY_UPGRADES.reduce((acc, u) => {
     if (u.effect.type === 'production_bonus' && legacyUpgrades.includes(u.id)) {
@@ -169,8 +171,10 @@ function computeLegacyMult(
   // Event-Driven: permanent accumulated bonus
   const eventDrivenMult = 1 + eventSurvivalProductionBonus;
 
-  // Infinite Feedback Loop: permanent bonus accumulated from Great Refactors
-  const feedbackLoopMult = 1 + greatRefactorProductionBonus;
+  // Built-in GR scaling: ×1.5 per GR by default, ×2 per GR with Infinite Feedback Loop
+  // GR1=×1.5, GR2=×2.25, GR3=×3.375 — or ×2, ×4, ×8 with IFL
+  const grPerMult = architectureUpgrades.includes('infinite-feedback-loop') ? 2.0 : 1.5;
+  const grScaling = greatRefactorCount > 0 ? Math.pow(grPerMult, greatRefactorCount) : 1;
 
   return (
     (1 + legacyTokens * 0.05) *
@@ -178,7 +182,7 @@ function computeLegacyMult(
     archUpgradeMult *
     compoundingMult *
     eventDrivenMult *
-    feedbackLoopMult
+    grScaling
   );
 }
 
@@ -187,6 +191,7 @@ function computeCaches(s: CacheInput) {
   const prestige = s.prestigeCount ?? 0;
   const eventBonus = s.eventSurvivalProductionBonus ?? 0;
   const grBonus = s.greatRefactorProductionBonus ?? 0;
+  const grCount = s.greatRefactorCount ?? 0;
   return {
     cachedLOCps: calculateLOCps(s),
     cachedClickValue: calculateClickValue(s),
@@ -197,6 +202,7 @@ function computeCaches(s: CacheInput) {
       prestige,
       eventBonus,
       grBonus,
+      grCount,
     ),
   };
 }
@@ -304,11 +310,14 @@ function calcPrestigeTokens(totalLoc: number, prestigeCount: number): number {
   return Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
 }
 
+const LOOP_ERA_PRODUCER_IDS = ['the-process', 'sentient-codebase', 'duck-collective-llc', 'recursive-self'];
+
 function buildStartState(
   legacyUpgrades: string[],
   upgrades: string[],
   architectureUpgrades: string[],
   lastRunPeakLoc: number,
+  currentProducers: Record<string, number> = {},
 ) {
   const startProducers: Record<string, number> = {};
   const keptUpgrades: string[] = [];
@@ -343,9 +352,25 @@ function buildStartState(
     }
   }
 
-  // Recursive Memory: start with 10% of previous run's peak LOC
-  if (architectureUpgrades.includes('recursive-memory') && lastRunPeakLoc > 0) {
-    startLoc += Math.floor(lastRunPeakLoc * 0.1);
+  // Loop Inheritance (GR3): carry over Loop era producers on regular prestige
+  if (architectureUpgrades.includes('loop-producer-inheritance')) {
+    for (const id of LOOP_ERA_PRODUCER_IDS) {
+      const count = currentProducers[id] ?? 0;
+      if (count > 0) {
+        startProducers[id] = (startProducers[id] ?? 0) + count;
+      }
+    }
+  }
+
+  // Deep Recursion (GR2): start with 30% of previous run's peak LOC — supersedes Recursive Memory
+  // Recursive Memory (base): start with 10% of previous run's peak LOC
+  const memFraction = architectureUpgrades.includes('deep-recursion')
+    ? 0.3
+    : architectureUpgrades.includes('recursive-memory')
+      ? 0.1
+      : 0;
+  if (memFraction > 0 && lastRunPeakLoc > 0) {
+    startLoc += Math.floor(lastRunPeakLoc * memFraction);
   }
 
   return { startProducers, keptUpgrades, startLoc };
@@ -472,6 +497,7 @@ export const useGameStore = create<GameState>()(
                 state.prestigeCount,
                 eventSurvivalProductionBonus,
                 state.greatRefactorProductionBonus,
+                state.greatRefactorCount,
               )
             : state.cachedLegacyMult;
 
@@ -639,6 +665,7 @@ export const useGameStore = create<GameState>()(
                 state.prestigeCount,
                 eventSurvivalProductionBonus,
                 state.greatRefactorProductionBonus,
+                state.greatRefactorCount,
               )
             : state.cachedLegacyMult;
 
@@ -736,6 +763,7 @@ export const useGameStore = create<GameState>()(
           state.prestigeCount,
           state.eventSurvivalProductionBonus,
           state.greatRefactorProductionBonus,
+          state.greatRefactorCount,
         );
 
         set({
@@ -752,6 +780,7 @@ export const useGameStore = create<GameState>()(
         if (!upgrade) return;
         if (state.architectureUpgrades.includes(id)) return;
         if (state.architecturePoints < upgrade.cost) return;
+        if ((upgrade.requiresGreatRefactor ?? 0) > state.greatRefactorCount) return;
 
         const newArchUpgrades = [...state.architectureUpgrades, id];
         const newArchPoints = state.architecturePoints - upgrade.cost;
@@ -780,10 +809,13 @@ export const useGameStore = create<GameState>()(
           state.upgrades,
           state.architectureUpgrades,
           state.lastRunPeakLoc,
+          state.producers,
         );
 
         const newLegacyTokens = state.legacyTokens + tokensEarned;
         const newPrestigeCount = state.prestigeCount + 1;
+        // Prestige AP Dividend (GR2): each regular prestige grants +1 AP
+        const apGain = state.architectureUpgrades.includes('prestige-ap-dividend') ? 1 : 0;
         const cacheInput: CacheInput = {
           producers: startProducers,
           upgrades: keptUpgrades,
@@ -794,6 +826,7 @@ export const useGameStore = create<GameState>()(
           prestigeCount: newPrestigeCount,
           eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
           greatRefactorProductionBonus: state.greatRefactorProductionBonus,
+          greatRefactorCount: state.greatRefactorCount,
         };
 
         set({
@@ -813,7 +846,7 @@ export const useGameStore = create<GameState>()(
           techStack: state.techStack,
           pivotCount: state.pivotCount,
           greatRefactorCount: state.greatRefactorCount,
-          architecturePoints: state.architecturePoints,
+          architecturePoints: state.architecturePoints + apGain,
           architectureUpgrades: state.architectureUpgrades,
           totalLegacyTokensEverSpent: state.totalLegacyTokensEverSpent,
           lastRunPeakLoc: state.lastRunPeakLoc,
@@ -838,26 +871,27 @@ export const useGameStore = create<GameState>()(
         const newGreatRefactorCount = state.greatRefactorCount + 1;
         const newArchitecturePoints = state.architecturePoints + apEarned;
 
-        // Infinite Feedback Loop: each Great Refactor adds +5% permanent production
-        let newGreatRefactorProductionBonus = state.greatRefactorProductionBonus;
-        if (state.architectureUpgrades.includes('infinite-feedback-loop')) {
-          newGreatRefactorProductionBonus += 0.05;
-        }
+        // Legacy token carry-over: 0% on first GR, +10% per subsequent GR (max 50%)
+        // GR1→2: 10%, GR2→3: 20%, GR3→4: 30%, GR4→5+: 40-50%
+        const carryFraction = Math.min(0.5, state.greatRefactorCount * 0.1);
+        const carriedTokens = Math.floor(state.legacyTokens * carryFraction);
 
         const cacheInput: CacheInput = {
           producers: {},
           upgrades: [],
           locPerClick: 1,
           legacyUpgrades: [],
-          legacyTokens: 0,
+          legacyTokens: carriedTokens,
           architectureUpgrades: state.architectureUpgrades,
           prestigeCount: 0,
           eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
-          greatRefactorProductionBonus: newGreatRefactorProductionBonus,
+          greatRefactorProductionBonus: state.greatRefactorProductionBonus,
+          greatRefactorCount: newGreatRefactorCount,
         };
 
         set({
           ...DEFAULT_STATE,
+          legacyTokens: carriedTokens,
           greatRefactorCount: newGreatRefactorCount,
           architecturePoints: newArchitecturePoints,
           architectureUpgrades: state.architectureUpgrades,
@@ -868,7 +902,7 @@ export const useGameStore = create<GameState>()(
           negativeEventssurvived: state.negativeEventssurvived,
           activeEventTriggered: state.activeEventTriggered,
           eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
-          greatRefactorProductionBonus: newGreatRefactorProductionBonus,
+          greatRefactorProductionBonus: state.greatRefactorProductionBonus,
           techStack: state.techStack,
           pivotCount: state.pivotCount,
           productName: state.productName,
@@ -897,10 +931,13 @@ export const useGameStore = create<GameState>()(
           state.upgrades,
           state.architectureUpgrades,
           state.lastRunPeakLoc,
+          state.producers,
         );
 
         const newLegacyTokens = state.legacyTokens + tokensEarned;
         const newPrestigeCount = state.prestigeCount + 1;
+        // Prestige AP Dividend (GR2): pivot counts as a prestige for AP purposes
+        const apGain = state.architectureUpgrades.includes('prestige-ap-dividend') ? 1 : 0;
         const cacheInput: CacheInput = {
           producers: startProducers,
           upgrades: keptUpgrades,
@@ -911,6 +948,7 @@ export const useGameStore = create<GameState>()(
           prestigeCount: newPrestigeCount,
           eventSurvivalProductionBonus: state.eventSurvivalProductionBonus,
           greatRefactorProductionBonus: state.greatRefactorProductionBonus,
+          greatRefactorCount: state.greatRefactorCount,
         };
 
         set({
@@ -930,7 +968,7 @@ export const useGameStore = create<GameState>()(
           techStack: stack,
           pivotCount: state.pivotCount + 1,
           greatRefactorCount: state.greatRefactorCount,
-          architecturePoints: state.architecturePoints,
+          architecturePoints: state.architecturePoints + apGain,
           architectureUpgrades: state.architectureUpgrades,
           totalLegacyTokensEverSpent: state.totalLegacyTokensEverSpent,
           lastRunPeakLoc: state.lastRunPeakLoc,
@@ -959,6 +997,7 @@ export const useGameStore = create<GameState>()(
             state.prestigeCount,
             eventSurvivalProductionBonus,
             state.greatRefactorProductionBonus,
+            state.greatRefactorCount,
           );
         }
 
@@ -1041,6 +1080,7 @@ export const useGameStore = create<GameState>()(
             prestigeCount: state.prestigeCount ?? 0,
             eventSurvivalProductionBonus: state.eventSurvivalProductionBonus ?? 0,
             greatRefactorProductionBonus: state.greatRefactorProductionBonus ?? 0,
+            greatRefactorCount: state.greatRefactorCount ?? 0,
           });
           state.cachedLOCps = caches.cachedLOCps;
           state.cachedClickValue = caches.cachedClickValue;

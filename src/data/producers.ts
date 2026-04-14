@@ -265,7 +265,7 @@ export const PRODUCERS: Producer[] = [
     baseCost: 5e18,
     icon: '⚙️',
     unlockGreatRefactor: 1,
-    unlockLoc: 1e18,
+    unlockLoc: 1e15,
   },
   {
     id: 'sentient-codebase',
@@ -275,7 +275,7 @@ export const PRODUCERS: Producer[] = [
     baseCost: 5e21,
     icon: '🌐',
     unlockGreatRefactor: 1,
-    unlockLoc: 1e21,
+    unlockLoc: 1e18,
   },
   {
     id: 'duck-collective-llc',
@@ -285,7 +285,7 @@ export const PRODUCERS: Producer[] = [
     baseCost: 5e24,
     icon: '🦆⚖️',
     unlockGreatRefactor: 1,
-    unlockLoc: 1e24,
+    unlockLoc: 1e21,
   },
   {
     id: 'recursive-self',
@@ -295,6 +295,6 @@ export const PRODUCERS: Producer[] = [
     baseCost: 5e27,
     icon: '🪞',
     unlockGreatRefactor: 2,
-    unlockLoc: 1e27,
+    unlockLoc: 1e24,
   },
 ];

@@ -11,7 +11,10 @@ export type ArchitectureEffect =
   | { type: 'protocol_breach' }     // unlocks Phase 5 "The Loop" events
   | { type: 'ap_multiplier' }       // doubles AP earned in all future Great Refactors
   | { type: 'token_proliferation' }  // each prestige grants +1 bonus Legacy Token
-  | { type: 'infinite_feedback_loop' }; // +5% permanent production per Great Refactor (+5% each GR, no cap)
+  | { type: 'infinite_feedback_loop' } // upgrades the built-in GR multiplier from ×1.5 to ×2 per loop
+  | { type: 'prestige_ap_dividend' } // each regular prestige grants +1 AP
+  | { type: 'deep_recursion' }       // start each run with 30% of previous run's peak LOC
+  | { type: 'loop_producer_inheritance' }; // Loop era producers survive regular prestige resets
 
 export interface ArchitectureUpgrade {
   id: string;
@@ -20,6 +23,8 @@ export interface ArchitectureUpgrade {
   flavor: string;
   cost: number; // Architecture Points
   effect: ArchitectureEffect;
+  /** Only purchasable after this many Great Refactors. */
+  requiresGreatRefactor?: number;
 }
 
 export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
@@ -137,7 +142,7 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
   {
     id: 'infinite-feedback-loop',
     name: 'Infinite Feedback Loop',
-    description: 'Each Great Refactor permanently adds +5% global production (stacks forever)',
+    description: 'Upgrades the built-in Great Refactor multiplier from ×1.5 to ×2 per loop (GR5 = ×32 instead of ×7.6)',
     flavor: 'Every reset compounds the next. The codebase is learning from its own history.',
     cost: 15,
     effect: { type: 'infinite_feedback_loop' },
@@ -185,5 +190,45 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     flavor: 'The compiler has been running since before the universe. It just finished. Build succeeded.',
     cost: 125,
     effect: { type: 'production_bonus', multiplier: 25 },
+  },
+
+  // ── GR 2 Exclusive ───────────────────────────────────────────────────────────
+  {
+    id: 'prestige-ap-dividend',
+    name: 'Prestige AP Dividend',
+    description: 'Each regular prestige grants +1 Architecture Point',
+    flavor: 'You have done this before. The loop remembers the effort.',
+    cost: 12,
+    requiresGreatRefactor: 2,
+    effect: { type: 'prestige_ap_dividend' },
+  },
+  {
+    id: 'deep-recursion',
+    name: 'Deep Recursion',
+    description: 'Each run starts with 30% of the previous run\'s peak LOC (supersedes Recursive Memory)',
+    flavor: 'The stack goes deeper now. You can feel it before the run loads.',
+    cost: 10,
+    requiresGreatRefactor: 2,
+    effect: { type: 'deep_recursion' },
+  },
+
+  // ── GR 3 Exclusive ───────────────────────────────────────────────────────────
+  {
+    id: 'cascade-architecture',
+    name: 'Cascade Architecture',
+    description: '×20 global production. Third loop, third system — finally the right one.',
+    flavor: 'The architecture diagram has achieved enlightenment. It no longer fits on a whiteboard.',
+    cost: 20,
+    requiresGreatRefactor: 3,
+    effect: { type: 'production_bonus', multiplier: 20 },
+  },
+  {
+    id: 'loop-producer-inheritance',
+    name: 'Loop Inheritance',
+    description: 'The Loop era producers (The Process, Sentient Codebase, Duck Collective, Recursive Self) survive regular prestige resets',
+    flavor: 'They were already running before you reset. They just waited.',
+    cost: 25,
+    requiresGreatRefactor: 3,
+    effect: { type: 'loop_producer_inheritance' },
   },
 ];

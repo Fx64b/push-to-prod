@@ -31,7 +31,13 @@ function effectSummary(upgrade: ArchitectureUpgrade): string {
     case 'token_proliferation':
       return '+1 bonus Legacy Token per prestige (stacks)';
     case 'infinite_feedback_loop':
-      return '+5% permanent production per Great Refactor (stacks forever)';
+      return 'Upgrades the built-in GR multiplier: ×1.5 → ×2 per Great Refactor';
+    case 'prestige_ap_dividend':
+      return '+1 Architecture Point per regular prestige';
+    case 'deep_recursion':
+      return "Each run starts with 30% of last run's peak LOC (supersedes Recursive Memory)";
+    case 'loop_producer_inheritance':
+      return 'The Process, Sentient Codebase, Duck Collective, and Recursive Self survive regular prestige resets';
     default:
       return '';
   }
@@ -41,47 +47,70 @@ function ArchUpgradeCard({
   upgrade,
   purchased,
   canAfford,
+  locked,
   onBuy,
 }: {
   upgrade: ArchitectureUpgrade;
   purchased: boolean;
   canAfford: boolean;
+  locked: boolean;
   onBuy: () => void;
 }) {
   return (
     <div
       className={`p-3 rounded border font-mono text-xs transition-all ${
-        purchased
-          ? 'border-gh-yellow/40 bg-gh-yellow/5 opacity-70'
-          : canAfford
-            ? 'border-gh-border bg-gh-surface hover:border-gh-yellow/60 cursor-pointer'
-            : 'border-gh-border/40 bg-gh-surface/40 opacity-50'
+        locked
+          ? 'border-gh-border/30 bg-gh-surface/20 opacity-40'
+          : purchased
+            ? 'border-gh-yellow/40 bg-gh-yellow/5 opacity-70'
+            : canAfford
+              ? 'border-gh-border bg-gh-surface hover:border-gh-yellow/60 cursor-pointer'
+              : 'border-gh-border/40 bg-gh-surface/40 opacity-50'
       }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            {purchased && <span className="text-gh-yellow text-[10px] font-bold">✓ INSTALLED</span>}
-            <span className={`font-bold text-sm ${purchased ? 'text-gh-yellow' : 'text-gh-text'}`}>
+            {locked && (
+              <span className="text-gh-muted text-[10px] font-bold">
+                🔒 GR {upgrade.requiresGreatRefactor}+
+              </span>
+            )}
+            {!locked && purchased && (
+              <span className="text-gh-yellow text-[10px] font-bold">✓ INSTALLED</span>
+            )}
+            <span
+              className={`font-bold text-sm ${
+                locked ? 'text-gh-muted' : purchased ? 'text-gh-yellow' : 'text-gh-text'
+              }`}
+            >
               {upgrade.name}
             </span>
           </div>
-          <p className="text-gh-blue text-[11px] mb-1">{effectSummary(upgrade)}</p>
-          <p className="text-gh-muted text-[11px] italic">"{upgrade.flavor}"</p>
+          <p className={`text-[11px] mb-1 ${locked ? 'text-gh-muted' : 'text-gh-blue'}`}>
+            {effectSummary(upgrade)}
+          </p>
+          {!locked && <p className="text-gh-muted text-[11px] italic">"{upgrade.flavor}"</p>}
         </div>
 
         <div className="flex flex-col items-end gap-2 shrink-0">
           <div className="flex items-center gap-1">
             <span
               className={`font-bold text-sm tabular-nums ${
-                purchased ? 'text-gh-yellow' : canAfford ? 'text-gh-yellow' : 'text-gh-muted'
+                locked
+                  ? 'text-gh-muted/50'
+                  : purchased
+                    ? 'text-gh-yellow'
+                    : canAfford
+                      ? 'text-gh-yellow'
+                      : 'text-gh-muted'
               }`}
             >
               {upgrade.cost}
             </span>
             <span className="text-gh-muted text-[10px]">AP</span>
           </div>
-          {!purchased && (
+          {!locked && !purchased && (
             <button
               onClick={onBuy}
               disabled={!canAfford}
@@ -110,6 +139,9 @@ export function ArchitecturePanel() {
   if (greatRefactorCount === 0) return null;
 
   const purchased = ARCHITECTURE_UPGRADES.filter((u) => architectureUpgrades.includes(u.id)).length;
+  const unlocked = ARCHITECTURE_UPGRADES.filter(
+    (u) => (u.requiresGreatRefactor ?? 0) <= greatRefactorCount,
+  ).length;
 
   return (
     <>
@@ -127,7 +159,7 @@ export function ArchitecturePanel() {
               {architecturePoints} AP
             </span>
           )}
-          <span className="text-gh-muted text-[10px]">{purchased}/{ARCHITECTURE_UPGRADES.length}</span>
+          <span className="text-gh-muted text-[10px]">{purchased}/{unlocked}</span>
         </div>
       </button>
 
@@ -176,7 +208,7 @@ export function ArchitecturePanel() {
                     Installed
                   </div>
                   <div className="text-gh-green text-sm font-bold">
-                    {purchased}/{ARCHITECTURE_UPGRADES.length}
+                    {purchased}/{unlocked}
                   </div>
                 </div>
               </div>
@@ -188,15 +220,20 @@ export function ArchitecturePanel() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-2">
-              {ARCHITECTURE_UPGRADES.map((u) => (
-                <ArchUpgradeCard
-                  key={u.id}
-                  upgrade={u}
-                  purchased={architectureUpgrades.includes(u.id)}
-                  canAfford={architecturePoints >= u.cost && !architectureUpgrades.includes(u.id)}
-                  onBuy={() => buyArchitectureUpgrade(u.id)}
-                />
-              ))}
+              {ARCHITECTURE_UPGRADES.map((u) => {
+                const isLocked = (u.requiresGreatRefactor ?? 0) > greatRefactorCount;
+                const isPurchased = architectureUpgrades.includes(u.id);
+                return (
+                  <ArchUpgradeCard
+                    key={u.id}
+                    upgrade={u}
+                    purchased={isPurchased}
+                    canAfford={architecturePoints >= u.cost && !isPurchased && !isLocked}
+                    locked={isLocked}
+                    onBuy={() => buyArchitectureUpgrade(u.id)}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
