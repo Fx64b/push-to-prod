@@ -12,7 +12,6 @@ export interface Achievement {
     negativeEventssurvived: number;
     prestigeCount: number;
     activeEventTriggered: boolean;
-    technicalDebt: number;
     techStack: string | null;
     pivotCount: number;
     greatRefactorCount: number;
@@ -445,22 +444,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: ({ upgrades }) => upgrades.includes('we-dont-need-tests'),
   },
 
-  // ── Technical Debt achievements ────────────────────────────────────────────────
-  {
-    id: 'debt-ceiling',
-    name: 'Debt Ceiling',
-    description: 'Technical debt reached maximum. Congress has been notified.',
-    icon: '📉',
-    condition: ({ technicalDebt }) => technicalDebt >= 100,
-  },
-  {
-    id: 'well-fix-it-in-post',
-    name: "We'll Fix It In Post",
-    description: 'Technical debt has been above 75 for a very long time. It is structural now.',
-    icon: '🏚️',
-    condition: ({ technicalDebt }) => technicalDebt >= 75,
-  },
-
   // ── Prestige achievements ──────────────────────────────────────────────────────
   {
     id: 'great-refactor',
@@ -696,7 +679,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: ({ architectureUpgrades }) =>
       [
         'event-horizon',
-        'debt-forgiveness',
         'fast-learner',
         'recursive-memory',
         'nest-protocol',
@@ -859,7 +841,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: ({ architectureUpgrades }) =>
       [
         'event-horizon',
-        'debt-forgiveness',
         'fast-learner',
         'recursive-memory',
         'nest-protocol',
