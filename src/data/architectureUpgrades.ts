@@ -1,6 +1,5 @@
 export type ArchitectureEffect =
   | { type: 'event_horizon' } // positive events last 2× longer
-  | { type: 'debt_forgiveness' } // technical debt accumulates 25% slower
   | { type: 'fast_learner' } // legacy upgrades cost 20% fewer tokens
   | { type: 'recursive_memory' } // start each run with 10% of last run's peak LOC
   | { type: 'unlock_duck_nesting' } // enables the duck nesting mechanic
@@ -41,14 +40,6 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     flavor: 'Good things take time. You have learned to hold them.',
     cost: 1,
     effect: { type: 'event_horizon' },
-  },
-  {
-    id: 'debt-forgiveness',
-    name: 'Debt Forgiveness',
-    description: 'Technical debt accumulates 25% slower',
-    flavor: 'The codebase has forgiven you. For now.',
-    cost: 1,
-    effect: { type: 'debt_forgiveness' },
   },
 
   // ── 2 AP ─────────────────────────────────────────────────────────────────────

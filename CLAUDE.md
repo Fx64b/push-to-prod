@@ -57,7 +57,6 @@ Static game content — producers, upgrades, events, achievements, social posts 
 
 ### Key Mechanics
 
-- **Technical Debt** — 0–100 meter; certain producers raise it, reducing total production
 - **Tech Stack Pivots** — mutually exclusive bonuses (TypeScript/Rust/PHP/Blockchain) via `PivotButton.tsx`
 - **Duck Nesting** — ducks store LOC; enabled by the "Nest Protocol" architecture upgrade
 - **Random Events** — Slack-style interruptions that apply timed production modifiers

@@ -10,8 +10,6 @@ function effectSummary(upgrade: ArchitectureUpgrade): string {
       return `×${e.multiplier} global production`;
     case 'event_horizon':
       return 'Positive events last 2× longer';
-    case 'debt_forgiveness':
-      return 'Technical debt accumulates 25% slower';
     case 'fast_learner':
       return 'Legacy upgrades cost 20% fewer tokens';
     case 'recursive_memory':

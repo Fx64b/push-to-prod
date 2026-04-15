@@ -64,9 +64,6 @@ interface GameState {
   activeEventTriggered: boolean;
   negativeEventssurvived: number;
 
-  // Technical debt (0–100, only active after all legacy items bought)
-  technicalDebt: number;
-
   // Tech Stack prestige
   techStack: TechStack | null;
   pivotCount: number;
@@ -233,34 +230,12 @@ export function getStackMult(techStack: TechStack | null): { production: number;
   }
 }
 
-// ── Technical Debt helpers ────────────────────────────────────────────────────
+// ── Great Refactor helper ─────────────────────────────────────────────────────
 
 function allLegacyBought(legacyUpgrades: string[]): boolean {
   return LEGACY_UPGRADES.filter((u) => !u.requiresSecondSystem).every((u) =>
     legacyUpgrades.includes(u.id),
   );
-}
-
-function calcDebtRate(producers: Record<string, number>): number {
-  const generated =
-    (producers['junior-dev'] ?? 0) * 0.005 +
-    (producers['stackoverflow-tab'] ?? 0) * 0.003 +
-    (producers['linkedin-influencer'] ?? 0) * 0.007 +
-    (producers['offshore-team'] ?? 0) * 0.005 +
-    (producers['github-copilot'] ?? 0) * 0.01;
-  const reduced =
-    (producers['senior-dev'] ?? 0) * 0.004 +
-    (producers['tech-lead'] ?? 0) * 0.002 +
-    (producers['the-pm'] ?? 0) * 0.001;
-  return generated - reduced;
-}
-
-export function getDebtPenalty(debt: number): number {
-  if (debt >= 100) return 0.15;
-  if (debt >= 75) return 0.4;
-  if (debt >= 50) return 0.7;
-  if (debt >= 25) return 0.9;
-  return 1.0;
 }
 
 // ── Weighted event selection ──────────────────────────────────────────────────
@@ -425,7 +400,6 @@ const DEFAULT_STATE = {
   eventEndTime: null,
   activeEventTriggered: false,
   negativeEventssurvived: 0,
-  technicalDebt: 0,
   techStack: null as TechStack | null,
   pivotCount: 0,
   greatRefactorCount: 0,
@@ -518,8 +492,6 @@ export const useGameStore = create<GameState>()(
         // ── LOC production ──────────────────────────────────────────────────────
         const { locps: locpsMult } = getEventMultiplier(activeEvent);
         const { production: stackProductionMult } = getStackMult(state.techStack);
-        const debtActive = allLegacyBought(state.legacyUpgrades);
-        const debtPenalty = debtActive ? getDebtPenalty(state.technicalDebt) : 1.0;
 
         // Recompute legacy mult if eventSurvivalProductionBonus changed this tick
         const legacyMult =
@@ -536,23 +508,11 @@ export const useGameStore = create<GameState>()(
               )
             : state.cachedLegacyMult;
 
-        const locGained =
-          state.cachedLOCps * locpsMult * legacyMult * stackProductionMult * debtPenalty * dt;
+        const locGained = state.cachedLOCps * locpsMult * legacyMult * stackProductionMult * dt;
 
         let newLoc = state.loc + locGained;
         let newTotalLoc = state.totalLoc + locGained;
         const newLastRunPeakLoc = Math.max(state.lastRunPeakLoc, newTotalLoc);
-
-        // ── Technical debt ──────────────────────────────────────────────────────
-        let newTechnicalDebt = state.technicalDebt;
-        if (debtActive) {
-          let debtRate = calcDebtRate(state.producers);
-          // Debt Forgiveness: positive debt accumulates 25% slower
-          if (state.architectureUpgrades.includes('debt-forgiveness') && debtRate > 0) {
-            debtRate *= 0.75;
-          }
-          newTechnicalDebt = Math.max(0, Math.min(100, state.technicalDebt + debtRate * dt));
-        }
 
         // ── Duck nesting ────────────────────────────────────────────────────────
         let nestedDucks = state.nestedDucks;
@@ -584,14 +544,7 @@ export const useGameStore = create<GameState>()(
           if (nestedDucks.length > 0) {
             nestedDucks = nestedDucks.map((duck) => {
               const singleLOCps = calculateSingleProducerLOCps(duck.producerId, state);
-              const stolen =
-                singleLOCps *
-                0.08 *
-                locpsMult *
-                legacyMult *
-                stackProductionMult *
-                debtPenalty *
-                dt;
+              const stolen = singleLOCps * 0.08 * locpsMult * legacyMult * stackProductionMult * dt;
               nestedStolenTotal += stolen;
               return { ...duck, storedLoc: duck.storedLoc + stolen };
             });
@@ -658,7 +611,6 @@ export const useGameStore = create<GameState>()(
           prestigeCount: state.prestigeCount,
           greatRefactorCount: state.greatRefactorCount,
           activeEventTriggered,
-          technicalDebt: newTechnicalDebt,
           techStack: state.techStack,
           pivotCount: state.pivotCount,
           architectureUpgrades: state.architectureUpgrades,
@@ -788,7 +740,6 @@ export const useGameStore = create<GameState>()(
           eventEndTime: newEventEndTime,
           negativeEventssurvived,
           activeEventTriggered,
-          technicalDebt: newTechnicalDebt,
           achievements: newAchievements,
           toastQueue: newToasts,
           lastSaveTime: now,
