@@ -214,7 +214,7 @@ const DEFAULT_HN: ((n: string) => string)[] = [
   (n) => `Show HN: I finally shipped ${n}. Here's what took so long.`,
   (n) => `The hidden complexity of maintaining ${n} alone`,
   (n) => `Lessons from 6 months of running ${n} in production (solo founder edition)`,
-  (n) => `Ask HN: Is it normal to understand your own codebase less the longer you work on it?`,
+  (n) => `Ask HN: Is it normal to understand ${n}'s codebase less the longer you work on it?`,
 ];
 
 // ── Negative-event pool (fires when isNegativeEvent) ─────────────────────────
