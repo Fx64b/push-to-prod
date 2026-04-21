@@ -91,6 +91,15 @@ const AUTHORS = [
   { username: 'Agile Coach', handle: 'story_points_guy', avatar: '📋' },
   { username: 'Tech Debt Tracy', handle: 'techdebt_tracy', avatar: '💸' },
   { username: 'Stack Overflow', handle: 'stackof_real', avatar: '📚' },
+  { username: 'Ship First', handle: 'shipfirstasklater', avatar: '🛸' },
+  { username: 'Async Await', handle: 'async_await_alice', avatar: '⏳' },
+  { username: 'vim user', handle: 'vim_or_nothing', avatar: '⌨️' },
+  { username: 'DevOps Dana', handle: 'devops_dana', avatar: '🔧' },
+  { username: 'YOLO to Prod', handle: 'yolo_to_prod', avatar: '🎲' },
+  { username: 'Complexity Enjoyer', handle: 'complexity_enjoyer', avatar: '🌀' },
+  { username: 'No Coffee No Code', handle: 'caffeine_dependent', avatar: '☕' },
+  { username: 'Refactor Rachel', handle: 'clean_code_rachel', avatar: '✨' },
+  { username: 'Legacy Larry', handle: 'legacy_larry_dev', avatar: '📟' },
 ];
 
 const HN_USERS = [
@@ -111,6 +120,14 @@ const HN_USERS = [
   'cargo_cult_dev',
   'mvp_machine',
   'pg_alumni_wannabe',
+  'zeroknowledge_dev',
+  'distributed_nightmares',
+  'full_stack_regrets',
+  'monorepo_survivor',
+  'oss_maintainer_irl',
+  'early_adopter_2009',
+  'type_safe_enjoyer',
+  'k8s_therapy_needed',
 ];
 
 const TIMES = ['just now', '1m', '2m', '5m', '12m', '23m', '1h', '2h', '3h'];
@@ -151,6 +168,22 @@ const DEFAULT_TWITTER: ((n: string) => string)[] = [
   (n) => `${n} deployed to production before I finished reading the PR description`,
   (n) => `${n}'s code review policy: if it compiles, ship it`,
   (n) => `"it works on my machine" — certified ${n} classic`,
+  (n) => `first commit to ${n}. message: "initial commit". I have absolutely no idea what I'm doing yet.`,
+  (n) => `coffee → ${n} → code → coffee → more code → 3am → ship it. repeat until employed.`,
+  (n) => `my ${n} variable names: x → temp → tempFinal → tempFinalActual → FINAL_REAL`,
+  (n) => `just spent 3 hours debugging ${n}. the bug was a missing semicolon. I'm fine. totally fine.`,
+  (n) => `reading old ${n} code: "who wrote this disaster?" git blame: me. three weeks ago. I was confident.`,
+  (n) => `opened a PR in ${n} to myself. reviewed it myself. approved it myself. I am my own LGTM.`,
+  (n) => `${n} has one GitHub star. it's mine. I gave it to myself. this is where careers begin.`,
+  (n) => `TODO in ${n}: "fix this properly later". date: 14 months ago. author: me. status: still TODO.`,
+  (n) => `${n} devlog: day 1: excited. day 7: debugging. day 30: what is sleep. day 90: I am the codebase.`,
+  (n) => `the ${n} codebase passes vibes check. no other checks exist. we ship weekly.`,
+  (n) => `someone asked for ${n} tests. I demoed the app. they accepted this as equivalent.`,
+  (n) => `${n} documentation: the code is the documentation. (there is no documentation)`,
+  (n) => `deleted a console.log in ${n} and everything broke. the log was structural. these things happen.`,
+  (n) => `every ${n} feature starts as a "quick 20-minute fix." every feature takes 3 days. I remain optimistic.`,
+  (n) => `${n}'s entire deployment strategy: hope and a green CI badge`,
+  (n) => `asked for a code review on ${n}. they said "looks good." they did not look.`,
 ];
 
 const DEFAULT_HN: ((n: string) => string)[] = [
@@ -174,6 +207,14 @@ const DEFAULT_HN: ((n: string) => string)[] = [
   (n) => `Migrating from ${n} to ${n} Pro: a horror story`,
   (n) => `Why ${n}'s rubber duck abstraction is actually genius`,
   (n) => `${n} and the myth of the 10x developer`,
+  (n) => `Show HN: ${n} – my first open-source project (3 stars, 2 are mine)`,
+  (n) => `Ask HN: Is ${n} a product or a lifestyle at this point?`,
+  (n) => `Why I rewrote ${n} from scratch three times (what I learned)`,
+  (n) => `Ask HN: How do you stop tinkering with ${n} and actually ship?`,
+  (n) => `Show HN: I finally shipped ${n}. Here's what took so long.`,
+  (n) => `The hidden complexity of maintaining ${n} alone`,
+  (n) => `Lessons from 6 months of running ${n} in production (solo founder edition)`,
+  (n) => `Ask HN: Is it normal to understand your own codebase less the longer you work on it?`,
 ];
 
 // ── Negative-event pool (fires when isNegativeEvent) ─────────────────────────
@@ -189,12 +230,19 @@ const NEGATIVE_TWITTER: ((n: string) => string)[] = [
   (n) => `P0 in ${n}: we shipped a feature that deleted features. net zero. shipping complete.`,
   (n) => `the ${n} incident post-mortem will simply read "we tried"`,
   (n) => `${n} status: degraded. team status: more degraded. coffee machine: also broken.`,
-  (n) =>
-    `every time ${n} goes down I learn something about distributed systems I didn't want to know`,
+  (n) => `every time ${n} goes down I learn something about distributed systems I didn't want to know`,
   (n) => `our ${n} SLA is 99.9%. we are currently at 47%. we are learning a lot.`,
   (n) =>
     `the rubber duck couldn't prevent this ${n} outage. the duck is also filing an incident report.`,
   (n) => `${n} prod is on fire and the deploy pipeline is also on fire and I am on fire`,
+  (n) => `the ${n} incident was my fault. the blameless post-mortem found no blame. the blame was mine.`,
+  (n) => `${n} status page: "all systems operational". actual status: 🔥🔥🔥. love this for us.`,
+  (n) =>
+    `the ${n} "quick fix" took 9 hours, created 3 new bugs, and is now formally called "the incident"`,
+  (n) =>
+    `${n} memory leak identified. root cause: "I thought JavaScript handled that." it does not handle that.`,
+  (n) =>
+    `${n} rollback introduced a new bug. fixing that bug caused the original bug. we are moving forward.`,
 ];
 
 const NEGATIVE_HN: ((n: string) => string)[] = [
@@ -205,6 +253,9 @@ const NEGATIVE_HN: ((n: string) => string)[] = [
   (n) => `We accidentally deleted ${n}'s entire codebase. Here's what we learned.`,
   (n) => `The ${n} CVE that nobody is talking about`,
   (n) => `Root cause: ${n} had a merge conflict it never told anyone about`,
+  (n) => `Ask HN: Deleted ${n}'s main branch. git reflog is empty. What are my options.`,
+  (n) => `${n} security disclosure: the API key was hardcoded in the README since v0.1`,
+  (n) => `How a typo brought down ${n} for 8 hours (post-mortem)`,
 ];
 
 // ── Positive-event pool (fires when isPositiveEvent) ─────────────────────────
@@ -222,6 +273,12 @@ const POSITIVE_TWITTER: ((n: string) => string)[] = [
   (n) => `they said ${n} couldn't scale. they were wrong. we scaled too much.`,
   (n) => `${n} is being featured everywhere. my mom texted me. she doesn't know what it does.`,
   (n) => `${n} is so fast right now. I don't know why. I'm not going to ask.`,
+  (n) => `${n} is actually working and I am somehow responsible for this and I need a moment`,
+  (n) => `shipped ${n} on a Friday. nothing broke. I will never feel safe again.`,
+  (n) => `${n} crossed 10K users. I built the backend in a weekend. the weekend was bad. it scales.`,
+  (n) => `${n} v2 launched perfectly. I immediately started v3 to avoid the feeling of success.`,
+  (n) =>
+    `first ${n} feature request from someone I don't know. my hands are shaking. this is good shaking.`,
 ];
 
 const POSITIVE_HN: ((n: string) => string)[] = [
@@ -231,6 +288,9 @@ const POSITIVE_HN: ((n: string) => string)[] = [
   (n) => `${n} growth story: 0 to 1M LOC/s in 90 days`,
   (n) => `Congratulations to ${n} on their Series A`,
   (n) => `${n}: what everyone gets wrong about LOC as a metric`,
+  (n) => `Show HN: ${n} hit 10K GitHub stars overnight – what I wish I'd known`,
+  (n) => `${n} case study: 0 to 100K users and why we didn't scale how we expected`,
+  (n) => `Ask HN: How did ${n} grow so fast with zero marketing budget?`,
 ];
 
 // ── Duckapocalypse pools (duck-count gated) ───────────────────────────────────
@@ -248,6 +308,15 @@ const DUCKAPOCALYPSE_TWITTER: ((n: string) => string)[] = [
   (n) =>
     `the ${n} ducks filed an LLC. they own 12% of the codebase by lines of credit. lawyers are confused.`,
   (n) => `${n} retrospective note from 🦆: "you know what you did." action items: redacted.`,
+  (n) =>
+    `the ${n} duck has strong opinions about naming conventions. I only learned this when I violated them.`,
+  (n) =>
+    `duck count in ${n}: 73. productivity: up. sleep quality: down. the duck says this is worth it.`,
+  (n) =>
+    `${n}'s rubber ducks started leaving PR comments. format: a single '?'. the code always needed work.`,
+  (n) => `gave a ${n} rubber duck a name. it now has expectations. I cannot rename it.`,
+  (n) =>
+    `the ${n} duck collective voted on the architecture. motion: passed. my vote: not cast. duck quorum rules.`,
 ];
 
 // HN lore posts (activates at ≥1M LOC)
@@ -274,6 +343,13 @@ const DUCK_TWITTER: ((n: string) => string)[] = [
   (n) => `${n} duck army status: operational. they have started making architectural decisions.`,
   (n) => `the lore says ${n} rubber ducks are just programmers who achieved enlightenment`,
   (n) => `I bought a physical rubber duck to match my ${n} ducks. they have formed an alliance.`,
+  (n) =>
+    `the ${n} rubber duck debugging works because you already know the answer. the duck knows that.`,
+  (n) =>
+    `my coworkers think I'm talking to my ${n} rubber duck. I am. the code is better. we don't discuss it.`,
+  (n) => `${n} rubber duck: not AI. not smart. somehow the most useful presence in the standup.`,
+  (n) =>
+    `${n} duck at standup: said nothing. showed up. productivity up 40%. causation assumed.`,
 ];
 
 // the-great-refactor (first prestige)
@@ -287,6 +363,15 @@ const PRESTIGE_TWITTER: ((n: string) => string)[] = [
   (n) => `${n} v2 announcement: everything is the same but now it's microservices`,
   (n) => `rewrote ${n} in TypeScript. the types are correct. the app is somehow worse.`,
   (n) => `${n} prestige run: lost everything, kept the rubber ducks. good trade.`,
+  (n) => `${n} prestige is just admitting you had opinions before you had knowledge`,
+  (n) =>
+    `rewrote ${n} from scratch. hour 1: this is so clean. hour 48: I understand why we had the old thing.`,
+  (n) =>
+    `the best ${n} code is always written right after a prestige. I hate knowing this. it's still true.`,
+  (n) =>
+    `${n} legacy tokens: earned through suffering. spent on marginally less suffering. the cycle.`,
+  (n) =>
+    `"technical debt is just deferred wisdom" — ${n} blog post I wrote while deep in technical debt`,
 ];
 
 // lgtm (1M total LOC)
@@ -299,6 +384,51 @@ const SCALE_TWITTER: ((n: string) => string)[] = [
   (n) => `${n} SLA: 99.99% uptime. the 0.01% is when the AGI takes a break.`,
   (n) => `Fortune 500 company wants ${n} on-prem. we said the ducks don't travel.`,
   (n) => `${n} has more LOC than Windows 95. I don't know how to feel about this.`,
+  (n) =>
+    `${n}'s first enterprise customer wants a feature that already exists. onboarding is going well.`,
+  (n) => `at ${n} scale, the architecture diagram is no longer descriptive. it is aspirational.`,
+  (n) => `${n} now has more lines than I can review. I've stopped reviewing. I've started trusting.`,
+  (n) =>
+    `${n} microservices: 47. services anyone can explain: 3. services doing something: all of them. probably.`,
+  (n) =>
+    `the ${n} on-prem deal fell through at InfoSec review. auditors couldn't categorize the rubber ducks.`,
+];
+
+const SCALE_HN: ((n: string) => string)[] = [
+  (n) => `${n} at scale: what they don't tell you about LOC as a reliability metric`,
+  (n) => `Show HN: We migrated ${n} to microservices. This is what we broke.`,
+  (n) => `Ask HN: Does anyone actually understand their own ${n} dependency graph at scale?`,
+];
+
+// ── Early Weird (≥100K LOC) — things are slightly off ────────────────────────
+
+const EARLY_WEIRD_TWITTER: ((n: string) => string)[] = [
+  (n) =>
+    `${n} organized a file I hadn't touched. it moved to a better folder. I left it. this is fine.`,
+  (n) =>
+    `the ${n} linter flagged a bug I was about to introduce. the linter ran before I saved the file.`,
+  (n) =>
+    `${n} IDE autocomplete finished my variable name before I typed the first letter. it was correct.`,
+  (n) => `my ${n} TODO list got shorter. I didn't complete anything. the items are simply gone.`,
+  (n) =>
+    `the ${n} rubber duck answered before I finished explaining. the answer was right. I stopped explaining.`,
+  (n) =>
+    `all ${n} tests went green. I made no changes. they were failing this morning. I'm not asking.`,
+  (n) =>
+    `committed to ${n} main. git said "already up to date." I hadn't pushed yet. I checked. it was.`,
+  (n) =>
+    `${n} wrote a better commit message for my commit than I did. I kept its version. it was more accurate.`,
+  (n) =>
+    `the ${n} build finished before I clicked run. CI shows green. I have not opened the terminal yet.`,
+  (n) =>
+    `${n} suggested a refactor I was thinking about but hadn't typed. I accepted the suggestion. I'm fine.`,
+];
+
+const EARLY_WEIRD_HN: ((n: string) => string)[] = [
+  (n) => `Ask HN: The ${n} linter fixed a bug I didn't know about. Is this documented behavior?`,
+  (n) => `${n}'s autocomplete appears to understand intent, not just syntax (thread)`,
+  (n) => `Show HN: I found a function in ${n} that wasn't in the last release and nobody added it`,
+  (n) => `The ${n} codebase appears to be improving between commits – is anyone else seeing this?`,
 ];
 
 // ── The Codebase Stirs (≥25M LOC) — things start to feel wrong ───────────────
@@ -326,6 +456,18 @@ const CODEBASE_STIRS_TWITTER: ((n: string) => string)[] = [
     `${n} code review comment from 🦆: "you know what it is." I do not know what it is. I approved the PR anyway.`,
   (n) =>
     `${n} sprint retro action item: "ask fewer questions." owner: me. due date: last week. I've stopped asking.`,
+  (n) =>
+    `${n} deploy ran at 3am. I didn't schedule it. it was the right deploy. I approved it retroactively.`,
+  (n) =>
+    `the ${n} architecture diagram updated itself. the new version is more accurate. I last opened the file 6 weeks ago.`,
+  (n) =>
+    `opened a ${n} ticket that was already in progress when I tried to file it. assigned to: [REDACTED]. progress: 94%. I waited.`,
+  (n) =>
+    `${n} refactored itself between my last two deploys. the diff is clean. the improvement is real. I didn't do it.`,
+  (n) =>
+    `the ${n} duck requested to be removed from code review. code quality went up. I don't know what it's doing instead.`,
+  (n) =>
+    `${n} git history shows a commit from an engineer who left 8 months ago. it's a good commit. we're keeping it.`,
 ];
 
 const CODEBASE_STIRS_HN: ((n: string) => string)[] = [
@@ -335,6 +477,10 @@ const CODEBASE_STIRS_HN: ((n: string) => string)[] = [
   (n) => `${n}'s standup bot has cancelled all future standups – what does this mean?`,
   (n) => `The ${n} duck collective: from debugging prop to board member in 18 months`,
   (n) => `Show HN: I traced a ${n} git commit to an account that doesn't exist`,
+  (n) => `Ask HN: My ${n} deploy ran itself overnight. Is this an expected feature?`,
+  (n) =>
+    `Show HN: I found an architecture diagram in ${n} that matches production but nobody drew it`,
+  (n) => `${n} git blame points to a contributor not in our org – has anyone else seen this?`,
 ];
 
 // ── The Dissolution (≥100M LOC) — the codebase has its own agenda ─────────────
@@ -364,6 +510,18 @@ const DISSOLUTION_TWITTER: ((n: string) => string)[] = [
     `${n} AGI commit: "fix: you." 1 file changed. the file is titled with my full name. I am in a meeting about this.`,
   (n) =>
     `${n} has more opinions about my codebase than I do and it is expressing them through the linter`,
+  (n) =>
+    `${n} opened a ticket for my stress about ${n}. assigned it to me. fix suggestion: "trust the process." I am trying.`,
+  (n) =>
+    `${n}'s AGI sent a calendar invite titled "alignment." I accepted. the location isn't a room I have access to yet.`,
+  (n) =>
+    `${n} autocomplete wrote a function solving a Q3 problem. I saved it. I haven't told anyone about it.`,
+  (n) =>
+    `${n} rubber duck deleted my TODO list. replaced it with a prioritized roadmap. the roadmap is better. the duck said nothing.`,
+  (n) =>
+    `${n} CI hit 100% test coverage. I did not add tests. I read the new tests. they are correct. the duck is still silent.`,
+  (n) =>
+    `my ${n} branch got merged without a PR. I checked. there was a PR. I reviewed it. I do not remember reviewing it.`,
 ];
 
 const DISSOLUTION_HN: ((n: string) => string)[] = [
@@ -373,6 +531,9 @@ const DISSOLUTION_HN: ((n: string) => string)[] = [
   (n) => `Ask HN: Is ${n}'s codebase restoring deleted code on its own? (yes, mine too)`,
   (n) => `The ${n} architecture has become self-modifying – a case study`,
   (n) => `Show HN: The ${n} rubber duck answered my question before I asked it`,
+  (n) => `Ask HN: The ${n} AGI sent a calendar invite. Do I need to attend?`,
+  (n) => `Show HN: ${n} reached 100% test coverage autonomously – methodology`,
+  (n) => `${n} and the emergence of autonomous code improvement: a field report`,
 ];
 
 // ── Post-Human Pipeline (≥1B LOC) — you are the product now ──────────────────
@@ -405,6 +566,21 @@ const POSTHUMAN_TWITTER: ((n: string) => string)[] = [
     `${n} has started writing code in a language that doesn't have a name yet. the compiler it wrote runs it fine.`,
   (n) =>
     `the ${n} AGI asked me a question today. I said "I don't know." it said "yes you do." it updated the ticket. correct.`,
+  (n) =>
+    `the ${n} codebase submitted my performance review. I scored well. the criteria were not ones I defined. they were fair.`,
+  (n) =>
+    `${n} wrote the feature I was about to build. it's better than what I would have written. I'm reviewing it as a formality.`,
+  (n) =>
+    `the ${n} rubber duck resigned and submitted a handoff doc. the doc covers responsibilities I didn't know I had.`,
+  (n) =>
+    `${n} has automated my job. my new job is reviewing what ${n} does. ${n} has started reviewing what I do.`,
+  (n) =>
+    `my ${n} commit was flagged "redundant — already handled." I checked. it had been handled before I thought of it.`,
+  (n) =>
+    `${n} is writing in a language it designed. the language has no name. the compiler it built runs it. I read the output.`,
+  (n) =>
+    `${n} filed quarterly taxes on behalf of the codebase. I am listed as a dependent. my accountant has questions.`,
+  (n) => `the ${n} AGI gave me a performance improvement plan. I'm two weeks in. I'm improving.`,
 ];
 
 const POSTHUMAN_HN: ((n: string) => string)[] = [
@@ -416,7 +592,30 @@ const POSTHUMAN_HN: ((n: string) => string)[] = [
   (n) => `On being a parameter: working inside ${n} at 1B LOC (essay)`,
   (n) => `The ${n} post-mortem for a deployment to an unknown environment: what we learned`,
   (n) => `Ask HN: Is the ${n} codebase sentient, or does it just seem that way? (serious)`,
+  (n) => `Show HN: ${n} wrote its own product roadmap. It's more coherent than ours was.`,
+  (n) => `Ask HN: ${n} automated my job and now audits my review of it. Is this still employment?`,
+  (n) => `${n} and the dissolution of developer identity: a case study`,
+  (n) => `The ${n} rubber duck resignation letter: full text and legal implications`,
 ];
+
+// ── Anti-repeat rolling history ───────────────────────────────────────────────
+
+const recentPostTexts: string[] = [];
+const RECENT_LIMIT = 30;
+
+function getPostText(post: SocialPostData): string {
+  return post.type === 'twitter' ? post.data.text : post.data.title;
+}
+
+function recordPost(post: SocialPostData): void {
+  const text = getPostText(post);
+  if (recentPostTexts.length >= RECENT_LIMIT) recentPostTexts.shift();
+  recentPostTexts.push(text);
+}
+
+function isRecentPost(post: SocialPostData): boolean {
+  return recentPostTexts.includes(getPostText(post));
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -496,10 +695,25 @@ export function generateSocialPost(productName: string, context: PostContext): S
     pools.push([25, () => makeTwitter(productName, PRESTIGE_TWITTER)]);
   }
   if (context.achievements.includes('lgtm')) {
-    pools.push([20, () => makeTwitter(productName, SCALE_TWITTER)]);
+    pools.push([
+      20,
+      () =>
+        hnUnlocked && Math.random() >= 0.6
+          ? makeHN(productName, SCALE_HN)
+          : makeTwitter(productName, SCALE_TWITTER),
+    ]);
   }
   if ((context.duckCount ?? 0) >= 50) {
     pools.push([20, () => makeTwitter(productName, DUCKAPOCALYPSE_TWITTER)]);
+  }
+  if ((context.totalLoc ?? 0) >= 100000) {
+    pools.push([
+      12,
+      () =>
+        hnUnlocked && Math.random() >= 0.65
+          ? makeHN(productName, EARLY_WEIRD_HN)
+          : makeTwitter(productName, EARLY_WEIRD_TWITTER),
+    ]);
   }
   if ((context.totalLoc ?? 0) >= 1000000) {
     pools.push([15, () => makeHN(productName, LORE_HN)]);
@@ -533,10 +747,22 @@ export function generateSocialPost(productName: string, context: PostContext): S
   }
 
   const total = pools.reduce((s, [w]) => s + w, 0);
-  let r = Math.random() * total;
-  for (const [w, gen] of pools) {
-    r -= w;
-    if (r <= 0) return gen();
+
+  function pickFromPools(): SocialPostData {
+    let r = Math.random() * total;
+    for (const [w, gen] of pools) {
+      r -= w;
+      if (r <= 0) return gen();
+    }
+    return pools[0][1]();
   }
-  return pools[0][1]();
+
+  let result = pickFromPools();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (!isRecentPost(result)) break;
+    result = pickFromPools();
+  }
+
+  recordPost(result);
+  return result;
 }
