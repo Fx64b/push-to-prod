@@ -121,6 +121,7 @@ interface GameState {
   popNestedDuck: (id: string) => void;
   newGame: () => void;
   setLoc: (loc: number) => void;
+  loadSave: (state: import('@/utils/save').PersistedState) => void;
 }
 
 // ── Cache helpers ────────────────────────────────────────────────────────────
@@ -1125,6 +1126,44 @@ export const useGameStore = create<GameState>()(
           productName: generateProductName(),
           lastSaveTime: Date.now(),
         });
+      },
+
+      loadSave: (saved) => {
+        const cacheInput: CacheInput = {
+          producers: saved.producers ?? {},
+          upgrades: saved.upgrades ?? [],
+          locPerClick: saved.locPerClick ?? 1,
+          legacyUpgrades: saved.legacyUpgrades ?? [],
+          legacyTokens: saved.legacyTokens ?? 0,
+          architectureUpgrades: saved.architectureUpgrades ?? [],
+          prestigeCount: saved.prestigeCount ?? 0,
+          eventSurvivalProductionBonus: saved.eventSurvivalProductionBonus ?? 0,
+          greatRefactorProductionBonus: saved.greatRefactorProductionBonus ?? 0,
+          greatRefactorCount: saved.greatRefactorCount ?? 0,
+        };
+        set({
+          ...DEFAULT_STATE,
+          ...saved,
+          ...computeCaches(cacheInput),
+          floatingTexts: [],
+          toastQueue: [],
+          pendingClickLoc: 0,
+          displayedLOCps: 0,
+        });
+        // Sync the encoded representation into localStorage so Zustand persist
+        // picks it up on next reload without touching the raw state directly.
+        const stored = localStorage.getItem('push-to-prod-v1');
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored) as { version?: number };
+            localStorage.setItem(
+              'push-to-prod-v1',
+              JSON.stringify({ state: saved, version: parsed.version ?? 0 }),
+            );
+          } catch {
+            // ignore — store will auto-persist on next tick
+          }
+        }
       },
     }),
     {

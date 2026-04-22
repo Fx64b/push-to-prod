@@ -1,5 +1,5 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import { Download, RotateCcw } from 'lucide-react';
+import { Download, RotateCcw, Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { AchievementToast } from '@/components/game/AchievementToast';
 import { AmbientTexts } from '@/components/game/AmbientTexts';
@@ -18,24 +18,44 @@ import { StatsPanel } from '@/components/game/StatsPanel';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { useOfflineProgress } from '@/hooks/useOfflineProgress';
 import { useGameStore } from '@/store/gameStore';
+import { downloadSave, readSaveFile } from '@/utils/save';
 import { WelcomePopup } from '@/components/game/WelcomePopup';
 import { DevPanel } from '@/components/game/DevPanel';
 import { Analytics } from '@vercel/analytics/react';
 
 function SettingsPopover() {
   const [open, setOpen] = useState(false);
+  const [importStatus, setImportStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const newGame = useGameStore((s) => s.newGame);
+  const loadSave = useGameStore((s) => s.loadSave);
 
   const handleExport = () => {
-    const state = localStorage.getItem('push-to-prod-v1');
-    if (!state) return;
-    const blob = new Blob([state], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'push-to-prod-save.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    const raw = localStorage.getItem('push-to-prod-v1');
+    if (!raw) return;
+    try {
+      const stored = JSON.parse(raw) as { state?: unknown };
+      if (!stored.state) return;
+      downloadSave(stored.state as Parameters<typeof downloadSave>[0]);
+    } catch {
+      // nothing to export
+    }
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    const validated = await readSaveFile(file);
+    if (!validated) {
+      setImportStatus('err');
+      setTimeout(() => setImportStatus('idle'), 3000);
+      return;
+    }
+    loadSave(validated);
+    setImportStatus('ok');
+    setOpen(false);
+    setTimeout(() => setImportStatus('idle'), 3000);
   };
 
   return (
@@ -46,6 +66,16 @@ function SettingsPopover() {
       >
         ⚙️ Settings
       </button>
+      {importStatus === 'ok' && (
+        <span className="absolute -top-5 right-0 text-[10px] text-gh-green font-mono whitespace-nowrap">
+          Save loaded ✓
+        </span>
+      )}
+      {importStatus === 'err' && (
+        <span className="absolute -top-5 right-0 text-[10px] text-gh-red font-mono whitespace-nowrap">
+          Invalid save file
+        </span>
+      )}
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
@@ -59,6 +89,19 @@ function SettingsPopover() {
             >
               <Download size={12} /> Export Save
             </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gh-border/30 text-gh-text transition-colors"
+            >
+              <Upload size={12} /> Import Save
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".ptp"
+              className="hidden"
+              onChange={handleImport}
+            />
             <div className="border-t border-gh-border my-1" />
             <button
               onClick={() => {
