@@ -1,26 +1,21 @@
 import { useState } from 'react';
-import { useGameStore, MIN_CLICKS_TO_PRESTIGE } from '@/store/gameStore';
+import { calcPrestigeThreshold, useGameStore } from '@/store/gameStore';
 import { formatLOC } from '@/utils/format';
-
-const PRESTIGE_THRESHOLD = 10_000_000;
 
 export function RefactorButton() {
   const totalLoc = useGameStore((s) => s.totalLoc);
   const legacyTokens = useGameStore((s) => s.legacyTokens);
   const prestigeCount = useGameStore((s) => s.prestigeCount);
-  const clicksThisRun = useGameStore((s) => s.clicksThisRun);
   const prestige = useGameStore((s) => s.prestige);
   const [confirming, setConfirming] = useState(false);
 
-  if (totalLoc < PRESTIGE_THRESHOLD) return null;
+  const prestigeThreshold = calcPrestigeThreshold(prestigeCount);
+
+  if (totalLoc < prestigeThreshold) return null;
 
   const tokensToEarn =
     Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
-  const clicksReady = clicksThisRun >= MIN_CLICKS_TO_PRESTIGE;
-  const canRefactor = clicksReady;
-
   const handleClick = () => {
-    if (!canRefactor) return;
     if (!confirming) {
       setConfirming(true);
       setTimeout(() => setConfirming(false), 3000);
@@ -42,27 +37,14 @@ export function RefactorButton() {
         (have: {legacyTokens})
       </div>
 
-      {!clicksReady && (
-        <div className="text-[10px] text-gh-muted text-center">
-          <span className="text-gh-red">{clicksThisRun}</span>
-          <span className="text-gh-muted">
-            {' '}
-            / {MIN_CLICKS_TO_PRESTIGE} clicks this run required
-          </span>
-        </div>
-      )}
-
       <button
         onClick={handleClick}
-        disabled={!canRefactor}
         className={`
           px-6 py-2 rounded border text-sm font-bold transition-all duration-200
           ${
-            !canRefactor
-              ? 'border-gh-border/40 bg-gh-surface/40 text-gh-muted cursor-not-allowed opacity-50'
-              : confirming
-                ? 'border-gh-red bg-gh-red/20 text-gh-red hover:bg-gh-red/30 animate-pulse'
-                : 'border-gh-purple/60 bg-gh-purple/10 text-gh-purple hover:border-gh-purple hover:bg-gh-purple/20'
+            confirming
+              ? 'border-gh-red bg-gh-red/20 text-gh-red hover:bg-gh-red/30 animate-pulse'
+              : 'border-gh-purple/60 bg-gh-purple/10 text-gh-purple hover:border-gh-purple hover:bg-gh-purple/20'
           }
         `}
       >
@@ -75,7 +57,7 @@ export function RefactorButton() {
 
       <div className="text-[10px] text-gh-muted text-center">
         Current LOC: <span className="text-gh-green">{formatLOC(totalLoc)}</span> / threshold:{' '}
-        <span className="text-gh-muted">{formatLOC(PRESTIGE_THRESHOLD)}</span>
+        <span className="text-gh-muted">{formatLOC(prestigeThreshold)}</span>
       </div>
 
       {legacyTokens > 0 && (

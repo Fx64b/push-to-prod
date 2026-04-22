@@ -292,7 +292,9 @@ function getEventMultiplier(event: GameEvent | null): {
 
 // ── Prestige helpers ──────────────────────────────────────────────────────────
 
-export const MIN_CLICKS_TO_PRESTIGE = import.meta.env.DEV ? 0 : 1000;
+export function calcPrestigeThreshold(prestigeCount: number): number {
+  return Math.round(10_000_000 * Math.pow(5, prestigeCount));
+}
 
 function calcPrestigeTokens(totalLoc: number, prestigeCount: number): number {
   return Math.max(0, Math.floor(Math.log10(totalLoc)) - 5) + Math.floor(prestigeCount / 2);
@@ -869,8 +871,7 @@ export const useGameStore = create<GameState>()(
 
       prestige: () => {
         const state = get();
-        if (state.totalLoc < 10000000) return;
-        if (state.clicksThisRun < MIN_CLICKS_TO_PRESTIGE) return;
+        if (state.totalLoc < calcPrestigeThreshold(state.prestigeCount)) return;
 
         const baseTokens = calcPrestigeTokens(state.totalLoc, state.prestigeCount);
         const bonusTokens = state.architectureUpgrades.includes('token-proliferation') ? 1 : 0;
@@ -937,12 +938,6 @@ export const useGameStore = create<GameState>()(
         // After the first Great Refactor, prestige requirements decrease
         const requiredPrestiges = Math.max(1, 3 - state.greatRefactorCount);
         if (state.prestigeCount < requiredPrestiges) return;
-        // After each Great Refactor, click requirements decrease (min 200)
-        const requiredClicks = Math.max(
-          200,
-          MIN_CLICKS_TO_PRESTIGE - state.greatRefactorCount * 200,
-        );
-        if (state.clicksThisRun < requiredClicks) return;
 
         const apGainMult = state.architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
         const apEarned = Math.max(2, 3 + state.greatRefactorCount * 2) * apGainMult;

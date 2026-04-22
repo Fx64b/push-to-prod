@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { LEGACY_UPGRADES } from '@/data/legacyUpgrades';
-import { MIN_CLICKS_TO_PRESTIGE, useGameStore } from '@/store/gameStore';
+import { useGameStore } from '@/store/gameStore';
 
 export function GreatRefactorButton() {
   const legacyUpgrades = useGameStore((s) => s.legacyUpgrades);
   const prestigeCount = useGameStore((s) => s.prestigeCount);
-  const clicksThisRun = useGameStore((s) => s.clicksThisRun);
   const greatRefactorCount = useGameStore((s) => s.greatRefactorCount);
   const architectureUpgrades = useGameStore((s) => s.architectureUpgrades);
   const greatRefactorProductionBonus = useGameStore((s) => s.greatRefactorProductionBonus);
@@ -15,8 +14,6 @@ export function GreatRefactorButton() {
 
   // After the first Great Refactor, prestige requirements decrease (min 1)
   const minPrestiges = Math.max(1, 3 - greatRefactorCount);
-  // After each Great Refactor, click requirements decrease (min 200)
-  const requiredClicks = Math.max(200, MIN_CLICKS_TO_PRESTIGE - greatRefactorCount * 200);
 
   const baseUpgrades = LEGACY_UPGRADES.filter((u) => !u.requiresSecondSystem);
   const allBaseBought = baseUpgrades.every((u) => legacyUpgrades.includes(u.id));
@@ -80,12 +77,10 @@ export function GreatRefactorButton() {
 
   const apGainMult = architectureUpgrades.includes('ap-multiplier') ? 2 : 1;
   const apToEarn = Math.max(2, 3 + greatRefactorCount * 2) * apGainMult;
-  const clicksReady = clicksThisRun >= requiredClicks;
   const hasInfiniteFeedback = architectureUpgrades.includes('infinite-feedback-loop');
   const feedbackAfter = greatRefactorProductionBonus + (hasInfiniteFeedback ? 0.05 : 0);
 
   const handleClick = () => {
-    if (!clicksReady) return;
     if (!confirming) {
       setConfirming(true);
       setTimeout(() => setConfirming(false), 4000);
@@ -119,24 +114,14 @@ export function GreatRefactorButton() {
         )}
       </div>
 
-      {!clicksReady && (
-        <div className="text-[10px] text-gh-muted text-center">
-          <span className="text-gh-red">{clicksThisRun}</span>
-          <span className="text-gh-muted"> / {requiredClicks} clicks required</span>
-        </div>
-      )}
-
       <button
         onClick={handleClick}
-        disabled={!clicksReady}
         className={`
           px-6 py-2 rounded border text-sm font-bold transition-all duration-200
           ${
-            !clicksReady
-              ? 'border-gh-border/40 bg-gh-surface/40 text-gh-muted cursor-not-allowed opacity-50'
-              : confirming
-                ? 'border-gh-red bg-gh-red/20 text-gh-red hover:bg-gh-red/30 animate-pulse'
-                : 'border-gh-yellow/60 bg-gh-yellow/10 text-gh-yellow hover:border-gh-yellow hover:bg-gh-yellow/20'
+            confirming
+              ? 'border-gh-red bg-gh-red/20 text-gh-red hover:bg-gh-red/30 animate-pulse'
+              : 'border-gh-yellow/60 bg-gh-yellow/10 text-gh-yellow hover:border-gh-yellow hover:bg-gh-yellow/20'
           }
         `}
       >
