@@ -62,6 +62,15 @@ export function DevPanel() {
             Dev Mode
           </div>
 
+          <div className="border-t border-gh-yellow/20 pt-2">
+            <button
+              onClick={() => useGameStore.setState({ tampered: true })}
+              className="w-full px-2 py-1 rounded bg-gh-yellow/10 border border-gh-yellow/30 text-gh-yellow hover:bg-gh-yellow/20 transition-colors text-[10px]"
+            >
+              🦆 Trigger Duck Event
+            </button>
+          </div>
+
           <div className="space-y-1">
             <div className="text-gh-muted text-[10px]">Set LOC</div>
             <div className="flex gap-1">

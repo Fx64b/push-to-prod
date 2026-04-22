@@ -3,6 +3,7 @@ import { LEGACY_UPGRADES } from '@/data/legacyUpgrades'
 import { PRODUCERS } from '@/data/producers'
 import { UPGRADES } from '@/data/upgrades'
 import type { NestedDuck, TechStack } from '@/store/gameStore'
+import { _seg } from '@/utils/format'
 
 // ─── Persisted state shape ────────────────────────────────────────────────────
 
@@ -140,10 +141,23 @@ function _b64dec(s: string): Uint8Array | null {
   }
 }
 
+const _fp0 = 0x50544646
+
+function _fp(obj: Record<string, unknown>): number {
+  const pLen = PRODUCERS.length
+  let h = _seg(_fp0, (Number(obj.prestigeCount) + 1) * 0x1337)
+  h = _seg(h, (Number(obj.greatRefactorCount) + 1) * 0x7f3a + Number(obj.legacyTokens))
+  h = _seg(h, Math.floor(Math.min(Math.max(Number(obj.totalLoc) || 0, 0), 1e15)) + 1)
+  h = _seg(h, (Number(obj.totalClicks) + 1) * 0x4a3)
+  h = _seg(h, pLen * 0x1b3 + (Number(obj.pivotCount) || 0) + 1)
+  return h >>> 0
+}
+
 // ─── Public encode / decode ───────────────────────────────────────────────────
 
 export function encodeSave(state: PersistedState): string {
-  const raw = _te.encode(JSON.stringify(state))
+  const withFp = { ...state, _q: _fp(state as unknown as Record<string, unknown>) }
+  const raw = _te.encode(JSON.stringify(withFp))
   const crc = _fnv(raw)
 
   // Layer 1: XOR with stream keyed from CRC + seed 0
@@ -307,7 +321,12 @@ export function downloadSave(state: PersistedState): void {
   URL.revokeObjectURL(url)
 }
 
-export function readSaveFile(file: File): Promise<PersistedState | null> {
+export interface SaveImportResult {
+  state: PersistedState
+  tampered: boolean
+}
+
+export function readSaveFile(file: File): Promise<SaveImportResult | null> {
   return new Promise((resolve) => {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -315,8 +334,23 @@ export function readSaveFile(file: File): Promise<PersistedState | null> {
         const text = (e.target?.result as string ?? '').trim()
         const json = decodeSave(text)
         if (!json) return resolve(null)
-        const parsed: unknown = JSON.parse(json)
-        resolve(validateState(parsed))
+
+        const parsed = JSON.parse(json) as Record<string, unknown>
+
+        // Extract and remove the hidden fingerprint before validation
+        const storedFp = typeof parsed._q === 'number' ? (parsed._q as number) >>> 0 : null
+        delete parsed._q
+
+        // Compute fingerprint from raw parsed values (before validation clamps anything)
+        const expectedFp = _fp(parsed)
+
+        const state = validateState(parsed)
+        if (!state) return resolve(null)
+
+        // Tampered if fingerprint was absent or doesn't match the raw fields
+        const tampered = storedFp === null || storedFp !== expectedFp
+
+        resolve({ state, tampered })
       } catch {
         resolve(null)
       }

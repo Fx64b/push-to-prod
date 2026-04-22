@@ -18,6 +18,7 @@ import { StatsPanel } from '@/components/game/StatsPanel';
 import { useGameLoop } from '@/hooks/useGameLoop';
 import { useOfflineProgress } from '@/hooks/useOfflineProgress';
 import { useGameStore } from '@/store/gameStore';
+import { DuckOverflowEvent } from '@/components/game/DuckOverflowEvent';
 import { downloadSave, readSaveFile } from '@/utils/save';
 import { WelcomePopup } from '@/components/game/WelcomePopup';
 import { DevPanel } from '@/components/game/DevPanel';
@@ -46,13 +47,13 @@ function SettingsPopover() {
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = '';
-    const validated = await readSaveFile(file);
-    if (!validated) {
+    const result = await readSaveFile(file);
+    if (!result) {
       setImportStatus('err');
       setTimeout(() => setImportStatus('idle'), 3000);
       return;
     }
-    loadSave(validated);
+    loadSave(result.state, result.tampered);
     setImportStatus('ok');
     setOpen(false);
     setTimeout(() => setImportStatus('idle'), 3000);
@@ -152,6 +153,7 @@ export default function App() {
 
   const _centerRef = useRef<HTMLDivElement>(null);
   const productName = useGameStore((s) => s.productName);
+  const tampered = useGameStore((s) => s.tampered);
   const [mobileTab, setMobileTab] = useState<MobileTab>('game');
 
   return (
@@ -292,6 +294,9 @@ export default function App() {
 
         {/* Welcome popup — shown only on first visit */}
         <WelcomePopup />
+
+        {/* Duck justice */}
+        {tampered && <DuckOverflowEvent />}
       </div>
       <Analytics />
     </TooltipPrimitive.Provider>

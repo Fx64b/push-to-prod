@@ -17,6 +17,7 @@ export interface Achievement {
     greatRefactorCount: number;
     architectureUpgrades: string[];
     greatRefactorProductionBonus: number;
+    tampered?: boolean;
   }) => boolean;
 }
 
@@ -1020,5 +1021,15 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: ({ architectureUpgrades }) =>
       architectureUpgrades.includes('autobuyer-producers') &&
       architectureUpgrades.includes('autobuyer-upgrades'),
+  },
+
+  // ── Hidden ────────────────────────────────────────────────────────────────────
+  {
+    id: 'unauthorized-push-to-main',
+    name: 'Unauthorized Push to Main',
+    description:
+      'Modified the save file without going through the proper review process. The rubber duck committee has been notified. Your PR has been assigned 47 reviewers.',
+    icon: '🦆',
+    condition: ({ tampered }) => tampered === true,
   },
 ];

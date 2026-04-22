@@ -119,9 +119,10 @@ interface GameState {
   addOfflineProgress: (loc: number) => void;
   dismissToast: (id: string) => void;
   popNestedDuck: (id: string) => void;
+  tampered: boolean;
   newGame: () => void;
   setLoc: (loc: number) => void;
-  loadSave: (state: import('@/utils/save').PersistedState) => void;
+  loadSave: (state: import('@/utils/save').PersistedState, tampered: boolean) => void;
 }
 
 // ── Cache helpers ────────────────────────────────────────────────────────────
@@ -414,6 +415,7 @@ const DEFAULT_STATE = {
   greatRefactorProductionBonus: 0,
   nestedDucks: [] as NestedDuck[],
   lastSaveTime: Date.now(),
+  tampered: false,
   prestigeCount: 0,
   clicksThisRun: 0,
   totalClicks: 0,
@@ -618,6 +620,7 @@ export const useGameStore = create<GameState>()(
           pivotCount: state.pivotCount,
           architectureUpgrades: state.architectureUpgrades,
           greatRefactorProductionBonus: state.greatRefactorProductionBonus,
+          tampered: state.tampered,
         };
 
         const newAchievements = [...state.achievements];
@@ -1128,7 +1131,7 @@ export const useGameStore = create<GameState>()(
         });
       },
 
-      loadSave: (saved) => {
+      loadSave: (saved, wasTampered) => {
         const cacheInput: CacheInput = {
           producers: saved.producers ?? {},
           upgrades: saved.upgrades ?? [],
@@ -1145,6 +1148,7 @@ export const useGameStore = create<GameState>()(
           ...DEFAULT_STATE,
           ...saved,
           ...computeCaches(cacheInput),
+          tampered: wasTampered,
           floatingTexts: [],
           toastQueue: [],
           pendingClickLoc: 0,
@@ -1177,6 +1181,7 @@ export const useGameStore = create<GameState>()(
           cachedLOCps: _cl,
           cachedClickValue: _ccv,
           cachedLegacyMult: _clm,
+          tampered: _tm,
           ...rest
         } = state;
         return rest;
