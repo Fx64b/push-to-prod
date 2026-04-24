@@ -1,18 +1,83 @@
 import { useCallback, useRef, useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 
+const HOLD_DELAY_MS = 300;
+const HOLD_INTERVAL_MS = 50;
+
 export function EnterKey() {
   const [pressed, setPressed] = useState(false);
   const click = useGameStore((s) => s.click);
   const activeEvent = useGameStore((s) => s.activeEvent);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const holdIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchHandledRef = useRef(false);
 
   const isClickDisabled = activeEvent?.effectType === 'click_disabled';
+
+  const stopHold = useCallback(() => {
+    if (holdTimerRef.current !== null) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+    if (holdIntervalRef.current !== null) {
+      clearInterval(holdIntervalRef.current);
+      holdIntervalRef.current = null;
+    }
+    setPressed(false);
+  }, []);
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLButtonElement>) => {
+      if (isClickDisabled || e.pointerType === 'mouse') return;
+      touchHandledRef.current = true;
+      setPressed(true);
+      const rect = e.currentTarget.getBoundingClientRect();
+      click(e.clientX - rect.left, e.clientY - rect.top);
+      holdTimerRef.current = setTimeout(() => {
+        holdIntervalRef.current = setInterval(() => {
+          click();
+        }, HOLD_INTERVAL_MS);
+      }, HOLD_DELAY_MS);
+    },
+    [click, isClickDisabled],
+  );
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLButtonElement>) => {
+      if (e.pointerType === 'mouse') return;
+      stopHold();
+    },
+    [stopHold],
+  );
+
+  const handlePointerLeave = useCallback(
+    (e: React.PointerEvent<HTMLButtonElement>) => {
+      if (e.pointerType === 'mouse') return;
+      stopHold();
+      touchHandledRef.current = false;
+    },
+    [stopHold],
+  );
+
+  const handlePointerCancel = useCallback(
+    (e: React.PointerEvent<HTMLButtonElement>) => {
+      if (e.pointerType === 'mouse') return;
+      stopHold();
+      touchHandledRef.current = false;
+    },
+    [stopHold],
+  );
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       if (isClickDisabled) return;
       if (e.detail === 0) return;
+      // Suppress synthetic click after touch — already handled in onPointerDown
+      if (touchHandledRef.current) {
+        touchHandledRef.current = false;
+        return;
+      }
       const rect = e.currentTarget.getBoundingClientRect();
       click(e.clientX - rect.left, e.clientY - rect.top);
       setPressed(true);
@@ -42,11 +107,15 @@ export function EnterKey() {
         ref={buttonRef}
         data-enter-key
         onClick={handleClick}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
+        onPointerCancel={handlePointerCancel}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         disabled={isClickDisabled}
         className={`
-          group relative outline-none transition-all duration-[80ms] ease-out
+          group relative outline-none transition-all duration-[80ms] ease-out touch-none
           ${isClickDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
         `}
         aria-label="Click to write code"
@@ -92,11 +161,15 @@ export function EnterKey() {
       )}
       {!isClickDisabled && (
         <p className="text-gh-muted text-xs font-mono">
-          press{' '}
-          <kbd className="px-1 py-0.5 rounded text-[10px] bg-gh-surface border border-gh-border">
-            Enter
-          </kbd>{' '}
-          or click
+          <span className="hidden sm:inline">
+            press{' '}
+            <kbd className="px-1 py-0.5 rounded text-[10px] bg-gh-surface border border-gh-border">
+              Enter
+            </kbd>{' '}
+            or{' '}
+          </span>
+          <span className="sm:hidden">tap or hold · </span>
+          click
         </p>
       )}
     </div>
