@@ -325,6 +325,11 @@ let floatingTextId = 0;
 let lastFloatingTextTime = 0;
 const FLOAT_THROTTLE_MS = 150;
 
+// Click accumulator — drained each tick to avoid per-click set() calls
+let _clickLoc = 0;
+let _clickCount = 0;
+let _clickFt: FloatingText | null = null;
+
 const EVENT_CHANCE_PER_TICK = 1 / 600;
 const MIN_EVENT_INTERVAL = 30;
 let lastEventTime = 0;
@@ -511,38 +516,35 @@ export const useGameStore = create<GameState>()(
 
         const { click: stackClickMult } = getStackMult(state.techStack);
         const clickVal = state.cachedClickValue * clickMult * stackClickMult;
-        const newLoc = state.loc + clickVal;
-        const newTotalLoc = state.totalLoc + clickVal;
 
+        _clickLoc += clickVal;
+        _clickCount++;
+
+        // Throttled floating text — stored for tick to apply
         const now = Date.now();
-        let floatingTexts = state.floatingTexts;
         if (now - lastFloatingTextTime >= FLOAT_THROTTLE_MS) {
           lastFloatingTextTime = now;
-          floatingTexts = [
-            ...floatingTexts,
-            {
-              id: floatingTextId++,
-              value: `+${formatLOC(clickVal)}`,
-              x: x ?? 50,
-              y: y ?? 50,
-              createdAt: now,
-            },
-          ];
+          _clickFt = {
+            id: floatingTextId++,
+            value: `+${formatLOC(clickVal)}`,
+            x: x ?? 50,
+            y: y ?? 50,
+            createdAt: now,
+          };
         }
-
-        set({
-          loc: newLoc,
-          totalLoc: newTotalLoc,
-          totalClicks: state.totalClicks + 1,
-          clicksThisRun: state.clicksThisRun + 1,
-          floatingTexts,
-          pendingClickLoc: state.pendingClickLoc + clickVal,
-        });
       },
 
       tick: (dt: number) => {
         const state = get();
         const now = Date.now();
+
+        // Drain click accumulator — avoids per-click set() calls during rapid clicking
+        const _cLoc = _clickLoc;
+        const _cCount = _clickCount;
+        const _cFt = _clickFt;
+        _clickLoc = 0;
+        _clickCount = 0;
+        _clickFt = null;
 
         // ── Event expiry ────────────────────────────────────────────────────────
         let activeEvent = state.activeEvent;
@@ -589,8 +591,8 @@ export const useGameStore = create<GameState>()(
           _qv(state.penaltyLevel) *
           dt;
 
-        let newLoc = state.loc + locGained;
-        let newTotalLoc = state.totalLoc + locGained;
+        let newLoc = state.loc + locGained + _cLoc;
+        let newTotalLoc = state.totalLoc + locGained + _cLoc;
         const newLastRunPeakLoc = Math.max(state.lastRunPeakLoc, newTotalLoc);
 
         // ── Duck nesting ────────────────────────────────────────────────────────
@@ -713,14 +715,15 @@ export const useGameStore = create<GameState>()(
         }
 
         // ── EMA display rate ────────────────────────────────────────────────────
-        const actualRate = (locGained - nestedStolenTotal + state.pendingClickLoc) / dt;
+        const actualRate = (locGained - nestedStolenTotal + _cLoc) / dt;
         const alpha = 0.85;
         const displayedLOCps = state.displayedLOCps * alpha + actualRate * (1 - alpha);
 
-        const floatingTexts =
+        let floatingTexts =
           state.floatingTexts.length > 0
             ? state.floatingTexts.filter((f) => now - f.createdAt < 1000)
             : state.floatingTexts;
+        if (_cFt !== null) floatingTexts = [...floatingTexts, _cFt];
 
         // ── Recache if event survival bonus changed ─────────────────────────────
         let updatedCachedLegacyMult =
@@ -830,6 +833,8 @@ export const useGameStore = create<GameState>()(
           eventSurvivalProductionBonus,
           architecturePoints: newArchitecturePoints,
           cachedLegacyMult: updatedCachedLegacyMult,
+          totalClicks: state.totalClicks + _cCount,
+          clicksThisRun: state.clicksThisRun + _cCount,
           ...(autobuyerBought
             ? {
                 producers: autobuyProducers,
