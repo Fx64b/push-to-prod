@@ -30,6 +30,7 @@ export function StatsPanel() {
   const architectureUpgradesPurchased = useGameStore((s) => s.architectureUpgrades);
   const clicksThisRun = useGameStore((s) => s.clicksThisRun);
   const eventSurvivalProductionBonus = useGameStore((s) => s.eventSurvivalProductionBonus);
+  const penaltyLevel = useGameStore((s) => s.penaltyLevel);
 
   const clickValue = useMemo(
     () => calculateClickValue({ producers, upgrades, locPerClick }),
@@ -51,6 +52,14 @@ export function StatsPanel() {
           <StatRow label="LOC" value={formatLOC(loc)} color="text-gh-green" />
           <StatRow label="Total LOC" value={formatLOC(totalLoc)} />
           <StatRow label="LOC/s" value={formatRate(locps)} color="text-gh-blue" />
+          {penaltyLevel >= 2 && (
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-gh-red">🦆 Duck penalty</span>
+              <span className="text-gh-red tabular-nums">
+                -{penaltyLevel >= 4 ? '99' : penaltyLevel === 3 ? '90' : '50'}%
+              </span>
+            </div>
+          )}
           <StatRow label="Per click" value={formatLOC(clickValue)} />
           <StatRow label="Commits" value={commits.toLocaleString()} />
           <div className="flex flex-col gap-0.5">

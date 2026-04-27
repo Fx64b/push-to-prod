@@ -92,6 +92,6 @@ export function formatTime(seconds: number): string {
 
 export function _seg(a: number, b: number): number {
   let v = (a ^ b ^ 0x9e3779b9) >>> 0;
-  v = (Math.imul(v ^ (v >>> 15), 0x85ebca6b)) >>> 0;
+  v = Math.imul(v ^ (v >>> 15), 0x85ebca6b) >>> 0;
   return (v ^ (v >>> 13)) >>> 0;
 }

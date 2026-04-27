@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { ACHIEVEMENTS } from '@/data/achievements';
 import { ARCHITECTURE_UPGRADES } from '@/data/architectureUpgrades';
 import { EVENTS, type GameEvent } from '@/data/events';
@@ -10,6 +10,7 @@ import { computeSynergyMult } from '@/data/synergies';
 import { UPGRADES } from '@/data/upgrades';
 import { producerBulkCost, producerCost } from '@/utils/costs';
 import { formatLOC } from '@/utils/format';
+import { _xsd, _xse } from '@/utils/save';
 import {
   calculateClickValue,
   calculateLOCps,
@@ -120,6 +121,7 @@ interface GameState {
   dismissToast: (id: string) => void;
   popNestedDuck: (id: string) => void;
   tampered: boolean;
+  penaltyLevel: number;
   newGame: () => void;
   setLoc: (loc: number) => void;
   loadSave: (state: import('@/utils/save').PersistedState, tampered: boolean) => void;
@@ -251,6 +253,71 @@ function pickWeightedEvent(events: GameEvent[]): GameEvent {
   }
   return events[events.length - 1];
 }
+
+function _qv(n: number): number {
+  if (n <= 1) return 1;
+  if (n === 2) return 0.5;
+  if (n === 3) return 0.1;
+  return 0.01;
+}
+
+const _lc =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+let _xp = false;
+let _xt: ReturnType<typeof setTimeout> | null = null;
+let _xk: string | null = null;
+let _xv: string | null = null;
+
+function _xf(): void {
+  if (_xk !== null && _xv !== null) {
+    try {
+      localStorage.setItem(_xk, _xse(_xv));
+    } catch {
+      try {
+        localStorage.setItem(_xk, _xv);
+      } catch {
+        /* ignore */
+      }
+    }
+    _xk = null;
+    _xv = null;
+  }
+  _xt = null;
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', _xf);
+}
+
+const _xs = {
+  getItem: (name: string): string | null => {
+    const raw = localStorage.getItem(name);
+    if (!raw) return null;
+    const r = _xsd(raw);
+    if (r !== null) {
+      if (r.tampered) _xp = true;
+      return r.json;
+    }
+    try {
+      JSON.parse(raw);
+      return raw;
+    } catch {
+      return null;
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    _xk = name;
+    _xv = value;
+    if (_xt === null) {
+      _xt = setTimeout(_xf, 1000);
+    }
+  },
+  removeItem: (name: string): void => {
+    localStorage.removeItem(name);
+  },
+};
 
 // ── Module-level singletons ───────────────────────────────────────────────────
 
@@ -416,6 +483,7 @@ const DEFAULT_STATE = {
   nestedDucks: [] as NestedDuck[],
   lastSaveTime: Date.now(),
   tampered: false,
+  penaltyLevel: 0,
   prestigeCount: 0,
   clicksThisRun: 0,
   totalClicks: 0,
@@ -513,7 +581,13 @@ export const useGameStore = create<GameState>()(
               )
             : state.cachedLegacyMult;
 
-        const locGained = state.cachedLOCps * locpsMult * legacyMult * stackProductionMult * dt;
+        const locGained =
+          state.cachedLOCps *
+          locpsMult *
+          legacyMult *
+          stackProductionMult *
+          _qv(state.penaltyLevel) *
+          dt;
 
         let newLoc = state.loc + locGained;
         let newTotalLoc = state.totalLoc + locGained;
@@ -1091,6 +1165,13 @@ export const useGameStore = create<GameState>()(
       },
 
       setLoc: (loc: number) => {
+        if (!_lc) {
+          set((state) => ({
+            tampered: true,
+            penaltyLevel: Math.min(state.penaltyLevel + 1, 50),
+          }));
+          return;
+        }
         set((state) => ({
           loc,
           totalLoc: Math.max(state.totalLoc, loc),
@@ -1144,34 +1225,26 @@ export const useGameStore = create<GameState>()(
           greatRefactorProductionBonus: saved.greatRefactorProductionBonus ?? 0,
           greatRefactorCount: saved.greatRefactorCount ?? 0,
         };
+        const newPenaltyLevel = wasTampered
+          ? Math.min((saved.penaltyLevel ?? 0) + 1, 50)
+          : (saved.penaltyLevel ?? 0);
         set({
           ...DEFAULT_STATE,
           ...saved,
           ...computeCaches(cacheInput),
           tampered: wasTampered,
+          penaltyLevel: newPenaltyLevel,
           floatingTexts: [],
           toastQueue: [],
           pendingClickLoc: 0,
           displayedLOCps: 0,
         });
-        // Sync the encoded representation into localStorage so Zustand persist
-        // picks it up on next reload without touching the raw state directly.
-        const stored = localStorage.getItem('push-to-prod-v1');
-        if (stored) {
-          try {
-            const parsed = JSON.parse(stored) as { version?: number };
-            localStorage.setItem(
-              'push-to-prod-v1',
-              JSON.stringify({ state: saved, version: parsed.version ?? 0 }),
-            );
-          } catch {
-            // ignore — store will auto-persist on next tick
-          }
-        }
+        _xf();
       },
     }),
     {
       name: 'push-to-prod-v1',
+      storage: createJSONStorage(() => _xs),
       partialize: (state) => {
         const {
           floatingTexts: _ft,
@@ -1213,6 +1286,12 @@ export const useGameStore = create<GameState>()(
           state.nestedDucks = state.nestedDucks ?? [];
           state.clicksThisRun = state.clicksThisRun ?? 0;
           state.greatRefactorProductionBonus = state.greatRefactorProductionBonus ?? 0;
+          state.penaltyLevel = state.penaltyLevel ?? 0;
+          if (_xp) {
+            _xp = false;
+            state.tampered = true;
+            state.penaltyLevel = Math.min((state.penaltyLevel ?? 0) + 1, 50);
+          }
         }
       },
     },

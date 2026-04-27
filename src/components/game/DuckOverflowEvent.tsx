@@ -7,7 +7,7 @@ function _anim(i: number): string {
   const variants = ['_dr1', '_dr2', '_dr3', '_dr4'];
   const kf = variants[i % variants.length];
   const dur = (2.6 + ((i * 0.23) % 2.1)).toFixed(2);
-  const delay = -(((i * 1.37) % 3.8)).toFixed(2);
+  const delay = -((i * 1.37) % 3.8).toFixed(2);
   return `${kf} ${dur}s ease-in-out ${delay}s infinite`;
 }
 
