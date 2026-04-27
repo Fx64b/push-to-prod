@@ -311,7 +311,7 @@ const _xs = {
     _xk = name;
     _xv = value;
     if (_xt === null) {
-      _xt = setTimeout(_xf, 1000);
+      _xt = setTimeout(_xf, 5000);
     }
   },
   removeItem: (name: string): void => {

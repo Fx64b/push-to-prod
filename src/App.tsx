@@ -19,7 +19,7 @@ import { useGameLoop } from '@/hooks/useGameLoop';
 import { useOfflineProgress } from '@/hooks/useOfflineProgress';
 import { useGameStore } from '@/store/gameStore';
 import { DuckOverflowEvent } from '@/components/game/DuckOverflowEvent';
-import { downloadSave, readSaveFile } from '@/utils/save';
+import { decodeSave, downloadSave, readSaveFile } from '@/utils/save';
 import { WelcomePopup } from '@/components/game/WelcomePopup';
 import { DevPanel } from '@/components/game/DevPanel';
 import { Analytics } from '@vercel/analytics/react';
@@ -35,9 +35,12 @@ function SettingsPopover() {
     const raw = localStorage.getItem('push-to-prod-v1');
     if (!raw) return;
     try {
-      const stored = JSON.parse(raw) as { state?: unknown };
+      const decoded = decodeSave(raw);
+      const stored = JSON.parse(decoded ?? raw) as { state?: unknown };
       if (!stored.state) return;
-      downloadSave(stored.state as Parameters<typeof downloadSave>[0]);
+      const state = stored.state as Record<string, unknown>;
+      delete state._q;
+      downloadSave(state as unknown as Parameters<typeof downloadSave>[0]);
     } catch {
       // nothing to export
     }
