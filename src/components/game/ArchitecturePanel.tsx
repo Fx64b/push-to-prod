@@ -44,6 +44,12 @@ function effectSummary(upgrade: ArchitectureUpgrade): string {
       return 'Auto-buys the cheapest affordable producer every 2 seconds';
     case 'autobuyer_upgrades':
       return 'Auto-buys the cheapest affordable upgrade every 5 seconds';
+    case 'autobuyer_bulk_producers':
+      return 'Auto-buys 5 of the cheapest affordable producer every second';
+    case 'autoclick':
+      return `Auto-clicks the LOC button ${e.cps} times per second`;
+    case 'autobuyer_all_upgrades':
+      return 'Auto-buys ALL affordable upgrades every 5 seconds';
     case 'beyond_producer_inheritance':
       return 'Multiverse Compiler, The Boardroom, Reality Engine, and The Final Push survive regular prestige resets';
     default:
@@ -157,11 +163,11 @@ export function ArchitecturePanel() {
         onClick={() => setOpen(true)}
         className="w-full flex items-center justify-between px-3 py-2 rounded border border-gh-yellow/50 bg-gh-yellow/10 text-gh-yellow font-mono font-bold hover:border-gh-yellow hover:bg-gh-yellow/20 transition-all"
       >
-        <div className="flex items-center gap-2 text-xs">
-          <Building2 size={13} />
-          <span>Architecture</span>
+        <div className="flex items-center gap-2 text-xs min-w-0">
+          <Building2 size={13} className="shrink-0" />
+          <span className="truncate">Architecture</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {architecturePoints > 0 && (
             <span className="bg-gh-yellow/30 text-gh-yellow px-1.5 py-0.5 rounded-full text-[10px]">
               {architecturePoints} AP

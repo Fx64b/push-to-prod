@@ -337,6 +337,9 @@ let lastEventTime = 0;
 // Autobuyer timers
 let lastAutobuyProducerTime = 0;
 let lastAutobuyUpgradeTime = 0;
+let lastAutobuyBulkProducerTime = 0;
+let lastAutobuyAllUpgradesTime = 0;
+let lastAutoclickTime = 0;
 
 // ── Event multiplier ────────────────────────────────────────────────────────
 
@@ -537,6 +540,26 @@ export const useGameStore = create<GameState>()(
       tick: (dt: number) => {
         const state = get();
         const now = Date.now();
+
+        // ── Autoclick: inject synthetic clicks before drain ──────────────────────
+        if (state.architectureUpgrades.includes('autoclick-protocol')) {
+          const autoclickUpgrade = ARCHITECTURE_UPGRADES.find((u) => u.id === 'autoclick-protocol');
+          const cps =
+            autoclickUpgrade && autoclickUpgrade.effect.type === 'autoclick'
+              ? autoclickUpgrade.effect.cps
+              : 5;
+          const elapsed = (now - lastAutoclickTime) / 1000;
+          const syntheticClicks = Math.floor(elapsed * cps);
+          if (syntheticClicks > 0) {
+            lastAutoclickTime = now;
+            const { clickDisabled, click: clickMult } = getEventMultiplier(state.activeEvent);
+            if (!clickDisabled) {
+              const { click: stackClickMult } = getStackMult(state.techStack);
+              _clickLoc += state.cachedClickValue * clickMult * stackClickMult * syntheticClicks;
+              _clickCount += syntheticClicks;
+            }
+          }
+        }
 
         // Drain click accumulator — avoids per-click set() calls during rapid clicking
         const _cLoc = _clickLoc;
@@ -797,6 +820,63 @@ export const useGameStore = create<GameState>()(
               autobuyUpgrades = [...autobuyUpgrades, cheapestId];
               autobuyLoc -= cheapestCost;
               autobuyerBought = true;
+            }
+          }
+        }
+
+        // ── Autobuyer: bulk producers (5/second) ────────────────────────────────
+        if (state.architectureUpgrades.includes('autobuyer-bulk-producers')) {
+          const elapsed = (now - lastAutobuyBulkProducerTime) / 1000;
+          if (elapsed >= 1) {
+            lastAutobuyBulkProducerTime = now;
+            let cheapestCost = Number.POSITIVE_INFINITY;
+            let cheapestId = '';
+            for (const producer of PRODUCERS) {
+              if ((producer.unlockLoc ?? 0) > newTotalLoc) continue;
+              if ((producer.unlockGreatRefactor ?? 0) > state.greatRefactorCount) continue;
+              const owned = autobuyProducers[producer.id] ?? 0;
+              const cost = producerCost(producer, owned);
+              if (cost <= autobuyLoc && cost < cheapestCost) {
+                cheapestCost = cost;
+                cheapestId = producer.id;
+              }
+            }
+            if (cheapestId) {
+              for (let i = 0; i < 5; i++) {
+                const owned = autobuyProducers[cheapestId] ?? 0;
+                const cost = producerCost(
+                  PRODUCERS.find((p) => p.id === cheapestId)!,
+                  owned,
+                );
+                if (cost > autobuyLoc) break;
+                autobuyProducers = { ...autobuyProducers, [cheapestId]: owned + 1 };
+                autobuyLoc -= cost;
+                autobuyerBought = true;
+              }
+            }
+          }
+        }
+
+        // ── Autobuyer: all affordable upgrades ──────────────────────────────────
+        if (state.architectureUpgrades.includes('autobuyer-all-upgrades')) {
+          const elapsed = (now - lastAutobuyAllUpgradesTime) / 1000;
+          if (elapsed >= 5) {
+            lastAutobuyAllUpgradesTime = now;
+            for (const upgrade of UPGRADES) {
+              if (autobuyUpgrades.includes(upgrade.id)) continue;
+              if (
+                !upgrade.unlockCondition({
+                  totalLoc: newTotalLoc,
+                  producers: autobuyProducers,
+                  upgrades: autobuyUpgrades,
+                })
+              )
+                continue;
+              if (upgrade.cost <= autobuyLoc) {
+                autobuyUpgrades = [...autobuyUpgrades, upgrade.id];
+                autobuyLoc -= upgrade.cost;
+                autobuyerBought = true;
+              }
             }
           }
         }

@@ -18,6 +18,9 @@ export type ArchitectureEffect =
   | { type: 'enhanced_synergies' } // doubles all synergy bonuses
   | { type: 'autobuyer_producers' } // auto-buys cheapest producer every 2s
   | { type: 'autobuyer_upgrades' } // auto-buys cheapest upgrade every 5s
+  | { type: 'autobuyer_bulk_producers' } // auto-buys 5 cheapest producers every second
+  | { type: 'autoclick'; cps: number } // auto-clicks at the given CPS
+  | { type: 'autobuyer_all_upgrades' } // auto-buys ALL affordable upgrades every 5s
   | { type: 'beyond_producer_inheritance' }; // Beyond era producers survive regular prestige resets
 
 export interface ArchitectureUpgrade {
@@ -256,6 +259,17 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     effect: { type: 'autobuyer_producers' },
   },
 
+  // ── GR 4 Exclusive ───────────────────────────────────────────────────────────
+  {
+    id: 'autoclick-protocol',
+    name: 'Auto-Click Protocol',
+    description: 'Automatically clicks the LOC button 5 times per second',
+    flavor: 'You have automated the clicking. The mouse is ceremonial now.',
+    cost: 15,
+    requiresGreatRefactor: 4,
+    effect: { type: 'autoclick', cps: 5 },
+  },
+
   // ── GR 5 Exclusive ───────────────────────────────────────────────────────────
   {
     id: 'enhanced-synergies',
@@ -275,8 +289,27 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     requiresGreatRefactor: 5,
     effect: { type: 'autobuyer_upgrades' },
   },
+  {
+    id: 'autobuyer-bulk-producers',
+    name: 'Bulk Procurement Protocol',
+    description: 'Automatically buys 5 of the cheapest affordable producer every second',
+    flavor:
+      'The hiring freeze is over. Five offers went out simultaneously. HR is rebooting.',
+    cost: 20,
+    requiresGreatRefactor: 5,
+    effect: { type: 'autobuyer_bulk_producers' },
+  },
 
   // ── GR 7 Exclusive ───────────────────────────────────────────────────────────
+  {
+    id: 'autobuyer-all-upgrades',
+    name: 'Upgrade Flood',
+    description: 'Automatically buys ALL affordable upgrades every 5 seconds (not just the cheapest)',
+    flavor: 'The changelog is a wall of text. Every item is checked. Nothing is optional.',
+    cost: 30,
+    requiresGreatRefactor: 7,
+    effect: { type: 'autobuyer_all_upgrades' },
+  },
   {
     id: 'momentum',
     name: 'Momentum',
