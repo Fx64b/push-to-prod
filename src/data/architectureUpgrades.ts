@@ -94,10 +94,10 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
   {
     id: 'loop-accelerant',
     name: 'Loop Accelerant',
-    description: '×2 global production',
+    description: '×3 global production',
     flavor: 'Second time through, everything goes faster. The codebase anticipated this.',
     cost: 5,
-    effect: { type: 'production_bonus', multiplier: 2.0 },
+    effect: { type: 'production_bonus', multiplier: 3.0 },
   },
 
   // ── 6 AP ─────────────────────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     id: 'infinite-feedback-loop',
     name: 'Infinite Feedback Loop',
     description:
-      'Upgrades the built-in Great Refactor multiplier from ×1.5 to ×2 per loop (GR5 = ×32 instead of ×7.6)',
+      'Upgrades the built-in Great Refactor multiplier from ×1.3 to ×1.65 per loop (GR5 = ×12.9 instead of ×3.7)',
     flavor: 'Every reset compounds the next. The codebase is learning from its own history.',
     cost: 15,
     effect: { type: 'infinite_feedback_loop' },
@@ -154,26 +154,26 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
   {
     id: 'compiler-god-mode',
     name: 'Compiler God Mode',
-    description: '×15 global production',
+    description: '×25 global production',
     flavor: 'The compiler no longer rejects your code. It has given up questioning you.',
     cost: 20,
-    effect: { type: 'production_bonus', multiplier: 15 },
+    effect: { type: 'production_bonus', multiplier: 25 },
   },
   {
     id: 'parallel-universe-deploy',
     name: 'Parallel Universe Deploy',
-    description: '×30 global production',
+    description: '×50 global production',
     flavor: 'Deployed to every branch. Every timeline. The diff is infinite and approved.',
     cost: 25,
-    effect: { type: 'production_bonus', multiplier: 30 },
+    effect: { type: 'production_bonus', multiplier: 50 },
   },
   {
     id: 'singularity-refactor',
     name: 'Singularity Refactor',
-    description: '×100 global production. The final architecture.',
+    description: '×175 global production. The final architecture.',
     flavor: 'The codebase has transcended language. It now compiles reality itself.',
     cost: 50,
-    effect: { type: 'production_bonus', multiplier: 100 },
+    effect: { type: 'production_bonus', multiplier: 175 },
   },
 
   // ── Deep Late-Game: For 20+ Great Refactors ──────────────────────────────────
@@ -181,20 +181,20 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
     id: 'quantum-architecture',
     name: 'Quantum Architecture',
     description:
-      '×10 global production. Your architecture exists in every possible future simultaneously.',
+      '×18 global production. Your architecture exists in every possible future simultaneously.',
     flavor:
       'The codebase exists in a superposition of shipping and not-shipping. Observation collapses it to shipped.',
     cost: 75,
-    effect: { type: 'production_bonus', multiplier: 10 },
+    effect: { type: 'production_bonus', multiplier: 18 },
   },
   {
     id: 'infinite-compile-time',
     name: 'Infinite Compile Time',
-    description: '×25 global production. The build takes forever. The output is everything.',
+    description: '×45 global production. The build takes forever. The output is everything.',
     flavor:
       'The compiler has been running since before the universe. It just finished. Build succeeded.',
     cost: 125,
-    effect: { type: 'production_bonus', multiplier: 25 },
+    effect: { type: 'production_bonus', multiplier: 45 },
   },
 
   // ── GR 2 Exclusive ───────────────────────────────────────────────────────────
@@ -222,12 +222,12 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
   {
     id: 'cascade-architecture',
     name: 'Cascade Architecture',
-    description: '×20 global production. Third loop, third system — finally the right one.',
+    description: '×35 global production. Third loop, third system — finally the right one.',
     flavor:
       'The architecture diagram has achieved enlightenment. It no longer fits on a whiteboard.',
     cost: 20,
     requiresGreatRefactor: 3,
-    effect: { type: 'production_bonus', multiplier: 20 },
+    effect: { type: 'production_bonus', multiplier: 35 },
   },
   {
     id: 'loop-producer-inheritance',
@@ -313,11 +313,11 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
   {
     id: 'momentum',
     name: 'Momentum',
-    description: '×50 global production. Unstoppable force, immovable codebase.',
+    description: '×90 global production. Unstoppable force, immovable codebase.',
     flavor: 'Velocity is no longer a metric. It is a law of physics you authored.',
     cost: 60,
     requiresGreatRefactor: 7,
-    effect: { type: 'production_bonus', multiplier: 50 },
+    effect: { type: 'production_bonus', multiplier: 90 },
   },
   {
     id: 'beyond-producer-inheritance',
@@ -334,10 +334,10 @@ export const ARCHITECTURE_UPGRADES: ArchitectureUpgrade[] = [
   {
     id: 'reality-override',
     name: 'Reality Override',
-    description: '×200 global production. The final multiplier. The architecture is complete.',
+    description: '×400 global production. The final multiplier. The architecture is complete.',
     flavor: 'sudo chmod 777 /reality. Permission: granted. Responsibility: none.',
     cost: 150,
     requiresGreatRefactor: 10,
-    effect: { type: 'production_bonus', multiplier: 200 },
+    effect: { type: 'production_bonus', multiplier: 400 },
   },
 ];

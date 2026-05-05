@@ -90,7 +90,7 @@ export function StatsPanel() {
           {greatRefactorCount > 0 && (
             <StatRow
               label="GR Multiplier"
-              value={`×${Math.pow(architectureUpgradesPurchased.includes('infinite-feedback-loop') ? 2.0 : 1.5, greatRefactorCount).toFixed(2)}`}
+              value={`×${Math.pow(architectureUpgradesPurchased.includes('infinite-feedback-loop') ? 1.65 : 1.3, greatRefactorCount).toFixed(2)}`}
               color="text-gh-yellow"
             />
           )}
