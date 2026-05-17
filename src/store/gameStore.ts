@@ -174,9 +174,9 @@ function computeLegacyMult(
   // Event-Driven: permanent accumulated bonus
   const eventDrivenMult = 1 + eventSurvivalProductionBonus;
 
-  // Built-in GR scaling: ×1.5 per GR by default, ×2 per GR with Infinite Feedback Loop
-  // GR1=×1.5, GR2=×2.25, GR3=×3.375 — or ×2, ×4, ×8 with IFL
-  const grPerMult = architectureUpgrades.includes('infinite-feedback-loop') ? 2.0 : 1.5;
+  // Built-in GR scaling: ×1.3 per GR by default, ×1.65 per GR with Infinite Feedback Loop
+  // GR1=×1.3, GR2=×1.69, GR3=×2.2 — or ×1.65, ×2.72, ×4.49 with IFL
+  const grPerMult = architectureUpgrades.includes('infinite-feedback-loop') ? 1.65 : 1.3;
   const grScaling = greatRefactorCount > 0 ? Math.pow(grPerMult, greatRefactorCount) : 1;
 
   // Synergy multiplier: activated by Synergy Protocol architecture upgrade
