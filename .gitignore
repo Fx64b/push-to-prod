@@ -3,3 +3,4 @@ dist/
 .claude/
 LORE.md
 graphify-out/
+package-lock.json
